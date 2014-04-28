@@ -8,6 +8,7 @@
 
 exitError()
 {
+    \rm -f /tmp/tmp.$$ 1>/dev/null 2>/dev/null
   	echo "ERROR $1: $2" 1>&2
     exit $1
 }
@@ -144,6 +145,84 @@ writeModuleList()
         touch ${modfile}
         module list -t 2>&1 | grep -v alps | grep -v '^- Package' | grep -v '^Currently Loaded' | sed 's/^/module load /g' > ${modfile}
     fi
+}
+
+
+testEnvironment()
+{
+    local tmp=/tmp/tmp.$$
+
+    echo ">>>>>>>>>>>>>>> test environment setup"
+
+    # initialize the log
+    writeModuleList ${tmp}.log all "AVAILABLE MODULES"
+
+    # checkpoint environment before
+    writeModuleList ${tmp}.log loaded "BEFORE C++ MODULES" ${tmp}.mod.before
+
+    # change environments a couple of times
+    for i in `seq 2` ; do
+
+        echo ">>>>>>>>>>>>>>> test C++ environment setup"
+
+        # check C++ env
+        setCppEnvironment
+        writeModuleList ${tmp}.log loaded "C++ MODULES" ${tmp}.mod.dycore
+        if [ -z ${old_prgenv+x} ] ; then exitError 8001 "variable old_prgenv is not set" ; fi
+        if [ -z ${dycore_gpp+x} ] ; then exitError 8002 "variable dycore_gpp is not set" ; fi
+        if [ -z ${dycore_gcc+x} ] ; then exitError 8003 "variable dycore_gcc is not set" ; fi
+        if [ -z ${cuda_gpp+x} ] ; then exitError 8004 "variable cuda_gpp is not set" ; fi
+        if [ -z ${boost_path+x} ] ; then exitError 8005 "variable boost_path is not set" ; fi
+        if [ -z ${mpi_path+x} ] ; then exitError 8006 "variable mpi_path is not set" ; fi
+
+        # check cleanup of C++ env
+        unsetCppEnvironment
+        writeModuleList ${tmp}.log loaded "BETWEEN MODULES" ${tmp}.mod.between
+        if [ ! -z ${old_prgenv+x} ] ; then exitError 8101 "variable old_prgenv is still set" ; fi
+        if [ ! -z ${dycore_gpp+x} ] ; then exitError 8102 "variable dycore_gpp is still set" ; fi
+        if [ ! -z ${dycore_gcc+x} ] ; then exitError 8103 "variable dycore_gcc is still set" ; fi
+        if [ ! -z ${cuda_gpp+x} ] ; then exitError 8104 "variable cuda_gpp is still set" ; fi
+        if [ ! -z ${boost_path+x} ] ; then exitError 8105 "variable boost_path is still set" ; fi
+        if [ ! -z ${mpi_path+x} ] ; then exitError 8106 "variable mpi_path is still set" ; fi
+        compareFiles ${tmp}.mod.before ${tmp}.mod.between
+
+        echo ">>>>>>>>>>>>>>> test Fortran environment setup"
+
+        # check Fortran env
+        setFortranEnvironment
+        writeModuleList ${tmp}.log loaded "FORTRAN MODULES" ${tmp}.mod.fortran
+        if [ -z ${old_prgenv+x} ] ; then exitError 8201 "variable old_prgenv is not set" ; fi
+
+        # check cleanup of Fortran env
+        unsetFortranEnvironment
+        writeModuleList ${tmp}.log loaded "AFTER FORTRAN MODULES" ${tmp}.mod.after
+        if [ ! -z ${old_prgenv+x} ] ; then exitError 8301 "variable old_prgenv is still set" ; fi
+        compareFiles ${tmp}.mod.before ${tmp}.mod.after
+
+    done
+
+    # everything ok
+    echo ">>>>>>>>>>>>>>>   success"
+
+    # remove temporary files
+    /bin/rm -f ${tmp}*
+
+}
+
+
+writeCppEnvironment()
+{
+    setCppEnvironment
+    writeModuleList /dev/null loaded "C++ MODULES" ${base_path}/modules_dycore.env
+    unsetCppEnvironment
+}
+
+
+writeFortranEnvironment()
+{
+    setFortranEnvironment
+    writeModuleList /dev/null loaded "FORTRAN MODULES" ${base_path}/modules_fortran.env
+    unsetFortranEnvironment
 }
 
 

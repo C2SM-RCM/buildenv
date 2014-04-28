@@ -5,10 +5,10 @@
 # functions must be defined in this file:
 #
 # setupDefaults            setup global default options for this platform
-# setDycoreEnvironment     setup environment for dycore compilation
-# unsetDycoreEnvironment   restore environment after dycore compilation
+# setCppEnvironment        setup environment for dycore compilation
+# unsetCppEnvironment      restore environment after dycore compilation
 # setFortranEnvironment    setup environment for Fortran compilation
-# unsetDycoreEnvironment   restore environment after Fortran compilation
+# unsetFortranEnvironment  restore environment after Fortran compilation
 
 # Setup global defaults and variables
 #
@@ -33,7 +33,7 @@ setupDefaults()
     cuda_arch="sm_35"
 }
 
-# This function loads modules and sets up variables for compiling the Dycore
+# This function loads modules and sets up variables for compiling in C++
 #
 # upon entry, the following global variables need to be set:
 #   compiler          Compiler to use to compile the Fortran parts of the code
@@ -47,7 +47,7 @@ setupDefaults()
 #   use_mpi_compiler  use MPI compiler wrappers?
 #   mpi_path          path to the MPI installation to use
 #
-setDycoreEnvironment()
+setCppEnvironment()
 {
     # switch to programming environment (only on Cray)
     old_prgenv=" "
@@ -72,7 +72,7 @@ setDycoreEnvironment()
         module swap gcc/4.6.3
         ;;
     * )
-        echo "ERROR: Unsupported compiler encountered in setDycoreEnvironment" 1>&2
+        echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
         exit 1
     esac
 
@@ -93,13 +93,13 @@ setDycoreEnvironment()
     mpi_path=${MPI_ROOT}
 }
 
-# This function unloads modules and removes variables for compiling the Dycore
+# This function unloads modules and removes variables for compiling in C++
 #
 # upon entry, the following global variables need to be set:
 #   compiler          Compiler to use to compile the Fortran parts of the code
 #   old_prgenv        Default PrgEnv-XXX module loaded on Cray machines
 #
-unsetDycoreEnvironment()
+unsetCppEnvironment()
 {
     # remove standard modules (part 2)
     module unload cuda
@@ -115,7 +115,7 @@ unsetDycoreEnvironment()
         module unload mvapich2/1.9-gcc-4.6.3
         ;;
     * )
-        echo "ERROR: Unsupported compiler encountered in unsetDycoreEnvironment" 1>&2
+        echo "ERROR: Unsupported compiler encountered in unsetCppEnvironment" 1>&2
         exit 1
     esac
 

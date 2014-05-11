@@ -101,7 +101,6 @@ unsetCppEnvironment()
 
     # remove Fortran compiler specific modules
     case "${compiler}" in
-        ;;
     gnu )
         ;;
     * )
@@ -152,7 +151,6 @@ setFortranEnvironment()
 
     # compiler specific modules
     case "${compiler}" in
-        ;;
     gnu )
         export FC=/opt/local/bin/gfortran
         export CC=/opt/local/bin/gcc
@@ -178,7 +176,6 @@ unsetFortranEnvironment()
 
     # remove compiler specific modules
     case "${compiler}" in
-        ;;
     gnu )
         ;;
     * )

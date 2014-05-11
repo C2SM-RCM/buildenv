@@ -74,6 +74,11 @@ elif [ "`hostname | grep santis`" != "" ] ; then
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
+elif [ "`hostname | grep durian`" != "" ] ; then
+    host="durian"
+    queue="normal"
+    nthreads=8
+    mpilaunch="mpirun"
 fi
 
 # make sure everything is set

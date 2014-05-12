@@ -97,7 +97,6 @@ setCppEnvironment()
 unsetCppEnvironment()
 {
     # remove standard modules (part 2)
-    module unload cuda
 
     # remove Fortran compiler specific modules
     case "${compiler}" in

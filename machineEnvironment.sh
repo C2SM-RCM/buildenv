@@ -75,6 +75,8 @@ elif [ "`hostname | grep santis`" != "" ] ; then
     nthreads=8
     mpilaunch="aprun"
 elif [ "`hostname | grep durian`" != "" ] ; then
+    shopt -s expand_aliases
+    alias module='echo $* 2>/dev/null 1>/dev/null'
     host="durian"
     queue="normal"
     nthreads=8

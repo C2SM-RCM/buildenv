@@ -23,7 +23,7 @@ if [ "`hostname | grep todi`" != "" ] ; then
     . /opt/modules/default/init/bash
     host="todi"
     queue="day"
-    nthreads=8
+    nthreads=16
     mpilaunch="aprun"
 elif [ "`hostname | grep opcode`" != "" ] ; then
     . /etc/bashrc
@@ -37,7 +37,7 @@ elif [ "`hostname | grep lema`" != "" ] ; then
     . /opt/modules/default/init/bash
     host="lema"
     queue="dev"
-    nthreads=6
+    nthreads=12
     mpilaunch="aprun"
 elif [ "`hostname | grep dom`" != "" ] ; then
     . /etc/bashrc
@@ -65,7 +65,7 @@ elif [ "`hostname | grep castor`" != "" ] ; then
     . /apps/castor/Modules/default/init/bash
     host="castor"
     queue="normal"
-    nthreads=8
+    nthreads=6
     mpilaunch="mpiexec"
 elif [ "`hostname | grep santis`" != "" ] ; then
     . /etc/bash.bashrc
@@ -79,7 +79,7 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     alias module='echo $* 2>/dev/null 1>/dev/null'
     host="durian"
     queue="normal"
-    nthreads=8
+    nthreads=4
     mpilaunch="mpirun"
 fi
 

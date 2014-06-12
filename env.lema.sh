@@ -26,11 +26,15 @@ setupDefaults()
     # available options
     targets=(cpu)
     compilers=(cray pgi gnu)
+    fcompiler_cmds=(ftn)
 
     # default options
     target="cpu"
     compiler="gnu"
     cuda_arch=" "
+
+    # fortran compiler command
+    fcompiler_cmd="ftn"
 }
 
 # This function loads modules and sets up variables for compiling in C++
@@ -156,6 +160,7 @@ setFortranEnvironment()
     fi
 
     # standard modules (part 1)
+    module load cmake/2.8.11.1
 
     # compiler specific modules
     case "${compiler}" in
@@ -205,6 +210,8 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 2)
+    module unload cmake
+
 
     # swap back to original programming environment (only on Cray machines)
     if [ -z "${old_prgenv}" ] ; then

@@ -26,11 +26,17 @@ setupDefaults()
     # available options
     targets=(cpu gpu)
     compilers=(cray gnu)
+    fcompiler_cmds=(ftn)
 
     # default options
     target="gpu"
     compiler="cray"
     cuda_arch="sm_35"
+
+    # fortran compiler command
+    fcompiler_cmd="ftn"
+
+
 }
 
 # This function loads modules and sets up variables for compiling in C++
@@ -160,6 +166,7 @@ setFortranEnvironment()
     fi
 
     # standard modules (part 1)
+    module load cmake
     if [ "${target}" == "gpu" ] ; then
         module load cudatoolkit
         module load craype-accel-nvidia35
@@ -206,7 +213,8 @@ unsetFortranEnvironment()
         exit 1
     esac
 
-    # remove standard modules (part 2)
+    # remove standard modules (part 1)
+    module unload cmake
     if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia35
         module unload cudatoolkit

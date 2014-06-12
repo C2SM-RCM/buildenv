@@ -26,11 +26,17 @@ setupDefaults()
     # available options
     targets=(cpu gpu)
     compilers=(gnu)
+    fcompiler_cmds=(mpif90-mpich-mp)
 
     # default options
     target="cpu"
     compiler="gnu"
     cuda_arch="sm_35"
+
+    #fortran compiler command
+    fcompiler_cmd="mpif90-mpich-mp"
+
+
 }
 
 # This function loads modules and sets up variables for compiling in C++

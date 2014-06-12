@@ -26,11 +26,17 @@ setupDefaults()
     # available options
     targets=(cpu gpu)
     compilers=(pgi gnu)
+    fcompiler_cmds=(mpif90)
+
 
     # default options
     target="gpu"
     compiler="pgi"
     cuda_arch="sm_35"
+
+    #fortran compiler command
+    fcompiler_cmd="mpif90"
+
 }
 
 # This function loads modules and sets up variables for compiling in C++
@@ -160,6 +166,7 @@ setFortranEnvironment()
     #fi
 
     # standard modules (part 1)
+    module load cmake/2.8.11.2
 
     # compiler specific modules
     case "${compiler}" in
@@ -213,6 +220,7 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
+    module unload cmake
 
     # swap back to original programming environment (only on Cray machines)
     #if [ -z "${old_prgenv}" ] ; then

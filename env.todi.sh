@@ -234,6 +234,7 @@ unsetFortranEnvironment()
         module unload cudatoolkit
     fi
     module load cscs/2013
+    module unload cmake
 
     # swap back to original programming environment (only on Cray machines)
     if [ -z "${old_prgenv}" ] ; then

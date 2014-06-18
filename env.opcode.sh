@@ -178,9 +178,9 @@ setFortranEnvironment()
         ;;
     gnu )
         module load mvapich2/1.9-gcc-opcode3-4.6.3
-        module load gcc/4.7.2
         module load netcdf/4.2-gcc
         module unload gcc/4.6.3
+        module load gcc/4.7.2
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -210,8 +210,8 @@ unsetFortranEnvironment()
         module unload mvapich2/1.9-pgi-opcode3-13.6
         ;;
     gnu )
-        module unload netcdf/4.2-gcc
         module unload gcc/4.7.2
+        module unload netcdf/4.2-gcc
         module unload mvapich2/1.9-gcc-opcode3-4.6.3
         ;;
     * )

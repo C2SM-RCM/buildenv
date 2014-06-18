@@ -208,7 +208,7 @@ unsetFortranEnvironment()
         module unload mvapich2/1.9-pgi
         ;;
     gnu )
-        module unload netcdf/4.2.1.1-gcc
+        module unload netcdf/4.1.3-gcc
         module unload gcc/4.8.1
         module unload mvapich2/1.9-gcc-4.8.1
         ;;

@@ -83,6 +83,7 @@ setCppEnvironment()
     esac
 
     # standard modules (part 2)
+    module load boost
     module load cuda/5.5
 
     # set global variables
@@ -109,6 +110,7 @@ unsetCppEnvironment()
 {
     # remove standard modules (part 2)
     module unload cuda
+    module unload boost
 
     # remove Fortran compiler specific modules
     case "${compiler}" in

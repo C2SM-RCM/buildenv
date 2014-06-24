@@ -66,6 +66,7 @@ setCppEnvironment()
     
     # standard modules (part 1)
     module load cmake/2.8.12.2
+    module load boost
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -74,7 +75,7 @@ setCppEnvironment()
         module load gcc/4.7.3
         ;;
     gnu )
-        module load mvapich2/1.9-gcc-4.6.3
+        module load mvapich2/1.9-pgi-13.10
         module swap gcc/4.6.3
         ;;
     * )

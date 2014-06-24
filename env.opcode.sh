@@ -66,6 +66,7 @@ setCppEnvironment()
     
     # standard modules (part 1)
     module load cmake/2.8.11.2
+    module load boost
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -108,6 +109,7 @@ setCppEnvironment()
 unsetCppEnvironment()
 {
     # remove standard modules (part 2)
+    module unload boost
     module unload cuda
 
     # remove Fortran compiler specific modules

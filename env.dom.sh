@@ -127,6 +127,7 @@ unsetCppEnvironment()
     esac
 
     # remove standard modules (part 1)
+    module unload boost
     module unload cmake
 
     ## restore programming environment (only on Cray)

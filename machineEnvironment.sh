@@ -101,5 +101,5 @@ test -n "${mpilaunch}" || exitError 2004 "Variable <mpilaunch> could not be set 
 test -n "${installdir}" || exitError 2005 "Variable <installdir> could not be set (unknown machine `hostname`?)"
 
 # export installation directory
-export INSTALL_DIR "${installdir}"
+export INSTALL_DIR="${installdir}"
 

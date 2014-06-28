@@ -16,6 +16,7 @@ host=""       # name of host
 queue=""      # standard queue to submit jobs to
 nthreads=""   # number of threads to use for parallel builds
 mpilaunch=""  # command to launch an MPI executable (e.g. aprun)
+installdir="" # directory where libraries are installed
 
 # setup machine specifics
 if [ "`hostname | grep todi`" != "" ] ; then
@@ -25,6 +26,7 @@ if [ "`hostname | grep todi`" != "" ] ; then
     queue="day"
     nthreads=16
     mpilaunch="aprun"
+    installdir=/project/c01/install/${host}
 elif [ "`hostname | grep opcode`" != "" ] ; then
     . /etc/bashrc
     . /etc/profile.d/modules.sh
@@ -32,6 +34,7 @@ elif [ "`hostname | grep opcode`" != "" ] ; then
     queue="primary"
     nthreads=8
     mpilaunch="mpirun"
+    installdir=/project/c01/install/${host}
 elif [ "`hostname | grep lema`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -39,6 +42,7 @@ elif [ "`hostname | grep lema`" != "" ] ; then
     queue="dev"
     nthreads=12
     mpilaunch="aprun"
+    installdir=/project/c01/install/${host}
 elif [ "`hostname | grep dom`" != "" ] ; then
     . /etc/bashrc
     . /apps/dom/Modules/3.2.10/init/bash
@@ -46,6 +50,7 @@ elif [ "`hostname | grep dom`" != "" ] ; then
     queue="normal"
     nthreads=8
     mpilaunch="mpiexec"
+    installdir=/project/c01/install/${host}
 elif [ "`hostname | grep daint`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -53,6 +58,7 @@ elif [ "`hostname | grep daint`" != "" ] ; then
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
+    installdir=/project/c01/install/${host}
 elif [ "`hostname | grep jupiter`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -60,6 +66,7 @@ elif [ "`hostname | grep jupiter`" != "" ] ; then
     queue="batch"
     nthreads=8
     mpilaunch="aprun"
+    installdir="???"
 elif [ "`hostname | grep castor`" != "" ] ; then
     . /etc/bashrc
     . /apps/castor/Modules/default/init/bash
@@ -67,6 +74,7 @@ elif [ "`hostname | grep castor`" != "" ] ; then
     queue="normal"
     nthreads=6
     mpilaunch="mpiexec"
+    installdir=/project/c01/install/${host}
 elif [ "`hostname | grep santis`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -74,6 +82,7 @@ elif [ "`hostname | grep santis`" != "" ] ; then
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
+    installdir="???"
 elif [ "`hostname | grep durian`" != "" ] ; then
     shopt -s expand_aliases
     alias module='echo $* 2>/dev/null 1>/dev/null'
@@ -81,6 +90,7 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     queue="normal"
     nthreads=4
     mpilaunch="mpirun"
+    installdir="???"
 fi
 
 # make sure everything is set
@@ -88,4 +98,8 @@ test -n "${host}" || exitError 2001 "Variable <host> could not be set (unknown m
 test -n "${queue}" || exitError 2002 "Variable <queue> could not be set (unknown machine `hostname`?)"
 test -n "${nthreads}" || exitError 2003 "Variable <nthreads> could not be set (unknown machine `hostname`?)"
 test -n "${mpilaunch}" || exitError 2004 "Variable <mpilaunch> could not be set (unknown machine `hostname`?)"
+test -n "${installdir}" || exitError 2005 "Variable <installdir> could not be set (unknown machine `hostname`?)"
+
+# export installation directory
+export INSTALL_DIR "${installdir}"
 

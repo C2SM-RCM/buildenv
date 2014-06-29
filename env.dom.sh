@@ -72,11 +72,11 @@ setCppEnvironment()
     case "${compiler}" in
     pgi )
         module load mvapich2/1.9-pgi-13.10
-        module load gcc/4.7.3
+        module load gcc/4.8.2
         ;;
     gnu )
-        module load mvapich2/1.9-pgi-13.10
-        module swap gcc/4.6.3
+        module load mvapich2/1.9-gcc-4.8.2
+        module swap gcc/4.8.2
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
@@ -114,12 +114,12 @@ unsetCppEnvironment()
     # remove Fortran compiler specific modules
     case "${compiler}" in
     pgi )
-        module unload gcc/4.7.3
+        module unload gcc/4.8.2
         module unload mvapich2/1.9-pgi-13.10
         ;;
     gnu )
-        module unload gcc/4.6.3
-        module unload mvapich2/1.9-gcc-4.6.3
+        module unload gcc/4.8.2
+        module unload mvapich2/1.9-gcc-4.8.2
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetCppEnvironment" 1>&2
@@ -178,8 +178,8 @@ setFortranEnvironment()
         module load netcdf/4.2.1.1-pgi_1301
         ;;
     gnu )
-        module load mvapich2/1.9-gcc-4.6.3
-        module swap gcc/4.6.3
+        module load mvapich2/1.9-gcc-4.8.2
+        module swap gcc/4.8.2
         module load netcdf/4.2.1.1-gnu_463
         ;;
     * )
@@ -213,8 +213,8 @@ unsetFortranEnvironment()
         ;;
     gnu )
         module unload netcdf/4.2.1.1-gnu_463
-        module unload gcc/4.6.3
-        module unload mvapich2/1.9-gcc-4.6.3
+        module unload gcc/4.8.2
+        module unload mvapich2/1.9-gcc-4.8.2
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

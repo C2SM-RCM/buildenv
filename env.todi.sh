@@ -65,7 +65,7 @@ setCppEnvironment()
     fi
     
     # standard modules (part 1)
-    module load cmake/2.8.12.2
+    module load cmake/2.8.12.2-64bits
     module swap gcc/4.8.2
     module unload cscs/2013
     if [ "${target}" == "gpu" ] ; then
@@ -133,7 +133,7 @@ unsetCppEnvironment()
     fi
     module load cscs/2013
     module unload gcc/4.8.2
-    module unload cmake
+    module unload cmake/2.8.12.2-64bits
 
     # restore programming environment (only on Cray)
     if [ -z "${old_prgenv}" ] ; then
@@ -179,7 +179,7 @@ setFortranEnvironment()
         module load cudatoolkit
         module unload libsci_acc
     fi
-    module load cmake/2.8.12.2
+    module load cmake/2.8.12.2-64bits
 
     # compiler specific modules
     case "${compiler}" in
@@ -234,7 +234,7 @@ unsetFortranEnvironment()
         module unload cudatoolkit
     fi
     module load cscs/2013
-    module unload cmake
+    module unload cmake/2.8.12.2-64bits
 
     # swap back to original programming environment (only on Cray machines)
     if [ -z "${old_prgenv}" ] ; then

@@ -7,8 +7,14 @@
 
 exitError()
 {
+    \rm -f /tmp/tmp.$$ 1>/dev/null 2>/dev/null
     echo "ERROR: $2" 1>&2
     exit $1
+}
+
+showWarning()
+{
+    echo "WARNING: $1" 1>&2
 }
 
 # setup empty defaults

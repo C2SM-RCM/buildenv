@@ -13,6 +13,10 @@ exitError()
     exit $1
 }
 
+showWarning()
+{
+    echo "WARNING: $1" 1>&2
+}
 
 containsElement()
 {

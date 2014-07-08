@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 # setup module environment
 # NOTE: the location of the base bash script and module initialization

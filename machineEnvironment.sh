@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# setup module environment
+# setup environment for different systems
+# 
 # NOTE: the location of the base bash script and module initialization
 #       vary from system to system, so you will have to add the location
 #       if your system is not supported below
@@ -15,6 +16,12 @@ exitError()
 showWarning()
 {
     echo "WARNING: $1" 1>&2
+}
+
+modulepathadd() {
+    if [ -d "$1" ] && [[ ":$MODULEPATH:" != *":$1:"* ]]; then
+        MODULEPATH="${MODULEPATH:+"$MODULEPATH:"}$1"
+    fi
 }
 
 # setup empty defaults
@@ -52,6 +59,7 @@ elif [ "`hostname | grep lema`" != "" ] ; then
 elif [ "`hostname | grep dom`" != "" ] ; then
     . /etc/bashrc
     . /apps/dom/Modules/3.2.10/init/bash
+    modulepathadd /apps/dom/modulefiles
     host="dom"
     queue="normal"
     nthreads=8

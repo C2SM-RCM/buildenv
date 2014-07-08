@@ -24,7 +24,7 @@
 setupDefaults()
 {
     # available options
-    targets=(cpu gpu)
+    targets=(cpu)
     compilers=(gnu)
     fcompiler_cmds=(mpif90-mpich-mp)
 
@@ -69,9 +69,9 @@ setCppEnvironment()
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     gnu )
-        export FC=/opt/local/bin/gfortran
-        export CC=/opt/local/bin/gcc
-        export CXX=/opt/local/bin/g++
+        export FC=/opt/local/bin/mpif90
+        export CC=/opt/local/bin/mpicc
+        export CXX=/opt/local/bin/mpic++
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
@@ -86,8 +86,8 @@ setCppEnvironment()
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
-    dycore_gpp='/opt/local/bin/g++'
-    dycore_gcc='/opt/local/bin/gcc'
+    dycore_gpp='/opt/local/bin/mpic++'
+    dycore_gcc='/opt/local/bin/mpicc'
     cuda_gpp='/opt/local/bin/g++'
     boost_path=/opt/local/include
     use_mpi_compiler=ON
@@ -157,9 +157,9 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     gnu )
-        export FC=/opt/local/bin/gfortran
-        export CC=/opt/local/bin/gcc
-        export CXX=/opt/local/bin/g++
+        export FC=/opt/local/bin/mpif90
+        export CC=/opt/local/bin/mpicc
+        export CXX=/opt/local/bin/mpic++
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2

@@ -90,7 +90,7 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     queue="normal"
     nthreads=4
     mpilaunch="mpirun"
-    installdir="???"
+    installdir="/Users/fuhrer/Desktop/install"
 fi
 
 # make sure everything is set

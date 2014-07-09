@@ -43,6 +43,7 @@ if [ "`hostname | grep todi`" != "" ] ; then
 elif [ "`hostname | grep opcode`" != "" ] ; then
     . /etc/bashrc
     . /etc/profile.d/modules.sh
+    module load slurm
     host="opcode"
     queue="primary"
     nthreads=8
@@ -84,6 +85,7 @@ elif [ "`hostname | grep jupiter`" != "" ] ; then
 elif [ "`hostname | grep castor`" != "" ] ; then
     . /etc/bashrc
     . /apps/castor/Modules/default/init/bash
+    module load slurm
     host="castor"
     queue="normal"
     nthreads=6

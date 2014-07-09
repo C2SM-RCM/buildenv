@@ -161,6 +161,7 @@ setFortranEnvironment()
 
     # standard modules (part 1)
     module load cmake/2.8.11.1
+    module load cray-mpich2/5.5.4
 
     # compiler specific modules
     case "${compiler}" in
@@ -210,8 +211,8 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 2)
+    module unload cray-mpich2/5.5.4
     module unload cmake
-
 
     # swap back to original programming environment (only on Cray machines)
     if [ -z "${old_prgenv}" ] ; then

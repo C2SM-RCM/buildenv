@@ -64,7 +64,7 @@ setCppEnvironment()
     
     # standard modules (part 1)
     module load cmake/2.8.11.1
-    module swap gcc/4.7.2
+    module swap gcc/4.8.2
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -119,7 +119,7 @@ unsetCppEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module swap gcc/4.7.2 gcc
+    module swap gcc/4.8.2 gcc
     module unload cmake
 
     # restore programming environment (only on Cray)
@@ -128,6 +128,8 @@ unsetCppEnvironment()
     else
         module swap PrgEnv-gnu ${old_prgenv}
     fi
+    module unload cce/8.1.8
+    module unload xt-libsci/12.2.0
     unset old_prgenv
 
     # unset global variables
@@ -161,7 +163,6 @@ setFortranEnvironment()
 
     # standard modules (part 1)
     module load cmake/2.8.11.1
-    module load cray-mpich2/5.5.4
 
     # compiler specific modules
     case "${compiler}" in
@@ -172,7 +173,7 @@ setFortranEnvironment()
         module swap pgi pgi/13.6.0
         ;;
     gnu )
-        module swap gcc gcc/4.6.1
+        module swap gcc gcc/4.8.2
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -180,7 +181,7 @@ setFortranEnvironment()
     esac
 
     # standard modules (part 2)
-    module load netcdf
+    module load cray-netcdf
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -192,7 +193,7 @@ setFortranEnvironment()
 unsetFortranEnvironment()
 {
     # remove standard modules (part 2)
-    module unload netcdf
+    module unload cray-netcdf
 
     # remove compiler specific modules
     case "${compiler}" in
@@ -203,7 +204,7 @@ unsetFortranEnvironment()
         module swap pgi/13.6.0 pgi
         ;;
     gnu )
-        module swap gcc/4.6.1 gcc
+        module swap gcc/4.8.2 gcc
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2
@@ -211,7 +212,6 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 2)
-    module unload cray-mpich2/5.5.4
     module unload cmake
 
     # swap back to original programming environment (only on Cray machines)
@@ -220,6 +220,8 @@ unsetFortranEnvironment()
     else
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
+    module unload cce/8.1.8
+    module unload xt-libsci/12.2.0
     unset old_prgenv
 }
 

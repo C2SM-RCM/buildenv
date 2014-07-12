@@ -178,6 +178,7 @@ setFortranEnvironment()
         ;;
     gnu )
         module swap gcc gcc/4.8.2
+        module load cray-netcdf
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -210,6 +211,7 @@ unsetFortranEnvironment()
         module swap pgi/13.6.0 pgi
         ;;
     gnu )
+        module unload cray-netcdf
         module swap gcc/4.8.2 gcc
         ;;
     * )

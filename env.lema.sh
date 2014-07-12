@@ -168,9 +168,13 @@ setFortranEnvironment()
     case "${compiler}" in
     cray )
         module swap cce cce/8.0.3
+        module load cray-mpich/6.2.2
+        module load cray-netcdf
         ;;
     pgi )
         module swap pgi pgi/13.6.0
+        module load xt-mpich2/5.4.4
+        module load netcdf
         ;;
     gnu )
         module swap gcc gcc/4.8.2
@@ -181,7 +185,6 @@ setFortranEnvironment()
     esac
 
     # standard modules (part 2)
-    module load cray-netcdf
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -193,14 +196,17 @@ setFortranEnvironment()
 unsetFortranEnvironment()
 {
     # remove standard modules (part 2)
-    module unload cray-netcdf
 
     # remove compiler specific modules
     case "${compiler}" in
     cray )
+        module unload cray-netcdf
+        module unload cray-mpich/6.2.2
         module swap cce/8.0.3 cce
         ;;
     pgi )
+        module unload netcdf
+        module unload xt-mpich2/5.4.4
         module swap pgi/13.6.0 pgi
         ;;
     gnu )

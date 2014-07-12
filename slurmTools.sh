@@ -9,15 +9,17 @@
 exitError()
 {
     \rm -f /tmp/tmp.$$ 1>/dev/null 2>/dev/null
-  	echo "ERROR $1: $2" 1>&2
+    echo "ERROR $1: LINE=$2" 1>&2
+    PARENT_COMMAND=$(ps $PPID | tail -n 1 | awk "{print \$6}")
+    echo "ERROR       LOCATION=$0"
     exit $1
 }
 
 showWarning()
 {
-    echo "WARNING: $1" 1>&2
+    echo "WARNING $1: LINE=$2" 1>&2
+    echo "WARNING       LOCATION=$0"
 }
-
 
 # function to launch and wait for job (until job finishes or a
 # specified timeout in seconds is reached)

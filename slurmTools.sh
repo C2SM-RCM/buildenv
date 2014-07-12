@@ -65,7 +65,13 @@ function launch_job {
   # make sure that job has finished
   squeue -o "%.20i %.20u" -h -j "${jobid}" | grep "^ *${jobid} "
   if [ $? -eq 0 ] ; then
-      exitError 7207 "${LINENO}: batch job ${script} with ID ${jobid} on host ${slave} did not finish!"
+      exitError 7207 "${LINENO}: batch job ${script} with ID ${jobid} on host ${slave} did not finish"
+  fi
+
+  # check for normal completion of batch job
+  sacct --jobs ${jobid} --user jenkins -p -n -b -D | grep -v '|COMPLETED|0:0|' > /dev/null
+  if [ $? -eq 0 ] ; then
+      exitError 7209 "${LINENO}: batch job ${script} with ID ${jobid} on host ${slave} did not complete successfully"
   fi
 
 }

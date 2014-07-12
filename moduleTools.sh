@@ -9,16 +9,17 @@
 exitError()
 {
     \rm -f /tmp/tmp.$$ 1>/dev/null 2>/dev/null
-    echo "ERROR $1: LINE=$2" 1>&2
-    PARENT_COMMAND=$(ps $PPID | tail -n 1 | awk "{print \$6}")
-    echo "ERROR       LOCATION=$0"
+    echo "ERROR $1: $3" 1>&2
+    echo "ERROR     LOCATION=$0" 1>&2
+    echo "ERROR     LINE=$2" 1>&2
     exit $1
 }
 
 showWarning()
 {
-    echo "WARNING $1: LINE=$2" 1>&2
-    echo "WARNING       LOCATION=$0"
+    echo "WARNING $1: $3" 1>&2
+    echo "WARNING       LOCATION=$0" 1>&2
+    echo "WARNING       LINE=$2" 1>&2
 }
 
 containsElement()

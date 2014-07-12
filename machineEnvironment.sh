@@ -29,11 +29,12 @@ modulepathadd() {
 }
 
 # setup empty defaults
-host=""       # name of host
-queue=""      # standard queue to submit jobs to
-nthreads=""   # number of threads to use for parallel builds
-mpilaunch=""  # command to launch an MPI executable (e.g. aprun)
-installdir="" # directory where libraries are installed
+host=""         # name of host
+queue=""        # standard queue to submit jobs to
+nthreads=""     # number of threads to use for parallel builds
+mpilaunch=""    # command to launch an MPI executable (e.g. aprun)
+installdir=""   # directory where libraries are installed
+testdata=""     # directory where unittestdata is stored
 
 # setup machine specifics
 if [ "`hostname | grep todi`" != "" ] ; then
@@ -44,6 +45,7 @@ if [ "`hostname | grep todi`" != "" ] ; then
     nthreads=16
     mpilaunch="aprun"
     installdir=/project/c01/install/${host}
+    testdata=/scratch/todi/jenkins/data
 elif [ "`hostname | grep opcode`" != "" ] ; then
     . /etc/bashrc
     . /etc/profile.d/modules.sh
@@ -53,6 +55,7 @@ elif [ "`hostname | grep opcode`" != "" ] ; then
     nthreads=8
     mpilaunch="mpirun"
     installdir=/project/c01/install/${host}
+    testdata=/scratch/jenkins/data
 elif [ "`hostname | grep lema`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -61,6 +64,7 @@ elif [ "`hostname | grep lema`" != "" ] ; then
     nthreads=12
     mpilaunch="aprun"
     installdir=/project/c01/install/${host}
+    testdata=/scratch/jenkins/data
 elif [ "`hostname | grep dom`" != "" ] ; then
     . /etc/bashrc
     . /apps/dom/Modules/3.2.10/init/bash
@@ -70,6 +74,7 @@ elif [ "`hostname | grep dom`" != "" ] ; then
     nthreads=8
     mpilaunch="mpiexec"
     installdir=/project/c01/install/${host}
+    testdata=/scratch/dom/jenkins/dom/data
 elif [ "`hostname | grep daint`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -78,6 +83,7 @@ elif [ "`hostname | grep daint`" != "" ] ; then
     nthreads=8
     mpilaunch="aprun"
     installdir=/project/c01/install/${host}
+    testdata=/scratch/daint/jenkins/data
 elif [ "`hostname | grep jupiter`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -86,6 +92,7 @@ elif [ "`hostname | grep jupiter`" != "" ] ; then
     nthreads=8
     mpilaunch="aprun"
     installdir="???"
+    testdata="???"
 elif [ "`hostname | grep castor`" != "" ] ; then
     . /etc/bashrc
     . /apps/castor/Modules/default/init/bash
@@ -95,6 +102,7 @@ elif [ "`hostname | grep castor`" != "" ] ; then
     nthreads=6
     mpilaunch="mpiexec"
     installdir=/project/c01/install/${host}
+    testdata=/scratch/castor/jenkins/castor/data
 elif [ "`hostname | grep santis`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -103,6 +111,7 @@ elif [ "`hostname | grep santis`" != "" ] ; then
     nthreads=8
     mpilaunch="aprun"
     installdir="???"
+    testdata="???"
 elif [ "`hostname | grep durian`" != "" ] ; then
     shopt -s expand_aliases
     alias module='echo $* 2>/dev/null 1>/dev/null'
@@ -111,6 +120,7 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     nthreads=4
     mpilaunch="mpirun"
     installdir="/Users/fuhrer/Desktop/install"
+    testdata="???"
 fi
 
 # make sure everything is set
@@ -122,4 +132,5 @@ test -n "${installdir}" || exitError 2005 "Variable <installdir> could not be se
 
 # export installation directory
 export INSTALL_DIR="${installdir}"
+export TESTDATA_DIR="${testdata}"
 

@@ -25,7 +25,7 @@ setupDefaults()
 {
     # available options
     targets=(cpu)
-    compilers=(cray pgi gnu)
+    compilers=(pgi gnu)
     fcompiler_cmds=(ftn)
 
     # default options

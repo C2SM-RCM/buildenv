@@ -34,7 +34,7 @@ isOnOff()
 {
     local switch=$1
     local onoff=(ON OFF)
-    containsElement "${switch}" "${onoff[@]}" || exitError 101 "Invalid value for ON/OFF switch (${switch}) chosen"
+    containsElement "${switch}" "${onoff[@]}" || exitError 101 ${LINENO} "Invalid value for ON/OFF switch (${switch}) chosen"
 }
 
 
@@ -44,7 +44,7 @@ checkModuleAvailable()
     if [ -n "${module}" ] ; then
         module avail -t 2>&1 | grep "${module}" &> /dev/null
         if [ $? -ne 0 ] ; then
-            exitError 201 "module ${module} is unavailable"
+            exitError 201 ${LINENO} "module ${module} is unavailable"
         fi
     fi
 }
@@ -56,8 +56,8 @@ compareFiles()
     two=$2
     msg=$3
 
-    if [ ! -f "${one}" ] ; then exitError 3001 "Must supply two valid files to compareFiles (${one})" ; fi
-    if [ ! -f "${two}" ] ; then exitError 3002 "Must supply two valid files to compareFiles (${two})" ; fi
+    if [ ! -f "${one}" ] ; then exitError 3001 ${LINENO} "Must supply two valid files to compareFiles (${one})" ; fi
+    if [ ! -f "${two}" ] ; then exitError 3002 ${LINENO} "Must supply two valid files to compareFiles (${two})" ; fi
 
     # sort and compare the two files
     diff <(sort "${one}") <(sort "${two}")
@@ -76,11 +76,11 @@ compilerVersion()
     compiler=$1
 
     # check for zero strings
-    if [ -z "${compiler}" ] ; then exitError 3101 "Must supply a compiler command to compilerVersion" ; fi
+    if [ -z "${compiler}" ] ; then exitError 3101 ${LINENO} "Must supply a compiler command to compilerVersion" ; fi
 
     # find absolute path of compiler
     which ${compiler} &> /dev/null
-    if [ $? -eq 1 ] ; then exitError 3102 "Cannot find compiler command (${compiler})" ; fi
+    if [ $? -eq 1 ] ; then exitError 3102 ${LINENO} "Cannot find compiler command (${compiler})" ; fi
     compiler=`which ${compiler}`
 
     # check for GNU
@@ -108,7 +108,7 @@ compilerVersion()
     fi
     
     # could not determine compiler version
-    exitError 3112 "Could not determine compiler version (${compiler})"
+    exitError 3112 ${LINENO} "Could not determine compiler version (${compiler})"
 
 }
 
@@ -121,13 +121,13 @@ writeModuleList()
     local modfile=$4
 
     # check arguments
-    test -n "${logfile}" || exitError 601 "Option <logfile> is not set"
-    test -n "${mode}" || exitError 602 "Option <mode> is not set"
-    test -n "${msg}" || exitError 603 "Option <msg> is not set"
+    test -n "${logfile}" || exitError 601 ${LINENO} "Option <logfile> is not set"
+    test -n "${mode}" || exitError 602 ${LINENO} "Option <mode> is not set"
+    test -n "${msg}" || exitError 603 ${LINENO} "Option <msg> is not set"
 
     # check correct mode
     local modes=(all loaded)
-    containsElement "${mode}" "${modes[@]}" || exitError 610 "Invalid mode (${mode}) chosen"
+    containsElement "${mode}" "${modes[@]}" || exitError 610 ${LINENO} "Invalid mode (${mode}) chosen"
 
     # clean log file for "all" mode
     if [ "${mode}" == "all" ] ; then
@@ -144,7 +144,7 @@ writeModuleList()
     elif [ "${mode}" == "loaded" ] ; then
         module list -t 2>&1 | grep -v alps >> ${logfile}
     else
-        exitError 620 "Invalid mode (${mode}) chosen"
+        exitError 620 ${LINENO} "Invalid mode (${mode}) chosen"
     fi
 
     # save list of loaded modules to environment file (if required)
@@ -176,22 +176,22 @@ testEnvironment()
         # check C++ env
         setCppEnvironment
         writeModuleList ${tmp}.log loaded "C++ MODULES" ${tmp}.mod.dycore
-        if [ -z ${old_prgenv+x} ] ; then exitError 8001 "variable old_prgenv is not set" ; fi
-        if [ -z ${dycore_gpp+x} ] ; then exitError 8002 "variable dycore_gpp is not set" ; fi
-        if [ -z ${dycore_gcc+x} ] ; then exitError 8003 "variable dycore_gcc is not set" ; fi
-        if [ -z ${cuda_gpp+x} ] ; then exitError 8004 "variable cuda_gpp is not set" ; fi
-        if [ -z ${boost_path+x} ] ; then exitError 8005 "variable boost_path is not set" ; fi
-        if [ -z ${mpi_path+x} ] ; then exitError 8006 "variable mpi_path is not set" ; fi
+        if [ -z ${old_prgenv+x} ] ; then exitError 8001 ${LINENO} "variable old_prgenv is not set" ; fi
+        if [ -z ${dycore_gpp+x} ] ; then exitError 8002 ${LINENO} "variable dycore_gpp is not set" ; fi
+        if [ -z ${dycore_gcc+x} ] ; then exitError 8003 ${LINENO} "variable dycore_gcc is not set" ; fi
+        if [ -z ${cuda_gpp+x} ] ; then exitError 8004 ${LINENO} "variable cuda_gpp is not set" ; fi
+        if [ -z ${boost_path+x} ] ; then exitError 8005 ${LINENO} "variable boost_path is not set" ; fi
+        if [ -z ${mpi_path+x} ] ; then exitError 8006 ${LINENO} "variable mpi_path is not set" ; fi
 
         # check cleanup of C++ env
         unsetCppEnvironment
         writeModuleList ${tmp}.log loaded "BETWEEN MODULES" ${tmp}.mod.between
-        if [ ! -z ${old_prgenv+x} ] ; then exitError 8101 "variable old_prgenv is still set" ; fi
-        if [ ! -z ${dycore_gpp+x} ] ; then exitError 8102 "variable dycore_gpp is still set" ; fi
-        if [ ! -z ${dycore_gcc+x} ] ; then exitError 8103 "variable dycore_gcc is still set" ; fi
-        if [ ! -z ${cuda_gpp+x} ] ; then exitError 8104 "variable cuda_gpp is still set" ; fi
-        if [ ! -z ${boost_path+x} ] ; then exitError 8105 "variable boost_path is still set" ; fi
-        if [ ! -z ${mpi_path+x} ] ; then exitError 8106 "variable mpi_path is still set" ; fi
+        if [ ! -z ${old_prgenv+x} ] ; then exitError 8101 ${LINENO} "variable old_prgenv is still set" ; fi
+        if [ ! -z ${dycore_gpp+x} ] ; then exitError 8102 ${LINENO} "variable dycore_gpp is still set" ; fi
+        if [ ! -z ${dycore_gcc+x} ] ; then exitError 8103 ${LINENO} "variable dycore_gcc is still set" ; fi
+        if [ ! -z ${cuda_gpp+x} ] ; then exitError 8104 ${LINENO} "variable cuda_gpp is still set" ; fi
+        if [ ! -z ${boost_path+x} ] ; then exitError 8105 ${LINENO} "variable boost_path is still set" ; fi
+        if [ ! -z ${mpi_path+x} ] ; then exitError 8106 ${LINENO} "variable mpi_path is still set" ; fi
         compareFiles ${tmp}.mod.before ${tmp}.mod.between
 
         echo ">>>>>>>>>>>>>>> test Fortran environment setup"
@@ -199,12 +199,12 @@ testEnvironment()
         # check Fortran env
         setFortranEnvironment
         writeModuleList ${tmp}.log loaded "FORTRAN MODULES" ${tmp}.mod.fortran
-        if [ -z ${old_prgenv+x} ] ; then exitError 8201 "variable old_prgenv is not set" ; fi
+        if [ -z ${old_prgenv+x} ] ; then exitError 8201 ${LINENO} "variable old_prgenv is not set" ; fi
 
         # check cleanup of Fortran env
         unsetFortranEnvironment
         writeModuleList ${tmp}.log loaded "AFTER FORTRAN MODULES" ${tmp}.mod.after
-        if [ ! -z ${old_prgenv+x} ] ; then exitError 8301 "variable old_prgenv is still set" ; fi
+        if [ ! -z ${old_prgenv+x} ] ; then exitError 8301 ${LINENO} "variable old_prgenv is still set" ; fi
         compareFiles ${tmp}.mod.before ${tmp}.mod.after
 
     done

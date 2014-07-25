@@ -32,22 +32,22 @@ function launch_job {
   local timeout=$2
 
   # check sanity of arguments
-  test -f "${script}" || exitError 7201 "${LINENO}: cannot find script ${script}"
+  test -f "${script}" || exitError 7201 ${LINENO} "cannot find script ${script}"
   if [ -n "${timeout}" ] ; then
       echo "${timeout}" | grep '^[0-9][0-9]*$' 2>&1 > /dev/null
       if [ $? -ne 0 ] ; then
-          exitError 7203 "${LINENO}: timeout is not a number"
+          exitError 7203 ${LINENO} "timeout is not a number"
       fi
   fi
 
   # submit SLURM job
   local res=`sbatch ${script}`
   if [ $? -ne 0 ] ; then
-      exitError 7205 "${LINENO}: problem submitting SLURM batch job"
+      exitError 7205 ${LINENO} "problem submitting SLURM batch job"
   fi
-  echo "${res}" | grep "^Submitted batch job [0-9][0-9]*$" || exitError 7206 "${LINENO}: problem determining job ID of SLURM job"
+  echo "${res}" | grep "^Submitted batch job [0-9][0-9]*$" || exitError 7206 ${LINENO} "problem determining job ID of SLURM job"
   local jobid=`echo "${res}" | sed  's/^Submitted batch job //g'`
-  test -n "${jobid}" || exitError 7207 "${LINENO}: problem determining job ID of SLURM job"
+  test -n "${jobid}" || exitError 7207 ${LINENO} "problem determining job ID of SLURM job"
 
   # wait until job has finished (or maximum sleep time has been reached)
   if [ -n "${timeout}" ] ; then
@@ -68,13 +68,13 @@ function launch_job {
   # make sure that job has finished
   squeue -o "%.20i %.20u" -h -j "${jobid}" | grep "^ *${jobid} "
   if [ $? -eq 0 ] ; then
-      exitError 7207 "${LINENO}: batch job ${script} with ID ${jobid} on host ${slave} did not finish"
+      exitError 7207 ${LINENO} "batch job ${script} with ID ${jobid} on host ${slave} did not finish"
   fi
 
   # check for normal completion of batch job
   sacct --jobs ${jobid} --user jenkins -p -n -b -D | grep -v '|COMPLETED|0:0|' > /dev/null
   if [ $? -eq 0 ] ; then
-      exitError 7209 "${LINENO}: batch job ${script} with ID ${jobid} on host ${slave} did not complete successfully"
+      exitError 7209 ${LINENO} "batch job ${script} with ID ${jobid} on host ${slave} did not complete successfully"
   fi
 
 }

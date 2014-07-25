@@ -124,11 +124,11 @@ elif [ "`hostname | grep durian`" != "" ] ; then
 fi
 
 # make sure everything is set
-test -n "${host}" || exitError 2001 "Variable <host> could not be set (unknown machine `hostname`?)"
-test -n "${queue}" || exitError 2002 "Variable <queue> could not be set (unknown machine `hostname`?)"
-test -n "${nthreads}" || exitError 2003 "Variable <nthreads> could not be set (unknown machine `hostname`?)"
-test -n "${mpilaunch}" || exitError 2004 "Variable <mpilaunch> could not be set (unknown machine `hostname`?)"
-test -n "${installdir}" || exitError 2005 "Variable <installdir> could not be set (unknown machine `hostname`?)"
+test -n "${host}" || exitError 2001 ${LINENO} "Variable <host> could not be set (unknown machine `hostname`?)"
+test -n "${queue}" || exitError 2002 ${LINENO} "Variable <queue> could not be set (unknown machine `hostname`?)"
+test -n "${nthreads}" || exitError 2003 ${LINENO} "Variable <nthreads> could not be set (unknown machine `hostname`?)"
+test -n "${mpilaunch}" || exitError 2004 ${LINENO} "Variable <mpilaunch> could not be set (unknown machine `hostname`?)"
+test -n "${installdir}" || exitError 2005 ${LINENO} "Variable <installdir> could not be set (unknown machine `hostname`?)"
 
 # export installation directory
 export INSTALL_DIR="${installdir}"

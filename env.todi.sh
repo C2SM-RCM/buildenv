@@ -25,7 +25,7 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(cray pgi gnu)
+    compilers=(gnu pgi cray)
     fcompiler_cmds=(ftn)
 
     # default options
@@ -35,8 +35,6 @@ setupDefaults()
 
     # fortran compiler command
     fcompiler_cmd="ftn"
-
-
 }
 
 # This function loads modules and sets up variables for compiling in C++

@@ -33,10 +33,8 @@ setupDefaults()
     compiler="gnu"
     cuda_arch="sm_35"
 
-    #fortran compiler command
+    # fortran compiler command
     fcompiler_cmd="mpif90-mpich-mp"
-
-
 }
 
 # This function loads modules and sets up variables for compiling in C++

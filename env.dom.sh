@@ -25,18 +25,16 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(pgi gnu)
+    compilers=(gnu pgi)
     fcompiler_cmds=(mpif90)
-
 
     # default options
     target="gpu"
     compiler="pgi"
     cuda_arch="sm_35"
 
-    #fortran compiler command
+    # fortran compiler command
     fcompiler_cmd="mpif90"
-
 }
 
 # This function loads modules and sets up variables for compiling in C++

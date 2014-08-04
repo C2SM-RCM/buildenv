@@ -122,8 +122,9 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     installdir="/Users/fuhrer/Desktop/install"
     testdata="???"
 elif [ "`hostname | grep osprey`" != "" ] ; then
-    shopt -s expand_aliases
-    alias module='echo $* 2>/dev/null 1>/dev/null'
+    . /etc/bashrc
+    . /usr/Modules/3.2.10/init/bash
+    module load craype-ivybridge
     host="osprey"
     queue="workq"
     nthreads=4

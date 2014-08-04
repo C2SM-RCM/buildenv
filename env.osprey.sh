@@ -180,7 +180,7 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce/8.2.3 cce
+        module swap cce/8.3.0 cce
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

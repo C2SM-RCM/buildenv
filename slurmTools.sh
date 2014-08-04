@@ -40,6 +40,10 @@ function launch_job {
       fi
   fi
 
+  # get out/err of SLURM job
+  local out=`grep '^\#SBATCH --output=' ${script} | sed 's/.*output=//g'`
+  local err=`grep '^\#SBATCH --error=' ${script} | sed 's/.*error=//g'`
+
   # submit SLURM job
   local res=`sbatch ${script}`
   if [ $? -ne 0 ] ; then
@@ -74,6 +78,16 @@ function launch_job {
   # check for normal completion of batch job
   sacct --jobs ${jobid} --user jenkins -p -n -b -D 2>/dev/null | grep -v '|COMPLETED|0:0|' >/dev/null
   if [ $? -eq 0 ] ; then
+      if [ -n "${out}" ] ; then
+          echo "=== ${out} BEGIN ==="
+          cat ${out} | /bin/sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
+          echo "=== ${out} END ==="
+      fi
+      if [ -n "${err}" ] ; then
+          echo "=== ${err} BEGIN ==="
+          cat ${err} | /bin/sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
+          echo "=== ${err} END ==="
+      fi
       exitError 7209 ${LINENO} "batch job ${script} with ID ${jobid} on host ${slave} did not complete successfully"
   fi
 

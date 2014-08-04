@@ -82,9 +82,9 @@ setCppEnvironment()
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
-    dycore_gpp='g++ -I/opt/cray/mvapich2_cce/1.9/CRAY/83/include'
-    dycore_gcc='gcc -I/opt/cray/mvapich2_cce/1.9/CRAY/83/include'
-    cuda_gpp='g++ -I/opt/cray/mvapich2_cce/1.9/CRAY/83/include'
+    dycore_gpp='g++'
+    dycore_gcc='gcc'
+    cuda_gpp='g++'
     boost_path=/cray/css/users/n17183/install/boost/1.49/include
     use_mpi_compiler=OFF
     mpi_path=/opt/cray/mvapich2_cce/1.9/CRAY/83/

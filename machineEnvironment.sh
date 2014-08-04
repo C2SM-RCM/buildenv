@@ -121,6 +121,15 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     mpilaunch="mpirun"
     installdir="/Users/fuhrer/Desktop/install"
     testdata="???"
+elif [ "`hostname | grep osprey`" != "" ] ; then
+    shopt -s expand_aliases
+    alias module='echo $* 2>/dev/null 1>/dev/null'
+    host="osprey"
+    queue="workq"
+    nthreads=4
+    mpilaunch="mpiexec.hydra -bootstrap slurm"
+    installdir="/cray/css/users/n17183/install"
+    testdata="/cray/css/users/n17183/data"
 fi
 
 # make sure everything is set

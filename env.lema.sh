@@ -69,6 +69,7 @@ setCppEnvironment()
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     cray )
+        module swap xt-asyncpe xt-asyncpe/5.18
         ;;
     pgi )
         ;;
@@ -108,6 +109,7 @@ unsetCppEnvironment()
     # remove Fortran compiler specific modules
     case "${compiler}" in
     cray )
+        module swap xt-asyncpe/5.18 xt-asyncpe
         ;;
     pgi )
         ;;
@@ -170,6 +172,7 @@ setFortranEnvironment()
         module swap cce cce/8.0.3
         module load cray-mpich/6.2.2
         module load cray-netcdf
+        module swap xt-asyncpe xt-asyncpe/5.18
         ;;
     pgi )
         module swap pgi pgi/13.6.0
@@ -201,6 +204,7 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
+        module swap xt-asyncpe/5.18 xt-asyncpe
         module unload cray-netcdf
         module unload cray-mpich/6.2.2
         module swap cce/8.0.3 cce

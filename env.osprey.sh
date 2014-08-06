@@ -56,14 +56,18 @@ setCppEnvironment()
     # switch to programming environment (only on Cray)
     #old_prgenv=" "
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
-    if [ -n "${old_prgenv}" ] ; then
-        module unload ${old_prgenv}
+    if [ -z "${old_prgenv}" ] ; then
+        module load PrgEnv-cray
+    else
+        module switch ${old_prgenv} PrgEnv-cray
     fi
     
     # standard modules (part 1)
     module load cmake
     module load gcc/4.8.1
     module load mvapich2_cce/1.9_cray83
+    export PATH=$(echo "$PATH" | sed -e 's/:\/usr\/mpi\/gcc\/mvapich2-1.7\/bin//')
+    export MPICH_CXX=g++
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -86,7 +90,7 @@ setCppEnvironment()
     dycore_gcc='gcc'
     cuda_gpp='g++'
     boost_path=/cray/css/users/n17183/install/boost/1.49/include
-    use_mpi_compiler=OFF
+    use_mpi_compiler=ON
     mpi_path=/opt/cray/mvapich2_cce/1.9/CRAY/83/
 }
 
@@ -115,8 +119,10 @@ unsetCppEnvironment()
     module unload cmake
 
     # restore programming environment (only on Cray)
-    if [ -n "${old_prgenv}" ] ; then
-        module load ${old_prgenv}
+    if [ -z "${old_prgenv}" ] ; then
+        module unload PrgEnv-cray
+    else
+        module switch PrgEnv-cray ${old_prgenv}
     fi
     unset old_prgenv
 
@@ -151,6 +157,9 @@ setFortranEnvironment()
 
     # standard modules (part 1)
     module load cmake
+    module load mvapich2_cce/1.9_cray83
+    export PATH=$(echo "$PATH" | sed -e 's/:\/usr\/mpi\/gcc\/mvapich2-1.7\/bin//')
+    export MPICH_CXX=g++
 
     # compiler specific modules
     case "${compiler}" in
@@ -188,6 +197,7 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
+    module unload mvapich2_cce/1.9_cray83
     module unload cmake
 
     # swap back to original programming environment (only on Cray machines)

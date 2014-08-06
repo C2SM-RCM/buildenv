@@ -171,7 +171,7 @@ setFortranEnvironment()
     cray )
         module swap cce cce/8.0.3
         module load cray-mpich/6.2.2
-        module load cray-netcdf
+        module load netcdf
         module swap xt-asyncpe xt-asyncpe/5.18
         ;;
     pgi )
@@ -205,7 +205,7 @@ unsetFortranEnvironment()
     case "${compiler}" in
     cray )
         module swap xt-asyncpe/5.18 xt-asyncpe
-        module unload cray-netcdf
+        module unload netcdf
         module unload cray-mpich/6.2.2
         module swap cce/8.0.3 cce
         ;;

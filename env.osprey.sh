@@ -63,11 +63,11 @@ setCppEnvironment()
     fi
     
     # standard modules (part 1)
+    module use /cray/css/users/kkersten/opt/modules
     module load cmake
     module load gcc/4.8.1
-    module load mvapich2_cce/1.9_cray83
-    export PATH=$(echo "$PATH" | sed -e 's/:\/usr\/mpi\/gcc\/mvapich2-1.7\/bin//')
-    export MPICH_CXX=g++
+    module unload mvapich2_cce/1.9_cray83
+    module load mvapich2_gcce/1.9_cray83
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -91,7 +91,7 @@ setCppEnvironment()
     cuda_gpp='g++'
     boost_path=/cray/css/users/n17183/install/boost/1.49/include
     use_mpi_compiler=ON
-    mpi_path=/opt/cray/mvapich2_cce/1.9/CRAY/83/
+    mpi_path=/cray/css/users/kkersten/opt/mvapich2/gcce/1.9
 }
 
 # This function unloads modules and removes variables for compiling in C++
@@ -114,7 +114,9 @@ unsetCppEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module unload mvapich2_cce/1.9_cray83
+    module use /cray/css/users/kkersten/opt/modules
+    module unload mvapich2_gcce/1.9_cray83
+    module load mvapich2_cce/1.9_cray83
     module unload gcc/4.8.1
     module unload cmake
 
@@ -156,10 +158,9 @@ setFortranEnvironment()
     fi
 
     # standard modules (part 1)
-    module load cmake
-    module load mvapich2_cce/1.9_cray83
-    export PATH=$(echo "$PATH" | sed -e 's/:\/usr\/mpi\/gcc\/mvapich2-1.7\/bin//')
-    export MPICH_CXX=g++
+    module use /cray/css/users/kkersten/opt/modules
+    module unload mvapich2_cce/1.9_cray83
+    module load mvapich2_gcce/1.9_cray83
 
     # compiler specific modules
     case "${compiler}" in
@@ -197,8 +198,9 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module unload mvapich2_cce/1.9_cray83
-    module unload cmake
+    module use /cray/css/users/kkersten/opt/modules
+    module unload mvapich2_gcce/1.9_cray83
+    module load mvapich2_cce/1.9_cray83
 
     # swap back to original programming environment (only on Cray machines)
     if [ -z "${old_prgenv}" ] ; then

@@ -68,6 +68,8 @@ setCppEnvironment()
     module load gcc/4.8.1
     module unload mvapich2_cce/1.9_cray83
     module load mvapich2_gcce/1.9_cray83
+    old_ldlibrarypath=${LD_LIBRARY_PATH}
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CRAY_LD_LIBRARY_PATH}
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -114,6 +116,8 @@ unsetCppEnvironment()
     esac
 
     # remove standard modules (part 1)
+    export LD_LIBRARY_PATH=${old_ldlibrarypath}
+    old_ldlibrarypath=""
     module use /cray/css/users/kkersten/opt/modules
     module unload mvapich2_gcce/1.9_cray83
     module load mvapich2_cce/1.9_cray83
@@ -161,6 +165,8 @@ setFortranEnvironment()
     module use /cray/css/users/kkersten/opt/modules
     module unload mvapich2_cce/1.9_cray83
     module load mvapich2_gcce/1.9_cray83
+    old_ldlibrarypath=${LD_LIBRARY_PATH}
+    export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CRAY_LD_LIBRARY_PATH}
 
     # compiler specific modules
     case "${compiler}" in
@@ -198,6 +204,8 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
+    export LD_LIBRARY_PATH=${old_ldlibrarypath}
+    old_ldlibrarypath=""
     module use /cray/css/users/kkersten/opt/modules
     module unload mvapich2_gcce/1.9_cray83
     module load mvapich2_cce/1.9_cray83

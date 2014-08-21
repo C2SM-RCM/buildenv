@@ -70,7 +70,8 @@ setCppEnvironment()
     module unload mvapich2_cce/1.9_cray83
     module load mvapich2_gcce/1.9_cray83
     if [ "${target}" == "gpu" ] ; then
-        module load cudatoolkit/6.0.37
+        module load cudatoolkit/5.5.22
+        #module load cudatoolkit/6.0.37
         module load craype-accel-nvidia35
     fi
     old_ldlibrarypath=${LD_LIBRARY_PATH}
@@ -176,7 +177,8 @@ setFortranEnvironment()
     module unload mvapich2_cce/1.9_cray83
     module load mvapich2_gcce/1.9_cray83
     if [ "${target}" == "gpu" ] ; then
-        module load cudatoolkit/6.0.37
+        module load cudatoolkit/5.5.22
+        #module load cudatoolkit/6.0.37
         module load craype-accel-nvidia35
     fi
     old_ldlibrarypath=${LD_LIBRARY_PATH}

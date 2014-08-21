@@ -64,7 +64,8 @@ setCppEnvironment()
     
     # standard modules (part 1)
     module use /cray/css/users/kkersten/opt/modules
-    module load cmake
+    module use /cray/css/users/kjt/opt/modulefiles
+    module load bench/cmake/2.8.11.2
     module load gcc/4.8.1
     module unload mvapich2_cce/1.9_cray83
     module load mvapich2_gcce/1.9_cray83
@@ -121,6 +122,7 @@ unsetCppEnvironment()
 
     # remove standard modules (part 1)
     module use /cray/css/users/kkersten/opt/modules
+    module use /cray/css/users/kjt/opt/modulefiles
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
     if [ "${target}" == "gpu" ] ; then
@@ -130,7 +132,7 @@ unsetCppEnvironment()
     module unload mvapich2_gcce/1.9_cray83
     module load mvapich2_cce/1.9_cray83
     module unload gcc/4.8.1
-    module unload cmake
+    module unload bench/cmake/2.8.11.2
 
     # restore programming environment (only on Cray)
     if [ -z "${old_prgenv}" ] ; then

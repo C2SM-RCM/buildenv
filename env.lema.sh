@@ -130,8 +130,6 @@ unsetCppEnvironment()
     else
         module swap PrgEnv-gnu ${old_prgenv}
     fi
-    module unload cce/8.1.8
-    module unload xt-libsci/12.2.0
     unset old_prgenv
 
     # unset global variables
@@ -232,8 +230,6 @@ unsetFortranEnvironment()
     else
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
-    module unload cce/8.1.8
-    module unload xt-libsci/12.2.0
     unset old_prgenv
 }
 

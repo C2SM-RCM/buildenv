@@ -24,12 +24,12 @@
 setupDefaults()
 {
     # available options
-    targets=(cpu)
+    targets=(cpu gpu)
     compilers=(cray)
     fcompiler_cmds=(ftn)
 
     # default options
-    target="cpu"
+    target="gpu"
     compiler="cray"
     cuda_arch="sm_35"
 
@@ -68,6 +68,10 @@ setCppEnvironment()
     module load gcc/4.8.1
     module unload mvapich2_cce/1.9_cray83
     module load mvapich2_gcce/1.9_cray83
+    if [ "${target}" == "gpu" ] ; then
+        module load cudatoolkit/6.0.37
+        module load craype-accel-nvidia35
+    fi
     old_ldlibrarypath=${LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CRAY_LD_LIBRARY_PATH}
 
@@ -116,9 +120,13 @@ unsetCppEnvironment()
     esac
 
     # remove standard modules (part 1)
+    module use /cray/css/users/kkersten/opt/modules
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
-    module use /cray/css/users/kkersten/opt/modules
+    if [ "${target}" == "gpu" ] ; then
+        module unload cudatoolkit
+        module unload craype-accel-nvidia35
+    fi
     module unload mvapich2_gcce/1.9_cray83
     module load mvapich2_cce/1.9_cray83
     module unload gcc/4.8.1
@@ -165,6 +173,10 @@ setFortranEnvironment()
     module use /cray/css/users/kkersten/opt/modules
     module unload mvapich2_cce/1.9_cray83
     module load mvapich2_gcce/1.9_cray83
+    if [ "${target}" == "gpu" ] ; then
+        module load cudatoolkit/6.0.37
+        module load craype-accel-nvidia35
+    fi
     old_ldlibrarypath=${LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CRAY_LD_LIBRARY_PATH}
 
@@ -204,9 +216,13 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
+    module use /cray/css/users/kkersten/opt/modules
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
-    module use /cray/css/users/kkersten/opt/modules
+    if [ "${target}" == "gpu" ] ; then
+        module unload cudatoolkit
+        module unload craype-accel-nvidia35
+    fi
     module unload mvapich2_gcce/1.9_cray83
     module load mvapich2_cce/1.9_cray83
 

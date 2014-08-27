@@ -29,12 +29,20 @@ setupDefaults()
     fcompiler_cmds=(mpif90-mpich-mp)
 
     # default options
-    target="cpu"
-    compiler="gnu"
-    cuda_arch="sm_35"
+    if [ -z "${target}" ] ; then
+        target="cpu"
+    fi
+    if [ -z "${compiler}" ] ; then
+        compiler="gnu"
+    fi
+    if [ -z "${cuda_arch}" ] ; then
+        cuda_arch="sm_35"
+    fi
 
     # fortran compiler command
-    fcompiler_cmd="mpif90-mpich-mp"
+    if [ -z "${fcompiler_cmd}" ] ; then
+        fcompiler_cmd="mpif90-mpich-mp"
+    fi
 }
 
 # This function loads modules and sets up variables for compiling in C++

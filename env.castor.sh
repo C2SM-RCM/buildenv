@@ -29,12 +29,20 @@ setupDefaults()
     fcompiler_cmds=(mpif90)
 
     # default options
-    target="gpu"
-    compiler="pgi"
-    cuda_arch="sm_20"
+    if [ -z "${target}" ] ; then
+        target="gpu"
+    fi
+    if [ -z "${compiler}" ] ; then
+        compiler="pgi"
+    fi
+    if [ -z "${cuda_arch}" ] ; then
+        cuda_arch="sm_20"
+    fi
 
     # fortran compiler command
-    fcompiler_cmd="mpif90"
+    if [ -z "${fcompiler_cmd}" ] ; then
+        fcompiler_cmd="mpif90"
+    fi
 }
 
 # This function loads modules and sets up variables for compiling in C++

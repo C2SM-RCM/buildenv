@@ -29,12 +29,20 @@ setupDefaults()
     fcompiler_cmds=(ftn)
 
     # default options
-    target="cpu"
-    compiler="gnu"
-    cuda_arch=" "
+    if [ -z "${target}" ] ; then
+        target="cpu"
+    fi
+    if [ -z "${compiler}" ] ; then
+        compiler="gnu"
+    fi
+    if [ -z "${cuda_arch}" ] ; then
+        cuda_arch=" "
+    fi
 
     # fortran compiler command
-    fcompiler_cmd="ftn"
+    if [ -z "${fcompiler_cmd}" ] ; then
+        fcompiler_cmd="ftn"
+    fi
 }
 
 # This function loads modules and sets up variables for compiling in C++

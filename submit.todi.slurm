@@ -6,6 +6,8 @@
 #SBATCH --output=<OUTFILE>
 #SBATCH --time=00:30:00
 #SBATCH --gres=gpu:1
+#SBATCH --partition=debug
+#SBATCH --account=s83
 
 ########################################################
 

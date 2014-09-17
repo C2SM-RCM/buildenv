@@ -4,7 +4,7 @@
 #SBATCH --ntasks-per-node=<NTASKSPERNODE>
 #SBATCH --cpus-per-task=<CPUSPERTASK>
 #SBATCH --output=<OUTFILE>
-#SBATCH --time=00:30:00
+#SBATCH --time=00:45:00
 #SBATCH --partition=primary
 #SBATCH --nodelist=opcode3
 #SBATCH --gres=gpu:8

@@ -90,7 +90,7 @@ setCppEnvironment()
     esac
 
     # standard modules (part 2)
-    module swap cuda/5.5
+    module swap cuda/6.0
 
     # set global variables
     if [ "${compiler}" == "gnu" ] ; then
@@ -194,7 +194,7 @@ setFortranEnvironment()
 
     # standard modules (part 2)
     module unload cuda
-    module load cuda/5.5
+    module load cuda/6.0
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts

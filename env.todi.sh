@@ -73,7 +73,7 @@ setCppEnvironment()
     # standard modules (part 1)
     module load cmake/2.8.12.2-64bits
     module swap gcc/4.8.2
-    module unload cscs/2013
+    #module unload cscs/2013
     if [ "${target}" == "gpu" ] ; then
         module load cudatoolkit
         module load craype-accel-nvidia35
@@ -137,7 +137,7 @@ unsetCppEnvironment()
         module unload craype-accel-nvidia35
         module unload cudatoolkit
     fi
-    module load cscs/2013
+    #module load cscs/2013
     module unload gcc/4.8.2
     module unload cmake/2.8.12.2-64bits
 
@@ -179,7 +179,7 @@ setFortranEnvironment()
     fi
 
     # standard modules (part 1)
-    module unload cscs/2013
+    #module unload cscs/2013
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia35
         module load cudatoolkit
@@ -239,7 +239,7 @@ unsetFortranEnvironment()
         module unload craype-accel-nvidia35
         module unload cudatoolkit
     fi
-    module load cscs/2013
+    #module load cscs/2013
     module unload cmake/2.8.12.2-64bits
 
     # swap back to original programming environment (only on Cray machines)

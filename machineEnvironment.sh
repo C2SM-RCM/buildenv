@@ -8,7 +8,7 @@
 
 exitError()
 {
-    \rm -f /tmp/tmp.$$ 1>/dev/null 2>/dev/null
+    \rm -f /tmp/tmp.${user}.$$ 1>/dev/null 2>/dev/null
     echo "ERROR $1: $3" 1>&2
     echo "ERROR     LOCATION=$0" 1>&2
     echo "ERROR     LINE=$2" 1>&2

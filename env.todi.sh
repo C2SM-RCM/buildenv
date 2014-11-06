@@ -190,7 +190,7 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce cce/8.2.3
+        module swap cce cce/8.3.4
         ;;
     pgi )
         module swap pgi pgi/13.10.0
@@ -221,7 +221,7 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce/8.2.3 cce
+        module swap cce/8.3.4 cce
         ;;
     pgi )
         module swap pgi/13.10.0 pgi

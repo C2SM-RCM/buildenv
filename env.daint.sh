@@ -72,7 +72,8 @@ setCppEnvironment()
     
     # standard modules (part 1)
     module load cmake
-    module swap gcc/4.8.2
+    module unload gcc
+    module gcc/4.8.2
     if [ "${target}" == "gpu" ] ; then
         module load cudatoolkit
         module load craype-accel-nvidia35
@@ -132,6 +133,7 @@ unsetCppEnvironment()
         module unload cudatoolkit
     fi
     module unload gcc/4.8.2
+    module load gcc
     module unload cmake
 
     # restore programming environment (only on Cray)
@@ -181,10 +183,12 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce cce/8.2.3
+        module unload cce
+        module load cce/8.2.3
         ;;
     gnu )
-        module swap gcc gcc/4.8.2
+        module unload gcc
+        module load gcc/4.8.2
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -209,10 +213,12 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce/8.2.3 cce
+        module unload cce/8.2.3
+        module load cce
         ;;
     gnu )
-        module swap gcc/4.8.2 gcc
+        module unload gcc/4.8.2
+        module load gcc
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

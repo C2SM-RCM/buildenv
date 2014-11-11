@@ -72,7 +72,8 @@ setCppEnvironment()
     
     # standard modules (part 1)
     module load cmake/2.8.12.2-64bits
-    module swap gcc/4.8.2
+    module unload gcc
+    module load gcc/4.8.2
     #module unload cscs/2013
     if [ "${target}" == "gpu" ] ; then
         module load cudatoolkit
@@ -190,13 +191,16 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce cce/8.3.4
+        module unload cce
+        module load cce/8.3.4
         ;;
     pgi )
-        module swap pgi pgi/13.10.0
+        module unload pgi
+        module load pgi/13.10.0
         ;;
     gnu )
-        module swap gcc gcc/4.8.2
+        module unload gcc
+        module gcc/4.8.2
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -221,13 +225,16 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce/8.3.4 cce
+        module unload cce/8.3.4
+        module load cce
         ;;
     pgi )
-        module swap pgi/13.10.0 pgi
+        module unload pgi/13.10.0
+        module load pgi
         ;;
     gnu )
-        module swap gcc/4.8.2 gcc
+        module unload gcc/4.8.2
+        module load gcc
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

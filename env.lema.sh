@@ -72,7 +72,8 @@ setCppEnvironment()
     
     # standard modules (part 1)
     module load cmake/2.8.11.1
-    module swap gcc/4.8.2
+    module unload gcc
+    module load gcc/4.8.2
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -129,7 +130,8 @@ unsetCppEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module swap gcc/4.8.2 gcc
+    module unload gcc/4.8.2
+    module load gcc
     module unload cmake
 
     # restore programming environment (only on Cray)
@@ -175,18 +177,21 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce cce/8.0.3
+        module unload cce
+        module load cce/8.0.3
         module load cray-mpich/6.2.2
         module load netcdf
         module swap xt-asyncpe xt-asyncpe/5.18
         ;;
     pgi )
-        module swap pgi pgi/13.6.0
+        module unload pgi
+        module load pgi/13.6.0
         module load xt-mpich2/5.4.4
         module load netcdf
         ;;
     gnu )
-        module swap gcc gcc/4.8.2
+        module unload gcc
+        module load gcc/4.8.2
         module load cray-netcdf
         ;;
     * )
@@ -213,16 +218,19 @@ unsetFortranEnvironment()
         module swap xt-asyncpe/5.18 xt-asyncpe
         module unload netcdf
         module unload cray-mpich/6.2.2
-        module swap cce/8.0.3 cce
+        module unload cce/8.0.3
+        module load cce
         ;;
     pgi )
         module unload netcdf
         module unload xt-mpich2/5.4.4
-        module swap pgi/13.6.0 pgi
+        module unload pgi/13.6.0
+        module load pgi
         ;;
     gnu )
         module unload cray-netcdf
-        module swap gcc/4.8.2 gcc
+        module unload gcc/4.8.2
+        module gcc
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

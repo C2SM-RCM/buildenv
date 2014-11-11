@@ -120,7 +120,7 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     nthreads=4
     mpilaunch="mpirun"
     installdir="/Users/fuhrer/Desktop/install"
-    testdata="???"
+    testdata="/Users/fuhrer/Desktop/install/testdata"
 elif [ "`hostname | grep osprey`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash

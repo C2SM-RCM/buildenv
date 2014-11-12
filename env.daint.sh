@@ -73,7 +73,7 @@ setCppEnvironment()
     # standard modules (part 1)
     module load cmake
     module unload gcc
-    module gcc/4.8.2
+    module load gcc/4.8.2
     if [ "${target}" == "gpu" ] ; then
         module load cudatoolkit
         module load craype-accel-nvidia35

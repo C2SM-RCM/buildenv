@@ -230,7 +230,7 @@ unsetFortranEnvironment()
     gnu )
         module unload cray-netcdf
         module unload gcc/4.8.2
-        module gcc
+        module load gcc
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

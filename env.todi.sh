@@ -200,7 +200,7 @@ setFortranEnvironment()
         ;;
     gnu )
         module unload gcc
-        module gcc/4.8.2
+        module load gcc/4.8.2
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2

@@ -184,7 +184,7 @@ setFortranEnvironment()
     case "${compiler}" in
     cray )
         module unload cce
-        module load cce/8.2.3
+        module load cce/8.3.4
         ;;
     gnu )
         module unload gcc
@@ -213,7 +213,7 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module unload cce/8.2.3
+        module unload cce/8.3.4
         module load cce
         ;;
     gnu )

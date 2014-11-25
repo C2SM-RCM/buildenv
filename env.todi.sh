@@ -74,6 +74,8 @@ setCppEnvironment()
     module load cmake/2.8.12.2-64bits
     module unload gcc
     module load gcc/4.8.2
+    module unload cray-mpich
+    module load cray-mpich/7.0.4
     #module unload cscs/2013
     if [ "${target}" == "gpu" ] ; then
         module load cudatoolkit
@@ -139,6 +141,8 @@ unsetCppEnvironment()
         module unload cudatoolkit
     fi
     #module load cscs/2013
+    module unload cray-mpich/7.0.4
+    module load cray-mpich
     module unload gcc/4.8.2
     module unload cmake/2.8.12.2-64bits
 
@@ -193,10 +197,14 @@ setFortranEnvironment()
     cray )
         module unload cce
         module load cce/8.3.4
+	module unload cray-mpich
+	module load cray-mpich/7.0.4
         ;;
     pgi )
         module unload pgi
         module load pgi/13.10.0
+	module unload cray-mpich
+	module load cray-mpich/7.0.4
         ;;
     gnu )
         module unload gcc
@@ -227,10 +235,14 @@ unsetFortranEnvironment()
     cray )
         module unload cce/8.3.4
         module load cce
+	module unload cray-mpich/7.0.4
+	module load cray-mpich
         ;;
     pgi )
         module unload pgi/13.10.0
         module load pgi
+	module unload cray-mpich/7.0.4
+	module load cray-mpich
         ;;
     gnu )
         module unload gcc/4.8.2

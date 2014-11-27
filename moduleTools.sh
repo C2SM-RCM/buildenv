@@ -159,6 +159,9 @@ writeModuleList()
             compilo=`cat ${modfile} | egrep "module load cce\/|module load gcc\/|module load pgi\/" | sed 's/module load/module swap/g'`
             echo "${compilo}" >> /tmp/tmp.${host}.${user}.$$
             /bin/mv -f /tmp/tmp.${host}.${user}.$$ ${modfile}
+	    compilo=`cat ${modfile} | egrep "module load cray-mpich" | sed 's/module load/module swap/g'`
+            sed 's/module load cray-mpich/module swap cray-mpich/g' ${modfile} > /tmp/tmp.${host}.${user}.$$
+	    /bin/mv -f /tmp/tmp.${host}.${user}.$$ ${modfile}
           fi
         fi
     fi

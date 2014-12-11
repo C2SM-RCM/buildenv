@@ -77,7 +77,7 @@ setCppEnvironment()
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     pgi )
-        module load mvapich2/1.9-pgi-14.7
+        module load mvapich2/1.9-pgi-14.10
         module load gcc/4.8.2
         ;;
     gnu )
@@ -121,7 +121,7 @@ unsetCppEnvironment()
     case "${compiler}" in
     pgi )
         module unload gcc/4.8.2
-        module unload mvapich2/1.9-pgi-14.7
+        module unload mvapich2/1.9-pgi-14.10
         ;;
     gnu )
         module unload gcc/4.8.2

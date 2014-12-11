@@ -180,7 +180,7 @@ setFortranEnvironment()
     case "${compiler}" in
     pgi )
         module load mvapich2/1.9-pgi
-        module load pgi/14.7
+        module load pgi/14.10
         module load netcdf/4.2.1.1-pgi
         ;;
     gnu )
@@ -212,7 +212,7 @@ unsetFortranEnvironment()
     case "${compiler}" in
     pgi )
         module unload netcdf/4.2.1.1-pgi
-        module unload pgi/14.7
+        module unload pgi/14.10
         module unload mvapich2/1.9-pgi
         ;;
     gnu )

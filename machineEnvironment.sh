@@ -121,6 +121,15 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     mpilaunch="mpirun"
     installdir="/Users/fuhrer/Desktop/install"
     testdata="/Users/fuhrer/Desktop/install/testdata"
+elif [ "`hostname | grep bertie`" != "" ] ; then
+    shopt -s expand_aliases
+    alias module='echo $* 2>/dev/null 1>/dev/null'
+    host="bertie"
+    queue="normal"
+    nthreads=4
+    mpilaunch="mpirun"
+    installdir="/home/spiros/Work/install"
+    testdata="/home/spiros/Work/install/testdata"
 elif [ "`hostname | grep osprey`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash

@@ -62,7 +62,7 @@ function launch_job {
           sleep ${inc}
           secs=$[$secs+${inc}]
           inc=60
-          squeue -o "%.20i %.20u" -h -j "${jobid}" | grep "^ *${jobid} " > /dev/null
+          squeue -o "%.20i %.20u" -h -j "${jobid}" | grep "^ *${jobid} " &> /dev/null
           if [ $? -eq 1 ] ; then
               break
           fi

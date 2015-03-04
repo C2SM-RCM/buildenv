@@ -28,24 +28,6 @@ setupDefaults()
     compilers=(cray)
     fcompiler_cmds=(ftn)
 
-    # Set version numbers here to avoid duplication and mistakes
-    #    later in the file.
-    netcdf_vers="netcdf4/4.3.2_cce83"
-    gcc_vers="4.8.0"
-    cce_vers="8.3.8.102"
-    mvapich_vers="2.0.2"
-    cuda_vers="6.5.14"
-
-    gcc_module="gcc/${gcc_vers}"
-    cce_module="cce/${cce_vers}"
-    #  mvapich_vers="mvapich2_cce/1.9_cray83"
-    mvapich_module="mvapich/${mvapich_vers}"
-    #  mpi_path=/opt/cray/mvapich2_cce/1.9/CRAY/83/
-    mvapich_path=/opt/cray/mvapich/${mpi_vers}/cray/8.3
-    #  cuda_vers="5.5.22"
-    cudatk_module="cudatoolkit/${cuda_vers}"
-    cudatk_path="/global/opt/nvidia/cudatoolkit/${cuda_vers}"
-
     # default options
     if [ -z "${target}" ] ; then
         target="gpu"
@@ -79,8 +61,6 @@ setupDefaults()
 #
 setCppEnvironment()
 {
-    echo 'Setting up CPP Environment'
-    echo '=========================='
     # switch to programming environment (only on Cray)
     #old_prgenv=" "
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
@@ -89,28 +69,17 @@ setCppEnvironment()
     else
         module switch ${old_prgenv} PrgEnv-cray
     fi
-
-    #  module list
     
-    module load craype-ivybridge
     # standard modules (part 1)
-    #  module use /cray/css/users/kkersten/opt/modules
-    #  module use /cray/css/users/kjt/opt/modulefiles
-    #  module load bench/cmake/2.8.11.2
-    #  module unuse /cray/css/users/kjt/opt/modulefiles
-    module load cmake
-    module unload gcc
-    module load "${gcc_module}"
-    module unload mvapich
-    module unload mvapich2_cce
-    module load "${mvapich_module}"
-    #  module load mvapich2_gcce/1.9_cray83
-
+    module use /cray/css/users/kkersten/opt/modules
+    module use /cray/css/users/kjt/opt/modulefiles
+    module load bench/cmake/2.8.11.2
+    module load gcc/4.8.1
+    module unload mvapich2_cce/1.9_cray83
+    module load mvapich2_gcce/1.9_cray83
     if [ "${target}" == "gpu" ] ; then
-        module unload cudatoolkit
-        module unload craype-accel-nvidia35
-        #  module load "${cudatk_module}"
-        #  module load cudatoolkit/6.0.37
+        module load cudatoolkit/5.5.22
+        #module load cudatoolkit/6.0.37
         module load craype-accel-nvidia35
     fi
     old_ldlibrarypath=${LD_LIBRARY_PATH}
@@ -119,8 +88,6 @@ setCppEnvironment()
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     cray )
-        module unload cce
-        module load "${cce_module}"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
@@ -138,20 +105,9 @@ setCppEnvironment()
     dycore_gpp='g++'
     dycore_gcc='gcc'
     cuda_gpp='g++'
-    #  dycore_gpp='CC'
-    #  dycore_gcc='cc'
-    #  cuda_gpp='CC'
-    #  boost_path=/cray/css/users/n17183/install/boost/1.49/include
-    boost_path=/cray/css/pe_tools/malice/builds/cosmo/2015Feb17/COSMO/n17183.install/boost/1.49/include
-    cudatk_include_path="${cudatk_path}"
-    #  use_mpi_compiler=ON
-    #  mpi_path=/cray/css/users/kkersten/opt/mvapich2/gcce/1.9
-    use_mpi_compiler=OFF
-    mpi_path="${mvapich_path}"
-
-    module list 
-    echo 'DONE Setting up CPP Environment'
-    echo '==============================='
+    boost_path=/cray/css/users/n17183/install/boost/1.49/include
+    use_mpi_compiler=ON
+    mpi_path=/cray/css/users/kkersten/opt/mvapich2/gcce/1.9
 }
 
 # This function unloads modules and removes variables for compiling in C++
@@ -162,8 +118,6 @@ setCppEnvironment()
 #
 unsetCppEnvironment()
 {
-    echo 'UNsetting  CPP Environment'
-    echo '=========================='
     # remove standard modules (part 2)
 
     # remove Fortran compiler specific modules
@@ -176,23 +130,18 @@ unsetCppEnvironment()
     esac
 
     # remove standard modules (part 1)
-    #  module use /cray/css/users/kkersten/opt/modules
-    #  module use /cray/css/users/kjt/opt/modulefiles
-    #  module unload bench/cmake/2.8.11.2
-    #  module unuse /cray/css/users/kjt/opt/modulefiles
-    module unload cmake
-    module unload craype-ivybridge
+    module use /cray/css/users/kkersten/opt/modules
+    module use /cray/css/users/kjt/opt/modulefiles
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
     if [ "${target}" == "gpu" ] ; then
         module unload cudatoolkit
         module unload craype-accel-nvidia35
     fi
-    #  module unload mvapich2_gcce/1.9_cray83
-    module unload mvapich
-    module unload mvapich2_cce
+    module unload mvapich2_gcce/1.9_cray83
     module load mvapich2_cce/1.9_cray83
-    module unload "${gcc_module}"
+    module unload gcc/4.8.1
+    module unload bench/cmake/2.8.11.2
 
     # restore programming environment (only on Cray)
     if [ -z "${old_prgenv}" ] ; then
@@ -210,10 +159,6 @@ unsetCppEnvironment()
     unset boost_path
     unset use_mpi_compiler
     unset mpi_path
-
-    module list
-    echo 'DONE UNsetting  CPP Environment'
-    echo '==============================='
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part
@@ -226,8 +171,6 @@ unsetCppEnvironment()
 #
 setFortranEnvironment()
 {
-    echo 'Setting up Fortran Environment'
-    echo '=============================='
     # switch to GNU programming environment (only on Cray machines)
     #old_prgenv=" "
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
@@ -236,38 +179,23 @@ setFortranEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-${compiler}
     fi
-    module load craype-ivybridge
 
     # standard modules (part 1)
-    #  module use /cray/css/users/kkersten/opt/modules
-    #  module unload mvapich2_cce/1.9_cray83
-    #  module load mvapich2_gcce/1.9_cray83
-    #  module use /cray/css/users/kjt/opt/modulefiles
-    #  module load bench/cmake/2.8.11.2
-    #  module unuse /cray/css/users/kjt/opt/modulefiles
-    module load cmake
-    module unload gcc
-    module load "${gcc_module}"
-    module unload mvapich
-    module unload mvapich2_cce
-    module load "${mvapich_module}"
-
+    module use /cray/css/users/kkersten/opt/modules
+    module unload mvapich2_cce/1.9_cray83
+    module load mvapich2_gcce/1.9_cray83
     if [ "${target}" == "gpu" ] ; then
-        module unload cudatoolkit
-        module unload craype-accel-nvidia35
-        #  module load "${cudatk_module}"
-        #  module load cudatoolkit/6.0.37
+        module load cudatoolkit/5.5.22
+        #module load cudatoolkit/6.0.37
         module load craype-accel-nvidia35
     fi
-
     old_ldlibrarypath=${LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CRAY_LD_LIBRARY_PATH}
 
     # compiler specific modules
     case "${compiler}" in
     cray )
-        module unload cce
-        module load "${cce_module}"
+        module swap cce cce/8.3.0
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -275,11 +203,7 @@ setFortranEnvironment()
     esac
 
     # standard modules (part 2)
-    #  module load netcdf4/4.3.1_cce
-    module load "${netcdf_vers}"
-    module list
-    echo 'DONE Setting up Fortran Environment'
-    echo '==================================='
+    module load netcdf4/4.3.1_cce
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -290,17 +214,13 @@ setFortranEnvironment()
 #
 unsetFortranEnvironment()
 {
-    echo 'UNsetting Fortran Environment'
-    echo '============================='
     # remove standard modules (part 2)
-    #  module unload netcdf4/4.3.1_cce
-    module unload "${netcdf_vers}"
-
+    module unload netcdf4/4.3.1_cce
 
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module swap cce cce
+        module swap cce/8.3.0 cce
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2
@@ -308,25 +228,15 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
-    #  module use /cray/css/users/kkersten/opt/modules
-    #  module use /cray/css/users/kjt/opt/modulefiles
-    #  module unload bench/cmake/2.8.11.2
-    #  module unuse /cray/css/users/kjt/opt/modulefiles
-    module unload cmake
-    module unload craype-ivybridge
-
+    module use /cray/css/users/kkersten/opt/modules
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
     if [ "${target}" == "gpu" ] ; then
         module unload cudatoolkit
         module unload craype-accel-nvidia35
     fi
-    module unload mvapich
-    module unload mvapich2_cce
+    module unload mvapich2_gcce/1.9_cray83
     module load mvapich2_cce/1.9_cray83
-    module unload gcc
-
-
 
     # swap back to original programming environment (only on Cray machines)
     if [ -z "${old_prgenv}" ] ; then
@@ -335,8 +245,5 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
-    module list
-    echo 'DONE UNsetting Fortran Environment'
-    echo '=================================='
 }
 

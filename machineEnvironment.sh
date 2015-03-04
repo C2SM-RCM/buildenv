@@ -133,13 +133,15 @@ elif [ "`hostname | grep bertie`" != "" ] ; then
 elif [ "`hostname | grep osprey`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash
-    module load craype-ivybridge
+    #  module swap craype-sandybridge craype-haswell
     host="osprey"
     queue="workq"
-    nthreads=4
+    nthreads=1
     mpilaunch="mpiexec.hydra -bootstrap slurm"
-    installdir="/cray/css/users/n17183/install"
-    testdata="/cray/css/users/n17183/data"
+    #  installdir="/cray/css/users/n17183/install"
+    #  testdata="/cray/css/users/n17183/data"
+    installdir="/cray/css/pe_tools/malice/builds/cosmo/2015Feb17/COSMO/stella/install"
+    testdata="/cray/css/pe_tools/malice/builds/cosmo/2015Feb17/COSMO/stella/data"
 fi
 
 # make sure everything is set

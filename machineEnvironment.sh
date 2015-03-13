@@ -47,7 +47,7 @@ if [ "`hostname | grep todi`" != "" ] ; then
     installdir=/project/c01/install/${host}
     testdata=/scratch/todi/jenkins/data
 elif [ "`hostname | grep opcode`" != "" ] ; then
-    . /etc/bashrc
+#    . /etc/bashrc
     . /etc/profile.d/modules.sh
     module load slurm
     host="opcode"

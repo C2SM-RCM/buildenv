@@ -77,7 +77,7 @@ setCppEnvironment()
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     pgi )
-        module load mvapich2/1.9-pgi-opcode3-13.6
+        module load mvapich2/2.1rc1-pgi-15.1-cuda6.5.opcode3
         module load gcc/4.7.2
         ;;
     gnu )
@@ -90,7 +90,7 @@ setCppEnvironment()
     esac
 
     # standard modules (part 2)
-    module load cuda/5.5
+    module load cuda
 
     # set global variables
     if [ "${compiler}" == "gnu" ] ; then
@@ -122,7 +122,7 @@ unsetCppEnvironment()
     case "${compiler}" in
     pgi )
         module unload gcc/4.7.2
-        module unload mvapich2/1.9-pgi-opcode3-13.6
+        module unload mvapich2/2.1rc1-pgi-15.1-cuda6.5.opcode3
         ;;
     gnu )
         module unload gcc/4.7.2
@@ -179,10 +179,9 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     pgi )
-        module load pgi/14.7
-        module load mvapich2/1.9-pgi-opcode3-13.6
-        module load netcdf/4.2-pgi
-        module unload pgi/14.2
+	module load pgi/15.1
+	module load mvapich2/2.1rc1-pgi-15.1-cuda6.5.opcode3
+        module load netcdf/4.4.2-pgi.15.1-mvapich
         ;;
     gnu )
         module load mvapich2/1.9-gcc-opcode3-4.6.3
@@ -196,7 +195,7 @@ setFortranEnvironment()
     esac
 
     # standard modules (part 2)
-    module load cuda/5.5
+    module load cuda
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -213,9 +212,9 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     pgi )
-        module unload netcdf/4.2-pgi
-        module unload pgi/14.7
-        module unload mvapich2/1.9-pgi-opcode3-13.6
+        module unload pgi/15.1
+	module unload mvapich2/2.1rc1-pgi-15.1-cuda6.5.opcode3
+        module unload netcdf/4.4.2-pgi.15.1-mvapich
         ;;
     gnu )
         module unload gcc/4.7.2

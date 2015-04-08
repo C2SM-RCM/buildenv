@@ -49,7 +49,12 @@ if [ "`hostname | grep todi`" != "" ] ; then
 elif [ "`hostname | grep opcode`" != "" ] ; then
 #    . /etc/bashrc
     . /etc/profile.d/modules.sh
-    module load slurm
+#There is no slurm on opcode, these alias are set so that
+#Jenkins don't fail. This should be replace with a better 
+#solution
+    alias sbatch='tcsh'
+    alias squeue='echo'
+#
     host="opcode"
     queue="primary"
     nthreads=8

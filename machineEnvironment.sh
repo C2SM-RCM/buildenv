@@ -47,14 +47,11 @@ if [ "`hostname | grep todi`" != "" ] ; then
     installdir=/project/c01/install/${host}
     testdata=/scratch/todi/jenkins/data
 elif [ "`hostname | grep opcode`" != "" ] ; then
-#    . /etc/bashrc
+    . /etc/bashrc
     . /etc/profile.d/modules.sh
-#There is no slurm on opcode, these alias are set so that
-#Jenkins don't fail. This should be replace with a better 
-#solution
-    alias sbatch='tcsh'
+    shopt -s expand_aliases
+    alias sbatch='eval'
     alias squeue='echo'
-#
     host="opcode"
     queue="primary"
     nthreads=8
@@ -119,6 +116,8 @@ elif [ "`hostname | grep santis`" != "" ] ; then
     testdata="???"
 elif [ "`hostname | grep durian`" != "" ] ; then
     shopt -s expand_aliases
+    alias sbatch='eval'
+    alias squeue='echo'
     alias module='echo $* 2>/dev/null 1>/dev/null'
     host="durian"
     queue="normal"
@@ -128,6 +127,8 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     testdata="/Users/fuhrer/Desktop/install/testdata"
 elif [ "`hostname | grep bertie`" != "" ] ; then
     shopt -s expand_aliases
+    alias sbatch='eval'
+    alias squeue='echo'
     alias module='echo $* 2>/dev/null 1>/dev/null'
     host="bertie"
     queue="normal"

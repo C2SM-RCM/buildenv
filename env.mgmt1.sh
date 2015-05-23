@@ -28,6 +28,26 @@ setupDefaults()
     compilers=(cray)
     fcompiler_cmds=(ftn)
 
+    export MY_CPU=ivybridge
+    export MY_CRAYPE_VERS=2.3.0
+    export MY_CMAKE_VERS=3.1.3
+    export MY_CCE_VERS=8.3.10
+    export MY_GCC_VERS=4.8.1
+    export MY_MVAPICH_VERS=2.0.1
+    export MY_LIBSCI_VERS=13.0.3
+    export MY_CUDA_VERS=6.5.14
+    export MY_LIBSCI_ACC_VERS=3.1.2
+    export MY_NETCDF_VERS=4.3.2_cce83
+    export MY_HDF5_VERS=1.8.13_cce83
+    export MY_PERFTOOLS_VERS=6.2.3
+    export MY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
+    export MY_BOOST_PATH=/home/n17183/boost_1.49.0/include
+    
+    module use /home/test/ahart/global/modules
+    
+    export MY_CMAKE_HOME=/home/kmm/cmake/local_313
+    export PATH=${MY_CMAKE_HOME}/bin:${PATH}
+
     cpu_vers="${MY_CPU}"
 
     # Set version numbers here to avoid duplication and mistakes
@@ -59,7 +79,6 @@ setupDefaults()
     libsci_acc_module="cray-libsci_acc/${libsci_acc_vers}"
     netcdf_module="netcdf4/${netcdf_vers}"
     hdf5_module="hdf5/${hdf5_vers}"
-    perftools_module="perftools/${perftools_vers}"
 
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${MY_MPI_PATH}:${LD_LIBRARY_PATH}
@@ -97,8 +116,6 @@ setupDefaults()
 #
 setCppEnvironment()
 {
-    echo 'Setting up CPP Environment'
-    echo '=========================='
     module load "craype-${cpu_vers}"
     module unload gcc
     module load "${gcc_module}"
@@ -129,10 +146,7 @@ setCppEnvironment()
         module load "${libsci_acc_module}"
     fi
     old_ldlibrarypath=${LD_LIBRARY_PATH}
-    #  export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CRAY_LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-    echo "SetCPP:  LD_LIBRARY_PATH is $LD_LIBRARY_PATH"
-
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -161,12 +175,6 @@ setCppEnvironment()
     use_mpi_compiler=OFF
     platform=CRAYCCS
     mpi_path="${mvapich_path}"
-    #  module load "${perftools_module}"
-
-    module list 
-    echo "LD_LIBRARY_PATH set to $LD_LIBRARY_PATH"
-    echo 'DONE Setting up CPP Environment'
-    echo '==============================='
 }
 
 # This function unloads modules and removes variables for compiling in C++
@@ -177,8 +185,6 @@ setCppEnvironment()
 #
 unsetCppEnvironment()
 {
-    echo 'UNsetting  CPP Environment'
-    echo '=========================='
     # remove standard modules (part 2)
 
     # remove Fortran compiler specific modules
@@ -228,10 +234,6 @@ unsetCppEnvironment()
     unset boost_path
     unset use_mpi_compiler
     unset mpi_path
-
-    module list
-    echo 'DONE UNsetting  CPP Environment'
-    echo '==============================='
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part
@@ -244,8 +246,6 @@ unsetCppEnvironment()
 #
 setFortranEnvironment()
 {
-    echo 'Setting up Fortran Environment'
-    echo '=============================='
     module load "craype-${cpu_vers}"
     module unload gcc
     module load "${gcc_module}"
@@ -261,7 +261,6 @@ setFortranEnvironment()
     # standard modules (part 1)
     module unload craype
     module load "${craype_module}"
-    #  module load "${cmake_module}"
     module unload mvapich2_cce
     module load "${mvapich_module}"
     module unload cray-libsci
@@ -297,10 +296,6 @@ setFortranEnvironment()
     # standard modules (part 2)
     module load "${netcdf_module}"
     module load "${hdf5_module}"
-    #  module load "${perftools_module}"
-    module list
-    echo 'DONE Setting up Fortran Environment'
-    echo '==================================='
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -311,8 +306,6 @@ setFortranEnvironment()
 #
 unsetFortranEnvironment()
 {
-    echo 'UNsetting Fortran Environment'
-    echo '============================='
     # remove standard modules (part 2)
     module unload perftools
     module unload "${netcdf_module}"
@@ -359,8 +352,5 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
-    module list
-    echo 'DONE UNsetting Fortran Environment'
-    echo '=================================='
 }
 

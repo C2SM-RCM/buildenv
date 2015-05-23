@@ -151,7 +151,7 @@ elif [ "`hostname | grep osprey`" != "" ] ; then
 elif [ "`hostname | grep mgmt1`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash
-    module load craype-haswell
+    #module load craype-ivybridge
     host="mgmt1"
     queue="debug"
     nthreads=1

@@ -138,13 +138,13 @@ setCppEnvironment()
     module unload cray-libsci
     module load "${libsci_module}"
 
-    if [ "${target}" == "gpu" ] ; then
+    #if [ "${target}" == "gpu" ] ; then
         module unload cudatoolkit
         module unload craype-accel-nvidia35
         module load craype-accel-nvidia35
         module unload cray-libsci_acc
         module load "${libsci_acc_module}"
-    fi
+    #fi
     old_ldlibrarypath=${LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
@@ -202,11 +202,11 @@ unsetCppEnvironment()
     module unload "craype-${cpu_vers}"
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
-    if [ "${target}" == "gpu" ] ; then
+    #if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia35
         module unload cudatoolkit
         module unload cray-libsci_acc
-    fi
+    #fi
     module unload mvapich2_gnu
     module unload mvapich2_cce
     module load mvapich2_cce
@@ -266,15 +266,13 @@ setFortranEnvironment()
     module unload cray-libsci
     module load "${libsci_module}"
 
-    if [ "${target}" == "gpu" ] ; then
+    #if [ "${target}" == "gpu" ] ; then
         module unload cudatoolkit
         module unload craype-accel-nvidia35
-        #  module load "${cudatk_module}"
-        #  module load cudatoolkit/6.0.37
         module load craype-accel-nvidia35
         module unload cray-libsci_acc
         module load "${libsci_acc_module}"
-    fi
+    #fi
 
     old_ldlibrarypath=${LD_LIBRARY_PATH}
     #  export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CRAY_LD_LIBRARY_PATH}
@@ -328,11 +326,11 @@ unsetFortranEnvironment()
 
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
-    if [ "${target}" == "gpu" ] ; then
+    #if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia35
         module unload cudatoolkit
         module unload cray-libsci_acc
-    fi
+    #fi
     #  module unload mvapich
     module unload mvapich2_gnu
     module unload mvapich2_cce

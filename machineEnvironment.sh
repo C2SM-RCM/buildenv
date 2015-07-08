@@ -166,8 +166,8 @@ elif [ "`hostname | grep kesch`" != "" ] ; then
     queue="debug"
     nthreads=1
     mpilaunch="srun"
-    installdir="/project/c01/install/${host}"
-    testdata="/lus/scratch/jenkins/data"
+    installdir="/lus/scratch/olifu/kesch/INSTALL"
+    testdata="/lus/scratch/olifu/kesch/DATA"
 fi
 
 # make sure everything is set

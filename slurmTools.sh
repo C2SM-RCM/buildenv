@@ -57,20 +57,24 @@ function launch_job {
   if [ -n "${timeout}" ] ; then
       local secs=0
       local inc=2
+      local job_status="UNKNOWN"
       while [ $secs -lt $timeout ] ; do
-          echo "...waiting ${inc}s for SLURM job ${jobid} to finish"
+          echo "...waiting ${inc}s for SLURM job ${jobid} to finish (status=${job_status})"
           sleep ${inc}
           secs=$[$secs+${inc}]
           inc=60
-          squeue -o "%.20i %.20u" -h -j "${jobid}" | grep "^ *${jobid} " &> /dev/null
+          squeue_out=`squeue -o "%T %.20i %.20u" -h -j "${jobid}" 2>/dev/null`
+          echo "${squeue_out}" | grep "^ *${jobid} " &> /dev/null
           if [ $? -eq 1 ] ; then
               break
           fi
+          job_status=`echo ${squeue_out} | awk '{print $1}'`
       done
   fi
 
   # make sure that job has finished
-  squeue -o "%.20i %.20u" -h -j "${jobid}" 2>/dev/null | grep "^ *${jobid} " >/dev/null
+  squeue_out=`squeue -o "%T %.20i %.20u" -h -j "${jobid}" 2>/dev/null`
+  echo "${squeue_out}" | grep "^ *${jobid} " &> /dev/null
   if [ $? -eq 0 ] ; then
       exitError 7207 ${LINENO} "batch job ${script} with ID ${jobid} on host ${slave} did not finish"
   fi

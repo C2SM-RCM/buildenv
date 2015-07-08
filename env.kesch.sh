@@ -28,7 +28,7 @@ setupDefaults()
     compilers=(cray)
     fcompiler_cmds=(ftn)
 
-    export MY_CPU=ivybridge
+    export MY_CPU=haswell
     export MY_CRAYPE_VERS=2.3.0
     export MY_CMAKE_VERS=3.1.3
     export MY_CCE_VERS=8.3.10

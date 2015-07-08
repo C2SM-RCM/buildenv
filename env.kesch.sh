@@ -41,7 +41,7 @@ setupDefaults()
     export MY_HDF5_VERS=1.8.13_cce83
     export MY_PERFTOOLS_VERS=6.2.3
     export MY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
-    export MY_BOOST_PATH=/home/n17183/boost_1.49.0/include
+    export MY_BOOST_PATH=/lus/scratch/olifu/kesch/BUILD/boost_1.49.0/include
     
     module use /home/test/ahart/global/modules
     

@@ -37,8 +37,8 @@ setupDefaults()
     export MY_LIBSCI_VERS=13.0.3
     export MY_CUDA_VERS=6.5.14
     export MY_LIBSCI_ACC_VERS=3.1.2
-    export MY_NETCDF_VERS=4.3.2_cce83
-    export MY_HDF5_VERS=1.8.13_cce83
+    export MY_NETCDF_VERS=4.3.2
+    export MY_HDF5_VERS=1.8.13
     export MY_PERFTOOLS_VERS=6.2.3
     export MY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
     export MY_BOOST_PATH=/lus/scratch/olifu/kesch/BUILD/boost_1.49.0/include
@@ -72,8 +72,8 @@ setupDefaults()
     cudatk_module="cudatoolkit/${cuda_vers}"
     cudatk_path="/global/opt/nvidia/cudatoolkit/${cuda_vers}"
     libsci_acc_module="cray-libsci_acc/${libsci_acc_vers}"
-    netcdf_module="netcdf4/${netcdf_vers}"
-    hdf5_module="hdf5/${hdf5_vers}"
+    netcdf_module="cray-netcdf/${netcdf_vers}"
+    hdf5_module="cray-hdf5/${hdf5_vers}"
 
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
     export LD_LIBRARY_PATH=${MY_MPI_PATH}:${LD_LIBRARY_PATH}

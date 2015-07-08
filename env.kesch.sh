@@ -43,11 +43,6 @@ setupDefaults()
     export MY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
     export MY_BOOST_PATH=/lus/scratch/olifu/kesch/BUILD/boost_1.49.0/include
     
-    module use /home/test/ahart/global/modules
-    
-    export MY_CMAKE_HOME=/home/kmm/cmake/local_313
-    export PATH=${MY_CMAKE_HOME}/bin:${PATH}
-
     cpu_vers="${MY_CPU}"
 
     # Set version numbers here to avoid duplication and mistakes
@@ -55,7 +50,7 @@ setupDefaults()
     # Import using env variables vi build_all.sh script
     #
     craype_vers="${MY_CRAYPE_VERS}"
-    #  cmake_vers="${MY_CMAKE_VERS}"
+    cmake_vers="${MY_CMAKE_VERS}"
     gcc_vers="${MY_GCC_VERS}"
     cce_vers="${MY_CCE_VERS}"
     mvapich_vers="${MY_MVAPICH_VERS}_gnu48"
@@ -68,7 +63,7 @@ setupDefaults()
 
 
     craype_module="craype/${craype_vers}"
-    #  cmake_module="cmake/${cmake_vers}"
+    cmake_module="cmake/${cmake_vers}"
     gcc_module="gcc/${gcc_vers}"
     cce_module="cce/${cce_vers}"
     mvapich_module="mvapich2_gnu/${mvapich_vers}"
@@ -132,7 +127,7 @@ setCppEnvironment()
     # standard modules (part 1)
     module unload craype
     module load "${craype_module}"
-    #  module load "${cmake_module}"
+    module load "${cmake_module}"
     module unload mvapich2_cce
     module load "${mvapich_module}"
     module unload cray-libsci
@@ -198,7 +193,7 @@ unsetCppEnvironment()
 
     # remove standard modules (part 1)
     module unload perftools
-    #  module unload cmake
+    module unload cmake
     module unload "craype-${cpu_vers}"
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
@@ -321,7 +316,6 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
-    #  module unload cmake
     module unload "craype-${cpu_vers}"
 
     export LD_LIBRARY_PATH=${old_ldlibrarypath}

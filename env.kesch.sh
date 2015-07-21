@@ -168,7 +168,6 @@ setCppEnvironment()
     boost_path="${MY_BOOST_PATH}"
     cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
-    platform=CRAYCCS
     mpi_path="${mvapich_path}"
 }
 

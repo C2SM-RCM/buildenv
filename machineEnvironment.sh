@@ -161,7 +161,6 @@ elif [ "`hostname | grep mgmt1`" != "" ] ; then
 elif [ "`hostname | grep kesch`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash
-    #module load craype-ivybridge
     host="kesch"
     queue="debug"
     nthreads=1

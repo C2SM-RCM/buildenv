@@ -148,16 +148,6 @@ elif [ "`hostname | grep osprey`" != "" ] ; then
     #  testdata="/cray/css/users/n17183/data"
     installdir="/cray/css/pe_tools/malice/builds/cosmo/2015Feb17/COSMO/stella/install"
     testdata="/cray/css/pe_tools/malice/builds/cosmo/2015Feb17/COSMO/stella/data"
-elif [ "`hostname | grep mgmt1`" != "" ] ; then
-    . /etc/bashrc
-    . /usr/Modules/3.2.10/init/bash
-    #module load craype-ivybridge
-    host="mgmt1"
-    queue="debug"
-    nthreads=1
-    mpilaunch="srun"
-    installdir="/home/n17183/install"
-    testdata="/home/n17183/data"
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash

@@ -151,6 +151,7 @@ elif [ "`hostname | grep osprey`" != "" ] ; then
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash
+    . /etc/profile.d/cray_pe.sh
     host="kesch"
     queue="debug"
     nthreads=1

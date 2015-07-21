@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x 
 
 # setup environment for different systems
 # 

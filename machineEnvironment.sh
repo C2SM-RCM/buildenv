@@ -158,7 +158,7 @@ elif [ "`hostname | grep mgmt1`" != "" ] ; then
     mpilaunch="srun"
     installdir="/home/n17183/install"
     testdata="/home/n17183/data"
-elif [ "`hostname | grep kesch`" != "" ] ; then
+elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash
     host="kesch"

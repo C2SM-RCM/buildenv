@@ -86,7 +86,7 @@ setupDefaults()
         compiler="cray"
     fi
     if [ -z "${cuda_arch}" ] ; then
-        cuda_arch="sm_35"
+        cuda_arch="sm_37"
     fi
 
     # fortran compiler command

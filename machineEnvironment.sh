@@ -154,10 +154,10 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     . /etc/profile.d/cray_pe.sh
     host="kesch"
     queue="debug"
-    nthreads=1
+    nthreads=6
     mpilaunch="srun"
-    installdir="/lus/scratch/olifu/kesch/INSTALL"
-    testdata="/lus/scratch/olifu/kesch/DATA"
+    installdir="/project/c01/install/${host}"
+    testdata="/lus/scratch/jenkins/data"
 fi
 
 # make sure everything is set

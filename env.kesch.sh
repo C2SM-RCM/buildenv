@@ -219,7 +219,6 @@ unsetCppEnvironment()
         module switch PrgEnv-cray ${old_prgenv}
     fi
     # Load default module
-    module load craype-network-infiniband
     unset old_prgenv
 
     # unset global variables
@@ -344,7 +343,6 @@ unsetFortranEnvironment()
     else
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
-    module load craype-network-infiniband
 
     unset old_prgenv
 }

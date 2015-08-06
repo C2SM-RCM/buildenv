@@ -111,7 +111,7 @@ setupDefaults()
 #
 setCppEnvironment()
 {
-    module load "craype-${cpu_vers}"
+#XL    module load "craype-${cpu_vers}"
     module unload gcc
     module load "${gcc_module}"
     # switch to programming environment (only on Cray)
@@ -193,7 +193,7 @@ unsetCppEnvironment()
     # remove standard modules (part 1)
     module unload perftools
 #    module unload cmake
-    module unload "craype-${cpu_vers}"
+#XL    module unload "craype-${cpu_vers}"
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
     #if [ "${target}" == "gpu" ] ; then
@@ -218,6 +218,8 @@ unsetCppEnvironment()
     else
         module switch PrgEnv-cray ${old_prgenv}
     fi
+    # Load default module
+    module load craype-network-infiniband
     unset old_prgenv
 
     # unset global variables
@@ -240,7 +242,7 @@ unsetCppEnvironment()
 #
 setFortranEnvironment()
 {
-    module load "craype-${cpu_vers}"
+#XL    module load "craype-${cpu_vers}"
     module unload gcc
     module load "${gcc_module}"
     # switch to GNU programming environment (only on Cray machines)
@@ -315,7 +317,7 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module unload "craype-${cpu_vers}"
+#XL    module unload "craype-${cpu_vers}"
 
     export LD_LIBRARY_PATH=${old_ldlibrarypath}
     old_ldlibrarypath=""
@@ -342,6 +344,8 @@ unsetFortranEnvironment()
     else
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
+    module load craype-network-infiniband
+
     unset old_prgenv
 }
 

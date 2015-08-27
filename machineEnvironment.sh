@@ -86,6 +86,15 @@ elif [ "`hostname | grep daint`" != "" ] ; then
     mpilaunch="aprun"
     installdir=/project/c01/install/${host}
     testdata=/scratch/daint/jenkins/data
+elif [ "`hostname | grep dora`" != "" ] ; then
+    . /etc/bash.bashrc
+    . /opt/modules/default/init/bash
+    host="dora"
+    queue="normal"
+    nthreads=8
+    mpilaunch="aprun"
+    installdir=/project/c01/install/${host}
+    testdata=/scratch/dora/jenkins/data
 elif [ "`hostname | grep jupiter`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash

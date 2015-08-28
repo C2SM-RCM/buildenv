@@ -93,7 +93,7 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
-    installdir=/project/c01/install/${host}
+    installdir=/project/c01/install/daint
     testdata=/scratch/dora/jenkins/data
 elif [ "`hostname | grep jupiter`" != "" ] ; then
     . /etc/bash.bashrc

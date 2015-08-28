@@ -71,6 +71,7 @@ setCppEnvironment()
     fi
     
     # standard modules (part 1)
+    module switch gcc/4.8.2
     module load cmake
 
     # Fortran compiler specific modules and setup
@@ -119,6 +120,8 @@ unsetCppEnvironment()
 
     # remove standard modules (part 1)
     module unload cmake
+    module unload gcc
+    module load gcc
 
     # restore programming environment (only on Cray)
     if [ -z "${old_prgenv}" ] ; then

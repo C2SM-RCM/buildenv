@@ -10,6 +10,26 @@
 # setFortranEnvironment    setup environment for Fortran compilation
 # unsetFortranEnvironment  restore environment after Fortran compilation
 
+writeModuleEnv()
+{
+    module list -t 2>&1 | grep -v alps | grep -v '^- Package' | grep -v '^Currently Loaded' | sed 's/^/module load /g' > $1
+}
+
+createModuleCheckPoint()
+{
+    previous_module_tmp=$(mktemp)
+    writeModuleEnv ${previous_module_tmp}
+    module purge
+}
+
+restoreModuleCheckPoint()
+{
+    module purge
+    source ${previous_module_tmp}
+    rm ${previous_module_tmp}
+    unset previous_module_tmp
+}
+
 # Setup global defaults and variables
 #
 # upon exit, the following global variables need to be set:
@@ -25,58 +45,43 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(cray)
+    compilers=(gnu cray)
     fcompiler_cmds=(ftn)
 
-    export MY_CPU=haswell
-    export MY_CRAYPE_VERS=2.3.0
-    export MY_CMAKE_VERS=3.1.3
-    export MY_CCE_VERS=8.3.10
-    export MY_GCC_VERS=4.8.1
-    export MY_MVAPICH_VERS=2.0.1
-    export MY_LIBSCI_VERS=13.0.3
-    export MY_CUDA_VERS=6.5.14
-    export MY_LIBSCI_ACC_VERS=3.1.2
-    export MY_NETCDF_VERS=4.3.2
-    export MY_HDF5_VERS=1.8.13
-    export MY_PERFTOOLS_VERS=6.2.3
+    export OLD_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
+
     export MY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
     export MY_BOOST_PATH=/scratch/olifu/kesch/BUILD/boost_1.49.0/include
-    
-    cpu_vers="${MY_CPU}"
 
-    # Set version numbers here to avoid duplication and mistakes
-    #    later in the file.
-    # Import using env variables vi build_all.sh script
-    #
-    craype_vers="${MY_CRAYPE_VERS}"
-#    cmake_vers="${MY_CMAKE_VERS}"
-    gcc_vers="${MY_GCC_VERS}"
-    cce_vers="${MY_CCE_VERS}"
-    mvapich_vers="${MY_MVAPICH_VERS}_gnu48"
-    libsci_vers="${MY_LIBSCI_VERS}"
-    cuda_vers="${MY_CUDA_VERS}"
-    libsci_acc_vers="${MY_LIBSCI_ACC_VERS}"
-    netcdf_vers="${MY_NETCDF_VERS}"
-    hdf5_vers="${MY_HDF5_VERS}"
-    perftools_vers="${MY_PERFTOOLS_VERS}"
+    export MY_BASE_MODULES="craype-haswell"
+    export MY_CRAY_PRG_ENV="PrgEnv-cray"
+    export MY_GNU_PRG_ENV="PrgEnv-gnu/2015b"
 
+    # NVIDIA
+    export MY_NVIDIA_PRG_ENV="craype-accel-nvidia35"
+    export MY_NVIDIA_CUDA_ARCH="sm_37"
 
-    craype_module="craype/${craype_vers}"
-#    cmake_module="cmake/${cmake_vers}"
-    gcc_module="gcc/${gcc_vers}"
-    cce_module="cce/${cce_vers}"
-    mvapich_module="mvapich2_gnu/${mvapich_vers}"
-    mvapich_path="${MY_MPI_PATH}"
-    libsci_module="cray-libsci/${libsci_vers}"
-    cudatk_module="cudatoolkit/${cuda_vers}"
-    cudatk_path="/global/opt/nvidia/cudatoolkit/${cuda_vers}"
-    libsci_acc_module="cray-libsci_acc/${libsci_acc_vers}"
-    netcdf_module="cray-netcdf/${netcdf_vers}"
-    hdf5_module="cray-hdf5/${hdf5_vers}"
+    # MVAPICH
+    export MY_CRAY_MVAPICH_VERS=2.0.1
+    export MY_CRAY_MVAPICH_MODULE="mvapich2_gnu/${MY_CRAY_MVAPICH_VERS}"
+    export MY_CRAY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
 
-    export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-    export LD_LIBRARY_PATH=${MY_MPI_PATH}:${LD_LIBRARY_PATH}
+    export MY_GNU_MVAPICH_VERS=2.0.1-GCC-4.8.2-EB
+    export MY_GNU_MVAPICH_MODULE="MVAPICH2/"
+    export MY_GNU_MPI_PATH=/apps/escha/easybuild/software/MVAPICH2/${MY_GNU_MVAPICH_VERS}
+    # BOOST
+    export MY_BOOST_PATH=/scratch/olifu/kesch/BUILD/boost_1.49.0/include
+
+    # Also don't forget to update Options.kesch.gnu.cpu when this value is changed
+    # get the path from module display
+    # Netcdf
+    export MY_CRAY_NETCDF_MODULE="cray-netcdf"
+    export MY_GNU_NETCDF_MODULE="netCDF-Fortran/4.4.2-gmvolf-2015b"
+    # Hdf5
+    export MY_CRAY_HDF5_MODULE="cray-hdf5"
+    export MY_GNU_HDF5_MODULE="HDF5/1.8.15-gmvolf-2015b"
+
+    hdf5_module="cray-hdf5"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -86,12 +91,16 @@ setupDefaults()
         compiler="cray"
     fi
     if [ -z "${cuda_arch}" ] ; then
-        cuda_arch="sm_37"
+        cuda_arch="${MY_NVIDIA_CUDA_ARCH}"
     fi
 
     # fortran compiler command
     if [ -z "${fcompiler_cmd}" ] ; then
-        fcompiler_cmd="ftn"
+        if [ "${compiler}" == "gnu" ] ; then
+            fcompiler_cmd="gfortran"
+        else
+            fcompiler_cmd="ftn"
+        fi
     fi
 }
 
@@ -111,43 +120,27 @@ setupDefaults()
 #
 setCppEnvironment()
 {
-#XL    module load "craype-${cpu_vers}"
-    module unload gcc
-    module load "${gcc_module}"
-    # switch to programming environment (only on Cray)
-    #old_prgenv=" "
+    createModuleCheckPoint
+
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
-    if [ -z "${old_prgenv}" ] ; then
-        module load PrgEnv-cray
-    else
-        module switch ${old_prgenv} PrgEnv-cray
-    fi
-
-    
-    # standard modules (part 1)
-    module unload craype
-    module load "${craype_module}"
-#    module load "${cmake_module}"
-    module unload mvapich2_cce
-    module load "${mvapich_module}"
-    module unload cray-libsci
-    module load "${libsci_module}"
-
-    #if [ "${target}" == "gpu" ] ; then
-        module unload cudatoolkit
-        module unload craype-accel-nvidia35
-        module load craype-accel-nvidia35
-        module unload cray-libsci_acc
-        module load "${libsci_acc_module}"
-    #fi
-    old_ldlibrarypath=${LD_LIBRARY_PATH}
-    export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-
-    # Fortran compiler specific modules and setup
+    # CXX compiler specific modules and setup
     case "${compiler}" in
     cray )
-        module unload cce
-        module load "${cce_module}"
+        # Copied from
+        # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
+        module load "${MY_BASE_MODULES}"
+        module load "${MY_CRAY_PRG_ENV}"
+        module load "${MY_NVIDIA_PRG_ENV}"
+        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
+        mvapich_path="${MY_CRAY_MPI_PATH}"
+         ;;
+    gnu )
+        # Copied from
+        # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.gnu
+        module load "${MY_BASE_MODULES}"
+        module load "${MY_GNU_PRG_ENV}"
+        module load "${MY_NVIDIA_PRG_ENV}"
+        mvapich_path="${MY_GNU_MPI_PATH}"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
@@ -162,13 +155,16 @@ setCppEnvironment()
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
+
     dycore_gpp='g++'
     dycore_gcc='gcc'
-    cuda_gpp='g++'
+    cuda_gpp='nvcc'
     boost_path="${MY_BOOST_PATH}"
-    cudatk_include_path="${cudatk_path}"
+    #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
     mpi_path="${mvapich_path}"
+
+    export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 }
 
 # This function unloads modules and removes variables for compiling in C++
@@ -179,49 +175,8 @@ setCppEnvironment()
 #
 unsetCppEnvironment()
 {
-    # remove standard modules (part 2)
-
-    # remove Fortran compiler specific modules
-    case "${compiler}" in
-    cray )
-        ;;
-    * )
-        echo "ERROR: Unsupported compiler encountered in unsetCppEnvironment" 1>&2
-        exit 1
-    esac
-
-    # remove standard modules (part 1)
-    module unload perftools
-#    module unload cmake
-#XL    module unload "craype-${cpu_vers}"
-    export LD_LIBRARY_PATH=${old_ldlibrarypath}
-    old_ldlibrarypath=""
-    #if [ "${target}" == "gpu" ] ; then
-        module unload craype-accel-nvidia35
-        module unload cudatoolkit
-        module unload cray-libsci_acc
-    #fi
-    module unload mvapich2_gnu
-    module unload mvapich2_cce
-    module load mvapich2_cce
-    module unload "${gcc_module}"
-
-    module unload cray-libsci
-    module load cray-libsci
-
-    module unload craype
-    module load craype
-
-    # restore programming environment (only on Cray)
-    if [ -z "${old_prgenv}" ] ; then
-        module unload PrgEnv-cray
-    else
-        module switch PrgEnv-cray ${old_prgenv}
-    fi
-    # Load default module
-    unset old_prgenv
-
-    # unset global variables
+    restoreModuleCheckPoint
+    
     unset dycore_openmp
     unset dycore_gpp
     unset dycore_gcc
@@ -229,6 +184,10 @@ unsetCppEnvironment()
     unset boost_path
     unset use_mpi_compiler
     unset mpi_path
+
+    unset old_prgenv
+
+    export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part
@@ -241,54 +200,42 @@ unsetCppEnvironment()
 #
 setFortranEnvironment()
 {
-#XL    module load "craype-${cpu_vers}"
-    module unload gcc
-    module load "${gcc_module}"
-    # switch to GNU programming environment (only on Cray machines)
-    #old_prgenv=" "
+    createModuleCheckPoint
+
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
-    if [ -z "${old_prgenv}" ] ; then
-        module load PrgEnv-${compiler}
-    else
-        module swap ${old_prgenv} PrgEnv-${compiler}
-    fi
 
-    # standard modules (part 1)
-    module unload craype
-    module load "${craype_module}"
-    module unload mvapich2_cce
-    module load "${mvapich_module}"
-    module unload cray-libsci
-    module load "${libsci_module}"
-
-    #if [ "${target}" == "gpu" ] ; then
-        module unload cudatoolkit
-        module unload craype-accel-nvidia35
-        module load craype-accel-nvidia35
-        module unload cray-libsci_acc
-        module load "${libsci_acc_module}"
-    #fi
-
-    old_ldlibrarypath=${LD_LIBRARY_PATH}
-    #  export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CRAY_LD_LIBRARY_PATH}
-    export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-
-
-
-    # compiler specific modules
     case "${compiler}" in
     cray )
-        module unload cce
-        module load "${cce_module}"
+        # Copied from
+        # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
+        module load "${MY_BASE_MODULES}"
+        module load "${MY_CRAY_PRG_ENV}"
+        module load "${MY_NVIDIA_PRG_ENV}"
+        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
+        module load "${MY_CRAY_NETCDF_MODULE}"
+        module load "${MY_CRAY_HDF5_MODULE}"
+
+        netcdf_module="${MY_CRAY_NETCDF_MODULE}"
+        hdf5_module="${MY_CRAY_HDF5_MODULE}"
+        ;;
+    gnu )
+        # Copied from
+        # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.gnu
+        module load "${MY_BASE_MODULES}"
+        module load "${MY_GNU_PRG_ENV}"
+        module load "${MY_NVIDIA_PRG_ENV}"
+        module load "${MY_GNU_NETCDF_MODULE}"
+        module load "${MY_GNU_HDF5_MODULE}"
+
+        netcdf_module="${MY_GNU_NETCDF_MODULE}"
+        hdf5_module="${MY_GNU_HDF5_MODULE}"
         ;;
     * )
-        echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
+        echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
         exit 1
     esac
 
-    # standard modules (part 2)
-    module load "${netcdf_module}"
-    module load "${hdf5_module}"
+    export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -299,51 +246,11 @@ setFortranEnvironment()
 #
 unsetFortranEnvironment()
 {
-    # remove standard modules (part 2)
-    module unload perftools
-    module unload "${netcdf_module}"
-    module unload "${hdf5_module}"
-
-
-    # remove compiler specific modules
-    case "${compiler}" in
-    cray )
-        module swap cce cce
-        ;;
-    * )
-        echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2
-        exit 1
-    esac
-
-    # remove standard modules (part 1)
-#XL    module unload "craype-${cpu_vers}"
-
-    export LD_LIBRARY_PATH=${old_ldlibrarypath}
-    old_ldlibrarypath=""
-    #if [ "${target}" == "gpu" ] ; then
-        module unload craype-accel-nvidia35
-        module unload cudatoolkit
-        module unload cray-libsci_acc
-    #fi
-    #  module unload mvapich
-    module unload mvapich2_gnu
-    module unload mvapich2_cce
-    module load mvapich2_cce
-    module unload gcc
-
-    module unload cray-libsci
-    module load cray-libsci
-
-    module unload craype
-    module load craype
-
-    # swap back to original programming environment (only on Cray machines)
-    if [ -z "${old_prgenv}" ] ; then
-        module unload PrgEnv-${compiler}
-    else
-        module swap PrgEnv-${compiler} ${old_prgenv}
-    fi
+    restoreModuleCheckPoint
 
     unset old_prgenv
+
+    export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
+    unset OLD_LD_LIBRARY_PATH
 }
 

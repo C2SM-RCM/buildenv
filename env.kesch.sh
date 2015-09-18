@@ -140,7 +140,7 @@ setCppEnvironment()
         #dycore_gcc="cc"
         #cuda_gpp="g++"
         # ;;
-        echo "The cray compiler is not supported for C++ on kesch, forcing GNU"
+        echo "INFO: The cray compiler is not supported for C++ on kesch, forcing GNU"
         # Bash doesn't support case fall throughs :/ hence the copy
         module load "${MY_BASE_MODULES}"
         module load "${MY_GNU_PRG_ENV}"

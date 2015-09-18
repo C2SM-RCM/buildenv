@@ -233,7 +233,7 @@ setFortranEnvironment()
             module swap cce "${MY_CRAY_COMPILER}"
         fi
         module load "${MY_NVIDIA_PRG_ENV}"
-#        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
+        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
         module load "${MY_CRAY_NETCDF_MODULE}"
         module load "${MY_CRAY_HDF5_MODULE}"
 

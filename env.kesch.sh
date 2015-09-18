@@ -57,6 +57,9 @@ setupDefaults()
     export MY_CRAY_PRG_ENV="PrgEnv-cray"
     export MY_GNU_PRG_ENV="PrgEnv-gnu/2015b"
 
+    # Cray Compiler
+    export MY_CRAY_COMPILER="cce/8.3.14"
+
     # NVIDIA
     export MY_NVIDIA_PRG_ENV="craype-accel-nvidia35"
     export MY_NVIDIA_CUDA_ARCH="sm_37"
@@ -226,6 +229,9 @@ setFortranEnvironment()
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
         module load "${MY_BASE_MODULES}"
         module load "${MY_CRAY_PRG_ENV}"
+        if [ -n "${MY_CRAY_COMPILER}" ] ; then
+            module swap cce "${MY_CRAY_COMPILER}"
+        fi
         module load "${MY_NVIDIA_PRG_ENV}"
 #        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
         module load "${MY_CRAY_NETCDF_MODULE}"

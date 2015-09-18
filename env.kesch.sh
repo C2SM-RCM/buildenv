@@ -53,7 +53,7 @@ setupDefaults()
     export MY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
     export MY_BOOST_PATH=/scratch/olifu/kesch/BUILD/boost_1.49.0/include
 
-    export MY_BASE_MODULES="craype-haswell"
+    export MY_BASE_MODULES="craype-haswell cmake/3.1.3"
     export MY_CRAY_PRG_ENV="PrgEnv-cray"
     export MY_GNU_PRG_ENV="PrgEnv-gnu/2015b"
 
@@ -128,12 +128,26 @@ setCppEnvironment()
     cray )
         # Copied from
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
+        #module load "${MY_BASE_MODULES}"
+        #module load "${MY_CRAY_PRG_ENV}"
+        #module load "${MY_NVIDIA_PRG_ENV}"
+        #module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
+        #mvapich_path="${MY_CRAY_MPI_PATH}"
+        #dycore_gpp="CC"
+        #dycore_gcc="cc"
+        #cuda_gpp="g++"
+        # ;;
+        echo "The cray compiler is not supported for C++ on kesch, forcing GNU"
+        # Bash doesn't support case fall throughs :/ hence the copy
         module load "${MY_BASE_MODULES}"
-        module load "${MY_CRAY_PRG_ENV}"
+        module load "${MY_GNU_PRG_ENV}"
         module load "${MY_NVIDIA_PRG_ENV}"
-        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
-        mvapich_path="${MY_CRAY_MPI_PATH}"
-         ;;
+        mvapich_path="${MY_GNU_MPI_PATH}"
+
+        dycore_gpp="g++"
+        dycore_gcc="gcc"
+        cuda_gpp="g++"
+        ;;
     gnu )
         # Copied from
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.gnu
@@ -141,14 +155,16 @@ setCppEnvironment()
         module load "${MY_GNU_PRG_ENV}"
         module load "${MY_NVIDIA_PRG_ENV}"
         mvapich_path="${MY_GNU_MPI_PATH}"
+
+        dycore_gpp="g++"
+        dycore_gcc="gcc"
+        cuda_gpp="g++"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
         exit 1
     esac
-
-    # standard modules (part 2)
-
+    
     # set global variables
     if [ "${compiler}" == "gnu" ] ; then
         dycore_openmp=ON   # OpenMP only works if GNU is also used for Fortran parts
@@ -156,9 +172,9 @@ setCppEnvironment()
         dycore_openmp=OFF  # Otherwise, switch off
     fi
 
-    dycore_gpp='g++'
-    dycore_gcc='gcc'
-    cuda_gpp='nvcc'
+#    dycore_gpp='g++'
+#    dycore_gcc='gcc'
+#    cuda_gpp='g++'
     boost_path="${MY_BOOST_PATH}"
     #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
@@ -211,7 +227,7 @@ setFortranEnvironment()
         module load "${MY_BASE_MODULES}"
         module load "${MY_CRAY_PRG_ENV}"
         module load "${MY_NVIDIA_PRG_ENV}"
-        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
+#        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
         module load "${MY_CRAY_NETCDF_MODULE}"
         module load "${MY_CRAY_HDF5_MODULE}"
 

@@ -126,6 +126,10 @@ setCppEnvironment()
     createModuleCheckPoint
 
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
+
+    #HACK This should be integrated with gcc module
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/gcc/mpc/0.8.1/lib
+
     # CXX compiler specific modules and setup
     case "${compiler}" in
     cray )

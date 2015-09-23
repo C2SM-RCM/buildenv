@@ -50,9 +50,6 @@ setupDefaults()
 
     export OLD_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 
-    export MY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
-    export MY_BOOST_PATH=/scratch/olifu/kesch/BUILD/boost_1.49.0/include
-
     export MY_BASE_MODULES="craype-haswell cmake/3.1.3"
     export MY_CRAY_PRG_ENV="PrgEnv-cray"
     export MY_GNU_PRG_ENV="PrgEnv-gnu/2015b"
@@ -65,13 +62,11 @@ setupDefaults()
     export MY_NVIDIA_CUDA_ARCH="sm_37"
 
     # MVAPICH
-    export MY_CRAY_MVAPICH_VERS=2.0.1
-    export MY_CRAY_MVAPICH_MODULE="mvapich2_gnu/${MY_CRAY_MVAPICH_VERS}"
-    export MY_CRAY_MPI_PATH=/opt/cray/mvapich2_gnu/${MY_MVAPICH_VERS}/GNU/48
+    export MY_CRAY_MVAPICH_MODULE="mvapich2_cce/2.0.1_cray83"
+    export MY_CRAY_MPI_PATH="/opt/cray/mvapich2_cce/2.0.1/CRAY/83"
 
-    export MY_GNU_MVAPICH_VERS=2.0.1-GCC-4.8.2-EB
-    export MY_GNU_MVAPICH_MODULE="MVAPICH2/"
-    export MY_GNU_MPI_PATH=/apps/escha/easybuild/software/MVAPICH2/${MY_GNU_MVAPICH_VERS}
+    export MY_GNU_MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
+    export MY_GNU_MPI_PATH="/opt/mvapich2/gdr/2.1/cuda6.5/gnu"
     # BOOST
     export MY_BOOST_PATH=/scratch/olifu/kesch/BUILD/boost_1.49.0/include
 
@@ -236,7 +231,10 @@ setFortranEnvironment()
         if [ -n "${MY_CRAY_COMPILER}" ] ; then
             module swap cce "${MY_CRAY_COMPILER}"
         fi
+	
         module load "${MY_NVIDIA_PRG_ENV}"
+	# Load mvapich module to use gnu gdr
+	module load "${MY_GNU_MVAPICH_MODULE}"
         module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
         module load "${MY_CRAY_NETCDF_MODULE}"
         module load "${MY_CRAY_HDF5_MODULE}"

@@ -65,8 +65,12 @@ setupDefaults()
     export MY_CRAY_MVAPICH_MODULE="mvapich2_cce/2.0.1_cray83"
     export MY_CRAY_MPI_PATH="/opt/cray/mvapich2_cce/2.0.1/CRAY/83"
 
-    export MY_GNU_MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
-    export MY_GNU_MPI_PATH="/opt/mvapich2/gdr/2.1/cuda6.5/gnu"
+    export MY_GNU_MVAPICH_VERS=2.0.1-GCC-4.8.2-EB
+    export MY_GNU_MVAPICH_MODULE="MVAPICH2/${MY_GNU_MVAPICH_VERS}"
+    export MY_GNU_MPI_PATH=/apps/escha/easybuild/software/MVAPICH2/${MY_GNU_MVAPICH_VERS}
+    
+#    export MY_GNU_MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
+#    export MY_GNU_MPI_PATH="/opt/mvapich2/gdr/2.1/cuda6.5/gnu"
     # BOOST
     export MY_BOOST_PATH=/scratch/olifu/kesch/BUILD/boost_1.49.0/include
 
@@ -233,8 +237,8 @@ setFortranEnvironment()
         fi
 	
         module load "${MY_NVIDIA_PRG_ENV}"
-	# Load mvapich module to use gnu gdr
-	module load "${MY_GNU_MVAPICH_MODULE}"
+    	# Load mvapich module to use gnu gdr
+	    module load "${MY_GNU_MVAPICH_MODULE}"
         module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
         module load "${MY_CRAY_NETCDF_MODULE}"
         module load "${MY_CRAY_HDF5_MODULE}"

@@ -166,7 +166,7 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     nthreads=6
     mpilaunch="srun"
     installdir="/project/c01/install/${host}"
-    testdata="/lus/scratch/jenkins/data"
+    testdata="/scratch/jenkins/data"
 fi
 
 # make sure everything is set

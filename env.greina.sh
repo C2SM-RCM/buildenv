@@ -147,39 +147,6 @@ unsetCppEnvironment()
 #
 setFortranEnvironment()
 {
-    # switch to GNU programming environment (only on Cray machines)
-    #old_prgenv=" "
-    old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
-    if [ -z "${old_prgenv}" ] ; then
-        module load PrgEnv-${compiler}
-    else
-        module swap ${old_prgenv} PrgEnv-${compiler}
-    fi
-
-    # standard modules (part 1)
-    module load cmake
-    if [ "${target}" == "gpu" ] ; then
-        module load cudatoolkit
-        module load craype-accel-nvidia35
-    fi
-
-    # compiler specific modules
-    case "${compiler}" in
-    cray )
-        module unload cce
-        module load cce/8.3.4
-        ;;
-    gnu )
-        module unload gcc
-        module load gcc/4.8.2
-        ;;
-    * )
-        echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
-        exit 1
-    esac
-
-    # standard modules (part 2)
-    module load cray-netcdf
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -190,37 +157,5 @@ setFortranEnvironment()
 #
 unsetFortranEnvironment()
 {
-    # remove standard modules (part 2)
-    module unload cray-netcdf
-
-    # remove compiler specific modules
-    case "${compiler}" in
-    cray )
-        module unload cce/8.3.4
-        module load cce
-        ;;
-    gnu )
-        module unload gcc/4.8.2
-        module load gcc
-        ;;
-    * )
-        echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2
-        exit 1
-    esac
-
-    # remove standard modules (part 1)
-    module unload cmake
-    if [ "${target}" == "gpu" ] ; then
-        module unload craype-accel-nvidia35
-        module unload cudatoolkit
-    fi
-
-    # swap back to original programming environment (only on Cray machines)
-    if [ -z "${old_prgenv}" ] ; then
-        module unload PrgEnv-${compiler}
-    else
-        module swap PrgEnv-${compiler} ${old_prgenv}
-    fi
-    unset old_prgenv
 }
 

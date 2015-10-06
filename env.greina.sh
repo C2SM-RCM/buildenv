@@ -97,6 +97,7 @@ setCppEnvironment()
     boost_path=/users/cosuna/software/boost_1_49_0
     use_mpi_compiler=OFF
     mpi_path=${CRAY_MPICH2_DIR}
+    old_prgenv="none"
 }
 
 # This function unloads modules and removes variables for compiling in C++
@@ -135,6 +136,7 @@ unsetCppEnvironment()
     unset boost_path
     unset use_mpi_compiler
     unset mpi_path
+    unset old_prgenv
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part

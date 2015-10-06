@@ -145,7 +145,10 @@ unsetCppEnvironment()
 # upon exit, the following global variables need to be set:
 #   old_prgenv        Default PrgEnv-XXX module loaded on Cray machines
 #
-setFortranEnvironment(){}
+setFortranEnvironment()
+{
+    echo "Empty Function"    
+}
 
 # This function unloads modules and removes variables for compiling the Fortran parts
 #
@@ -153,5 +156,8 @@ setFortranEnvironment(){}
 #   compiler          Compiler to use to compile the Fortran parts of the code
 #   old_prgenv        Default PrgEnv-XXX module loaded on Cray machines
 #
-unsetFortranEnvironment(){}
+unsetFortranEnvironment()
+{
+    echo "Empty Function"    
+}
 

@@ -123,7 +123,7 @@ unsetCppEnvironment()
 
     module unload gcc/4.8.4
     #we need a decent cmake version in order to pass the HOST_COMPILER to nvcc
-    module unload /home/cosuna/privatemodules/cmake-3.3.2
+    module unload cmake-3.3.2
     module unload python/3.4.3
     module unload boost/1.56_gcc4.8.4
     module unload mvapich2/gcc/64/2.0-gcc-4.8.2-cuda-6.0
@@ -149,7 +149,13 @@ unsetCppEnvironment()
 #
 setFortranEnvironment()
 {
-    echo "Empty Function"    
+    dycore_gpp='g++'
+    dycore_gcc='gcc'
+    cuda_gpp='g++'
+    boost_path=/users/cosuna/software/boost_1_49_0
+    use_mpi_compiler=OFF
+    mpi_path=${CRAY_MPICH2_DIR}
+    old_prgenv="none"
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -160,6 +166,13 @@ setFortranEnvironment()
 #
 unsetFortranEnvironment()
 {
-    echo "Empty Function"    
+    unset dycore_openmp   # OpenMP only works if GNU is also used for Fortran parts
+    unset dycore_gpp
+    unset dycore_gcc
+    unset cuda_gpp
+    unset boost_path
+    unset use_mpi_compiler
+    unset mpi_path
+    unset old_prgenv
 }
 

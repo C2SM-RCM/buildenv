@@ -174,7 +174,7 @@ elif [ "`hostname | grep greina`" != "" ] ; then
     queue="none"
     nthreads=4
     mpilaunch="none"
-    installdir=???
+    installdir="../install"
     testdata=???
 fi
 

@@ -64,7 +64,7 @@ setupDefaults()
     # MVAPICH
     export MY_MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
     # BOOST
-    export MY_BOOST_PATH=/scratch/olifu/kesch/BUILD/boost_1.49.0/include
+    export MY_BOOST_PATH=/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10/include
 
     # Also don't forget to update Options.kesch.gnu.cpu when this value is changed
     # get the path from module display

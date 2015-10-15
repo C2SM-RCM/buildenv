@@ -199,7 +199,6 @@ testEnvironment()
         if [ -z ${dycore_gcc+x} ] ; then exitError 8003 ${LINENO} "variable dycore_gcc is not set" ; fi
         if [ -z ${cuda_gpp+x} ] ; then exitError 8004 ${LINENO} "variable cuda_gpp is not set" ; fi
         if [ -z ${boost_path+x} ] ; then exitError 8005 ${LINENO} "variable boost_path is not set" ; fi
-        if [ -z ${mpi_path+x} ] ; then exitError 8006 ${LINENO} "variable mpi_path is not set" ; fi
 
         # check cleanup of C++ env
         unsetCppEnvironment
@@ -209,7 +208,6 @@ testEnvironment()
         if [ ! -z ${dycore_gcc+x} ] ; then exitError 8103 ${LINENO} "variable dycore_gcc is still set" ; fi
         if [ ! -z ${cuda_gpp+x} ] ; then exitError 8104 ${LINENO} "variable cuda_gpp is still set" ; fi
         if [ ! -z ${boost_path+x} ] ; then exitError 8105 ${LINENO} "variable boost_path is still set" ; fi
-        if [ ! -z ${mpi_path+x} ] ; then exitError 8106 ${LINENO} "variable mpi_path is still set" ; fi
         compareFiles ${tmp}.mod.before ${tmp}.mod.between
 
         echo ">>>>>>>>>>>>>>> test Fortran environment setup"

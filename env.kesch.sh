@@ -52,7 +52,7 @@ setupDefaults()
 
     export MY_BASE_MODULES="craype-haswell cmake/3.1.3"
     export MY_CRAY_PRG_ENV="PrgEnv-cray"
-    export MY_GNU_PRG_ENV="PrgEnv-gnu/2015b"
+    export MY_GNU_PRG_ENV="PrgEnv-gnu/2015b-gdr-2.1"
 
     # Cray Compiler
     export MY_CRAY_COMPILER="cce/8.3.14"
@@ -62,11 +62,7 @@ setupDefaults()
     export MY_NVIDIA_CUDA_ARCH="sm_37"
 
     # MVAPICH
-    export MY_CRAY_MVAPICH_MODULE="mvapich2_cce/2.0.1_cray83"
-    export MY_CRAY_MPI_PATH="/opt/cray/mvapich2_cce/2.0.1/CRAY/83"
-
-    export MY_GNU_MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
-    export MY_GNU_MPI_PATH="/opt/mvapich2/gdr/2.1/cuda6.5/gnu"
+    export MY_MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
     # BOOST
     export MY_BOOST_PATH=/scratch/olifu/kesch/BUILD/boost_1.49.0/include
 
@@ -114,7 +110,6 @@ setupDefaults()
 #   cuda_gpp          C++ used by nvcc as backend
 #   boost_path        path to the Boost installation to use
 #   use_mpi_compiler  use MPI compiler wrappers?
-#   mpi_path          path to the MPI installation to use
 #
 setCppEnvironment()
 {
@@ -134,7 +129,6 @@ setCppEnvironment()
         #module load "${MY_CRAY_PRG_ENV}"
         #module load "${MY_NVIDIA_PRG_ENV}"
         #module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
-        #mvapich_path="${MY_CRAY_MPI_PATH}"
         #dycore_gpp="CC"
         #dycore_gcc="cc"
         #cuda_gpp="g++"
@@ -144,7 +138,6 @@ setCppEnvironment()
         module load "${MY_BASE_MODULES}"
         module load "${MY_GNU_PRG_ENV}"
         module load "${MY_NVIDIA_PRG_ENV}"
-        mvapich_path="${MY_GNU_MPI_PATH}"
 
         dycore_gpp="g++"
         dycore_gcc="gcc"
@@ -156,7 +149,6 @@ setCppEnvironment()
         module load "${MY_BASE_MODULES}"
         module load "${MY_GNU_PRG_ENV}"
         module load "${MY_NVIDIA_PRG_ENV}"
-        mvapich_path="${MY_GNU_MPI_PATH}"
 
         dycore_gpp="g++"
         dycore_gcc="gcc"
@@ -180,7 +172,6 @@ setCppEnvironment()
     boost_path="${MY_BOOST_PATH}"
     #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
-    mpi_path="${mvapich_path}"
 
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 }
@@ -201,7 +192,6 @@ unsetCppEnvironment()
     unset cuda_gpp
     unset boost_path
     unset use_mpi_compiler
-    unset mpi_path
 
     unset old_prgenv
 
@@ -234,7 +224,7 @@ setFortranEnvironment()
 	
         module load "${MY_NVIDIA_PRG_ENV}"
     	# Load mvapich module to use gnu gdr
-	    module load "${MY_GNU_MVAPICH_MODULE}"
+	module load "${MY_MVAPICH_MODULE}"
         module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
         module load "${MY_CRAY_NETCDF_MODULE}"
         module load "${MY_CRAY_HDF5_MODULE}"

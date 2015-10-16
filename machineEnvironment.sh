@@ -163,7 +163,7 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     . /etc/profile.d/cray_pe.sh
     host="kesch"
     queue="debug"
-    nthreads=6
+    nthreads=1
     mpilaunch="srun"
     installdir="/project/c01/install/${host}"
     testdata="/scratch/jenkins/data"

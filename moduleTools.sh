@@ -162,13 +162,19 @@ writeModuleList()
 	    compilo=`cat ${modfile} | egrep "module load cray-mpich" | sed 's/module load/module swap/g'`
             sed 's/module load cray-mpich/module swap cray-mpich/g' ${modfile} > /tmp/tmp.${host}.${user}.$$
 	    /bin/mv -f /tmp/tmp.${host}.${user}.$$ ${modfile}
-	  # workaround for Kesch (only cce)
-	  elif [ "${host}" == "kesch" ] ; then
-	      cat ${modfile} | egrep -v "module load cce\/" > /tmp/tmp.${host}.${user}.$$
-              compilo=`cat ${modfile} | egrep "module load cce\/" | sed 's/module load/module swap/g'`
-              echo "${compilo}" >> /tmp/tmp.${host}.${user}.$$
-              /bin/mv -f /tmp/tmp.${host}.${user}.$$ ${modfile}
-	  fi
+	  
+        elif [ "${host}" == "kesch" ] ; then
+
+            # Workaround 
+            if [[ -n "$ENVIRONMENT_TEMPFILE" ]] ; then
+                #     cat ${modfile} | egrep -v "module load cce\/" > /tmp/tmp.${host}.${user}.$$
+                #     compilo=`cat ${modfile} | egrep "module load cce\/" | sed 's/module load/module swap/g'`
+                #     echo "${compilo}" >> /tmp/tmp.${host}.${user}.$$
+                #     /bin/mv -f /tmp/tmp.${host}.${user}.$$ ${modfile}
+                # else
+                cp $ENVIRONMENT_TEMPFILE ${modfile}
+            fi
+        fi
         fi
     fi
 }

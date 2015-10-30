@@ -50,32 +50,13 @@ setupDefaults()
 
     export OLD_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 
-    export MY_BASE_MODULES="craype-haswell cmake/3.1.3"
-    export MY_CRAY_PRG_ENV="PrgEnv-cray"
-    export MY_GNU_PRG_ENV="PrgEnv-gnu/2015b-gdr-2.1"
+    export BASE_MODULES="craype-haswell cmake/3.1.3"
+    export NVIDIA_CUDA_ARCH="sm_37"
 
-    # Cray Compiler
-    export MY_CRAY_COMPILER="cce/8.3.14"
-
-    # NVIDIA
-    export MY_NVIDIA_PRG_ENV="craype-accel-nvidia35"
-    export MY_NVIDIA_CUDA_ARCH="sm_37"
-
-    # MVAPICH
-    export MY_MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
-    # BOOST
-    export MY_BOOST_PATH=/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10/include
-
-    # Also don't forget to update Options.kesch.gnu.cpu when this value is changed
-    # get the path from module display
-    # Netcdf
-    export MY_CRAY_NETCDF_MODULE="cray-netcdf"
-    export MY_GNU_NETCDF_MODULE="netCDF-Fortran/4.4.2-gmvolf-2015b"
-    # Hdf5
-    export MY_CRAY_HDF5_MODULE="cray-hdf5"
-    export MY_GNU_HDF5_MODULE="HDF5/1.8.15-gmvolf-2015b"
-
-    hdf5_module="cray-hdf5"
+    # # MVAPICH
+    export MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
+    # # BOOST
+    export BOOST_PATH=/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10/include
 
     # default options
     if [ -z "${target}" ] ; then
@@ -85,7 +66,7 @@ setupDefaults()
         compiler="cray"
     fi
     if [ -z "${cuda_arch}" ] ; then
-        cuda_arch="${MY_NVIDIA_CUDA_ARCH}"
+        cuda_arch="${NVIDIA_CUDA_ARCH}"
     fi
 
     # fortran compiler command
@@ -117,61 +98,46 @@ setCppEnvironment()
 
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
 
-    #HACK This should be integrated with gcc module
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/gcc/mpc/0.8.1/lib
-
-    # CXX compiler specific modules and setup
     case "${compiler}" in
-    cray )
-        # Copied from
-        # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
-        #module load "${MY_BASE_MODULES}"
-        #module load "${MY_CRAY_PRG_ENV}"
-        #module load "${MY_NVIDIA_PRG_ENV}"
-        #module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
-        #dycore_gpp="CC"
-        #dycore_gcc="cc"
-        #cuda_gpp="g++"
-        # ;;
-        echo "INFO: The cray compiler is not supported for C++ on kesch, forcing GNU"
-        # Bash doesn't support case fall throughs :/ hence the copy
-        module load "${MY_BASE_MODULES}"
-        module load "${MY_GNU_PRG_ENV}"
-        module load "${MY_NVIDIA_PRG_ENV}"
-
-        dycore_gpp="g++"
-        dycore_gcc="gcc"
-        cuda_gpp="g++"
-        ;;
     gnu )
-        # Copied from
-        # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.gnu
-        module load "${MY_BASE_MODULES}"
-        module load "${MY_GNU_PRG_ENV}"
-        module load "${MY_NVIDIA_PRG_ENV}"
-
-        dycore_gpp="g++"
-        dycore_gcc="gcc"
-        cuda_gpp="g++"
+        # Do nothing
         ;;
     * )
-        echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
-        exit 1
+        echo "${compiler} is not supported on kesch. Forcing gnu."
+        ;;
     esac
+
+    export ENVIRONMENT_TEMPFILE=$(mktemp)
     
-    # set global variables
+    cat > $ENVIRONMENT_TEMPFILE <<- EOF
+        # Generated with the build script
+        module load $BASE_MODULES
+        module load GCC/4.8.2-EB
+        module load cudatoolkit/6.5.14
+        module load PrgEnv-gnu/2015b-gdr-2.1
+        module swap $MVAPICH_MODULE
+        # protect the default mvapich module
+        
+        module load cray-libsci_acc/3.1.2
+        module load craype-accel-nvidia35
+EOF
+   
+    module purge
+    source $ENVIRONMENT_TEMPFILE
+
+    dycore_gpp='g++'
+    dycore_gcc='gcc'
+    cuda_gpp='g++'
+    boost_path="${BOOST_PATH}"
+    #cudatk_include_path="${cudatk_path}"
+    use_mpi_compiler=OFF
+
+        # set global variables
     if [ "${compiler}" == "gnu" ] ; then
         dycore_openmp=ON   # OpenMP only works if GNU is also used for Fortran parts
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
-
-#    dycore_gpp='g++'
-#    dycore_gcc='gcc'
-#    cuda_gpp='g++'
-    boost_path="${MY_BOOST_PATH}"
-    #cudatk_include_path="${cudatk_path}"
-    use_mpi_compiler=OFF
 
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 }
@@ -186,6 +152,9 @@ unsetCppEnvironment()
 {
     restoreModuleCheckPoint
     
+    rm $ENVIRONMENT_TEMPFILE
+    unset ENVIRONMENT_TEMPFILE
+
     unset dycore_openmp
     unset dycore_gpp
     unset dycore_gcc
@@ -212,42 +181,52 @@ setFortranEnvironment()
 
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
 
+    export ENVIRONMENT_TEMPFILE=$(mktemp)
+    
     case "${compiler}" in
     cray )
         # Copied from
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
-        module load "${MY_BASE_MODULES}"
-        module load "${MY_CRAY_PRG_ENV}"
-        if [ -n "${MY_CRAY_COMPILER}" ] ; then
-            module swap cce "${MY_CRAY_COMPILER}"
-        fi
-	
-        module load "${MY_NVIDIA_PRG_ENV}"
-    	# Load mvapich module to use gnu gdr
-	module load "${MY_MVAPICH_MODULE}"
-        module load GCC/4.8.2-EB # to prevent: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found 
-        module load "${MY_CRAY_NETCDF_MODULE}"
-        module load "${MY_CRAY_HDF5_MODULE}"
+        cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # Generated with the build script
+            module load $BASE_MODULES
+            module load PrgEnv-cray
+            module swap cce/8.3.14
+            module unload mvapich2_cce
+            module load $MVAPICH_MODULE
+            module load GCC/4.8.2-EB 
+            # Remark:
+            # The a gnu compiler 4.8.x is needed in order to provide a libstdc++.so 
+            # compatible with GLIBCXX_3.4.15 as required by the PrgEnv-cray.
+            # This will prevent the following error: 
+            #   /usr/lib64/libstdc++.so.6: version GLIBCXX_3.4.15 not found
 
-        netcdf_module="${MY_CRAY_NETCDF_MODULE}"
-        hdf5_module="${MY_CRAY_HDF5_MODULE}"
+            module load craype-accel-nvidia35
+            module load cray-netcdf
+            module load cray-hdf5
+EOF
+
         ;;
     gnu )
         # Copied from
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.gnu
-        module load "${MY_BASE_MODULES}"
-        module load "${MY_GNU_PRG_ENV}"
-        module load "${MY_NVIDIA_PRG_ENV}"
-        module load "${MY_GNU_NETCDF_MODULE}"
-        module load "${MY_GNU_HDF5_MODULE}"
-
-        netcdf_module="${MY_GNU_NETCDF_MODULE}"
-        hdf5_module="${MY_GNU_HDF5_MODULE}"
+        cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # Generated with the build script
+            module load $BASE_MODULES
+            module load PrgEnv-gnu/2015b-gdr-2.1
+            module swap $MVAPICH_MODULE
+            # protect the default mvapich module
+            module load netCDF-Fortran/4.4.2-gmvolf-2015b
+            module load HDF5/1.8.15-gmvolf-2015b
+EOF
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
         exit 1
     esac
+   
+    module purge
+    source $ENVIRONMENT_TEMPFILE
 
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 }
@@ -261,6 +240,9 @@ setFortranEnvironment()
 unsetFortranEnvironment()
 {
     restoreModuleCheckPoint
+
+    rm $ENVIRONMENT_TEMPFILE
+    unset ENVIRONMENT_TEMPFILE
 
     unset old_prgenv
 

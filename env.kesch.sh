@@ -111,6 +111,7 @@ setCppEnvironment()
     
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         # Generated with the build script
+        # implicit module purge
         module load $BASE_MODULES
         module load GCC/4.8.2-EB
         module load cudatoolkit/6.5.14
@@ -189,6 +190,7 @@ setFortranEnvironment()
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
+            # implicit module purge
             module load $BASE_MODULES
             module load PrgEnv-cray
             module swap cce/8.3.14
@@ -211,6 +213,7 @@ EOF
         # Copied from
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.gnu
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # implicit module purge
             # Generated with the build script
             module load $BASE_MODULES
             module load PrgEnv-gnu/2015b-gdr-2.1

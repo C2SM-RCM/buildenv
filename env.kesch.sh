@@ -48,7 +48,6 @@ setupDefaults()
     compilers=(gnu cray)
     fcompiler_cmds=(ftn)
 
-    export OLD_LD_LIBRARY_PATH=${LD_LIBRARY_PATH}
 
     export BASE_MODULES="craype-haswell cmake/3.1.3"
     export NVIDIA_CUDA_ARCH="sm_37"
@@ -108,24 +107,19 @@ setCppEnvironment()
     esac
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
-    
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         # Generated with the build script
         # implicit module purge
-        module load $BASE_MODULES
-        module load GCC/4.8.2-EB
-        module load cudatoolkit/6.5.14
-        module load PrgEnv-gnu/2015b-gdr-2.1
-        module swap $MVAPICH_MODULE
-        # protect the default mvapich module
-        
-        module load cray-libsci_acc/3.1.2
-        module load craype-accel-nvidia35
+        module load craype-haswell
+        module load craype-network-infiniband
+        module load mvapich2gdr_gnu/2.1_cuda_7.0
+        module load GCC/4.9.3-binutils-2.25
+        module load cray-libsci_acc/3.3.0
 EOF
    
     module purge
     source $ENVIRONMENT_TEMPFILE
-
+    module list
     dycore_gpp='g++'
     dycore_gcc='gcc'
     cuda_gpp='g++'
@@ -139,7 +133,8 @@ EOF
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
-
+    
+    export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 }
 
@@ -166,6 +161,7 @@ unsetCppEnvironment()
     unset old_prgenv
 
     export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
+    unset OLD_LD_LIBRARY_PATH
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part
@@ -188,49 +184,40 @@ setFortranEnvironment()
     cray )
         # Copied from
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
-        cat > $ENVIRONMENT_TEMPFILE <<-EOF
-            # Generated with the build script
-            # implicit module purge
-            module load $BASE_MODULES
-            module load PrgEnv-cray
-            module swap cce/8.3.14
-            module unload mvapich2_cce
-            module load $MVAPICH_MODULE
-            module load GCC/4.8.2-EB 
-            # Remark:
-            # The a gnu compiler 4.8.x is needed in order to provide a libstdc++.so 
-            # compatible with GLIBCXX_3.4.15 as required by the PrgEnv-cray.
-            # This will prevent the following error: 
-            #   /usr/lib64/libstdc++.so.6: version GLIBCXX_3.4.15 not found
 
-            module load craype-accel-nvidia35
-            module load cray-netcdf
-            module load cray-hdf5
-EOF
 
         ;;
     gnu )
         # Copied from
         # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.gnu
-        cat > $ENVIRONMENT_TEMPFILE <<-EOF
-            # implicit module purge
-            # Generated with the build script
-            module load $BASE_MODULES
-            module load PrgEnv-gnu/2015b-gdr-2.1
-            module swap $MVAPICH_MODULE
-            # protect the default mvapich module
-            module load netCDF-Fortran/4.4.2-gmvolf-2015b
-            module load HDF5/1.8.15-gmvolf-2015b
-EOF
+        echo "GNU Fortran is not supported at the moment, forcing cray"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
         exit 1
     esac
    
+    cat > $ENVIRONMENT_TEMPFILE <<-EOF
+        # Generated with the build script
+        # implicit module purge
+        module load craype-haswell
+        module load craype-accel-nvidia35
+        module load PrgEnv-cray/15.10_cuda_7.0
+        module load cmake/3.1.3
+        module swap cce/8.4.0a
+        module unload mvapich2_cce
+        module load cray-libsci_acc/3.3.0
+        module load mvapich2gdr_gnu/2.1_cuda_7.0
+        module load cray-netcdf/4.3.2
+        module load cray-hdf5/1.8.13
+        module load GCC/4.9.3-binutils-2.25
+EOF
     module purge
     source $ENVIRONMENT_TEMPFILE
 
+    module list
+
+    export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 }
 

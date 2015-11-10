@@ -102,7 +102,7 @@ setCppEnvironment()
         # Do nothing
         ;;
     * )
-        echo "${compiler} is not supported on kesch. Forcing gnu."
+        echo "Note : ${compiler} is not supported on kesch for c++ compilation, forcing gnu"
         ;;
     esac
 
@@ -119,7 +119,6 @@ EOF
    
     module purge
     source $ENVIRONMENT_TEMPFILE
-    module list
     dycore_gpp='g++'
     dycore_gcc='gcc'
     cuda_gpp='g++'
@@ -214,8 +213,6 @@ setFortranEnvironment()
 EOF
     module purge
     source $ENVIRONMENT_TEMPFILE
-
-    module list
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}

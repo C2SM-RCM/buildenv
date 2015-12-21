@@ -45,6 +45,24 @@ setupDefaults()
     fi
 }
 
+get_fcompiler_cmd()
+{
+    local __resultvar=$1
+    local __compiler=$2
+    if [ "${compiler}" == "gnu" ] ; then
+        myresult="gfortran"
+    else
+        myresult="ftn"
+    fi
+
+    if [[ "$__resultvar" ]]; then
+        eval $__resultvar="'$myresult'"
+    else
+        echo "$myresult"
+    fi
+}
+
+
 # This function loads modules and sets up variables for compiling in C++
 #
 # upon entry, the following global variables need to be set:
@@ -184,7 +202,7 @@ setFortranEnvironment()
     case "${compiler}" in
     cray )
         module unload cce
-        module load cce/8.3.4
+        module load cce/8.4.0
         ;;
     gnu )
         module unload gcc
@@ -213,7 +231,7 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module unload cce/8.3.4
+        module unload cce/8.4.0
         module load cce
         ;;
     gnu )
@@ -241,3 +259,9 @@ unsetFortranEnvironment()
     unset old_prgenv
 }
 
+export -f setFortranEnvironment
+export -f unsetFortranEnvironment
+export -f unsetCppEnvironment
+export -f setupDefaults
+export -f setCppEnvironment
+export -f get_fcompiler_cmd

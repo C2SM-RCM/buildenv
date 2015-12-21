@@ -37,50 +37,19 @@ installdir=""   # directory where libraries are installed
 testdata=""     # directory where unittestdata is stored
 
 # setup machine specifics
-if [ "`hostname | grep todi`" != "" ] ; then
+if [ "`hostname | grep lema`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
-    host="todi"
-    queue="day"
-    nthreads=16
-    mpilaunch="aprun"
-    installdir=/project/c01/install/${host}
-    testdata=/scratch/todi/jenkins/data
-elif [ "`hostname | grep opcode`" != "" ] ; then
-    . /etc/bashrc
-    . /etc/profile.d/modules.sh
-    shopt -s expand_aliases
-    alias sbatch='eval'
-    alias squeue='echo'
-    host="opcode"
-    queue="primary"
-    nthreads=8
-    mpilaunch="mpirun"
-    installdir=/project/c01/install/${host}
-    testdata=/scratch/jenkins/data
-elif [ "`hostname | grep lema`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    host="lema"
+    export host="lema"
     queue="dev"
     nthreads=12
     mpilaunch="aprun"
     installdir=/project/c01/install/${host}
     testdata=/scratch/jenkins/data
-elif [ "`hostname | grep dom`" != "" ] ; then
-    . /etc/bashrc
-    . /apps/dom/Modules/3.2.10/init/bash
-    modulepathadd /apps/dom/modulefiles
-    host="dom"
-    queue="normal"
-    nthreads=8
-    mpilaunch="mpiexec"
-    installdir=/project/c01/install/${host}
-    testdata=/scratch/dom/jenkins/dom/data
 elif [ "`hostname | grep daint`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
-    host="daint"
+    export host="daint"
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
@@ -89,7 +58,7 @@ elif [ "`hostname | grep daint`" != "" ] ; then
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
-    host="dora"
+    export host="dora"
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
@@ -98,7 +67,7 @@ elif [ "`hostname | grep dora`" != "" ] ; then
 elif [ "`hostname | grep jupiter`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
-    host="jupiter"
+    export host="jupiter"
     queue="batch"
     nthreads=8
     mpilaunch="aprun"
@@ -108,7 +77,7 @@ elif [ "`hostname | grep castor`" != "" ] ; then
     . /etc/bashrc
     . /apps/castor/Modules/default/init/bash
     module load slurm
-    host="castor"
+    export host="castor"
     queue="normal"
     nthreads=6
     mpilaunch="mpiexec"
@@ -117,7 +86,7 @@ elif [ "`hostname | grep castor`" != "" ] ; then
 elif [ "`hostname | grep santis`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
-    host="santis"
+    export host="santis"
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
@@ -128,7 +97,7 @@ elif [ "`hostname | grep durian`" != "" ] ; then
     alias sbatch='eval'
     alias squeue='echo'
     alias module='echo $* 2>/dev/null 1>/dev/null'
-    host="durian"
+    export host="durian"
     queue="normal"
     nthreads=4
     mpilaunch="mpirun"
@@ -139,29 +108,17 @@ elif [ "`hostname | grep bertie`" != "" ] ; then
     alias sbatch='eval'
     alias squeue='echo'
     alias module='echo $* 2>/dev/null 1>/dev/null'
-    host="bertie"
+    export host="bertie"
     queue="normal"
     nthreads=4
     mpilaunch="mpirun"
     installdir="/home/spiros/Work/install"
     testdata="/home/spiros/Work/install/testdata"
-elif [ "`hostname | grep osprey`" != "" ] ; then
-    . /etc/bashrc
-    . /usr/Modules/3.2.10/init/bash
-    #  module swap craype-sandybridge craype-haswell
-    host="osprey"
-    queue="workq"
-    nthreads=1
-    mpilaunch="mpiexec.hydra -bootstrap slurm"
-    #  installdir="/cray/css/users/n17183/install"
-    #  testdata="/cray/css/users/n17183/data"
-    installdir="/cray/css/pe_tools/malice/builds/cosmo/2015Feb17/COSMO/stella/install"
-    testdata="/cray/css/pe_tools/malice/builds/cosmo/2015Feb17/COSMO/stella/data"
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc
     . /usr/Modules/3.2.10/init/bash
     . /etc/profile.d/cray_pe.sh
-    host="kesch"
+    export host="kesch"
     queue="debug"
     nthreads=1
     mpilaunch="srun"
@@ -170,7 +127,7 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
 elif [ "`hostname | grep greina`" != "" ] ; then
     . /etc/bashrc
     . /cm/local/apps/environment-modules/3.2.10/init/bash
-    host="greina"
+    export host="greina"
     queue="none"
     nthreads=4
     mpilaunch="none"

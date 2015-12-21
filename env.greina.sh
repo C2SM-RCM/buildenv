@@ -26,7 +26,7 @@ setupDefaults()
     # available options
     targets=(cpu gpu)
     compilers=(gnu cray)
-    fcompiler_cmds=(ftn)
+    fcompiler_cmds=(gfortran)
 
     # default options
     if [ -z "${target}" ] ; then
@@ -149,6 +149,10 @@ unsetCppEnvironment()
 #
 setFortranEnvironment()
 {
+    module load cmake
+    module load gcc/4.9.0
+    module load boost/1.56_gcc4.8.4
+
     dycore_gpp='g++'
     dycore_gcc='gcc'
     cuda_gpp='g++'
@@ -166,6 +170,9 @@ setFortranEnvironment()
 #
 unsetFortranEnvironment()
 {
+    module unload cmake
+    module unload gcc/4.9.0
+    module unload boost/1.56_gcc4.8.4
     unset dycore_openmp   # OpenMP only works if GNU is also used for Fortran parts
     unset dycore_gpp
     unset dycore_gcc
@@ -176,3 +183,23 @@ unsetFortranEnvironment()
     unset old_prgenv
 }
 
+get_fcompiler_cmd()
+{
+    local __resultvar=$1
+    local __compiler=$2
+    myresult="gfortran"
+
+    if [[ "$__resultvar" ]]; then
+        eval $__resultvar="'$myresult'"
+    else
+        echo "$myresult"
+    fi
+}
+
+
+export -f setFortranEnvironment
+export -f unsetFortranEnvironment
+export -f unsetCppEnvironment
+export -f setupDefaults
+export -f setCppEnvironment
+export -f get_fcompiler_cmd

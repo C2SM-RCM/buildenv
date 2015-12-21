@@ -21,7 +21,6 @@ createModuleCheckPoint()
     writeModuleEnv ${previous_module_tmp}
     module purge
 }
-
 restoreModuleCheckPoint()
 {
     module purge
@@ -75,6 +74,23 @@ setupDefaults()
         else
             fcompiler_cmd="ftn"
         fi
+    fi
+}
+
+get_fcompiler_cmd()
+{
+    local __resultvar=$1
+    local __compiler=$2
+    if [ "${compiler}" == "gnu" ] ; then
+        myresult="gfortran"
+    else
+        myresult="ftn"
+    fi
+
+    if [[ "$__resultvar" ]]; then
+        eval $__resultvar="'$myresult'"
+    else
+        echo "$myresult"
     fi
 }
 
@@ -181,36 +197,42 @@ setFortranEnvironment()
     
     case "${compiler}" in
     cray )
-        # Copied from
-        # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.cce
-
+        # Provided by CSCS
+        cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # Generated with the build script
+            # implicit module purge
+            module load craype-haswell
+            module load craype-accel-nvidia35
+            module load PrgEnv-cray/15.10_cuda_7.0
+            module load cmake/3.1.3
+            module swap cce/8.4.0a
+            module unload mvapich2_cce
+            module load cray-libsci_acc/3.3.0
+            module load mvapich2gdr_gnu/2.1_cuda_7.0
+            module load cray-netcdf/4.3.2
+            module load cray-hdf5/1.8.13
+            module load GCC/4.9.3-binutils-2.25
+EOF
 
         ;;
     gnu )
-        # Copied from
-        # https://github.com/eth-cscs/mchquickstart/blob/master/mpicuda/readme.gnu
-        echo "GNU Fortran is not supported at the moment, forcing cray"
+        cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # Generated with the build script
+            # implicit module purge
+            module load craype-haswell
+            module load PrgEnv-gnu/15.11_cuda_7.0_gdr
+            module load cmake/3.1.3
+            module unload MVAPICH2
+            module unload gmvapich2
+            module load netCDF-Fortran
+            module load HDF5
+EOF
         ;;
     * )
-        echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
+        echo "ERROR: ${compiler} Unsupported compiler encountered in setCppEnvironment" 1>&2
         exit 1
     esac
-   
-    cat > $ENVIRONMENT_TEMPFILE <<-EOF
-        # Generated with the build script
-        # implicit module purge
-        module load craype-haswell
-        module load craype-accel-nvidia35
-        module load PrgEnv-cray/15.10_cuda_7.0
-        module load cmake/3.1.3
-        module swap cce/8.4.0a
-        module unload mvapich2_cce
-        module load cray-libsci_acc/3.3.0
-        module load mvapich2gdr_gnu/2.1_cuda_7.0
-        module load cray-netcdf/4.3.2
-        module load cray-hdf5/1.8.13
-        module load GCC/4.9.3-binutils-2.25
-EOF
+    
     module purge
     source $ENVIRONMENT_TEMPFILE
 
@@ -236,4 +258,13 @@ unsetFortranEnvironment()
     export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
     unset OLD_LD_LIBRARY_PATH
 }
+
+
+export -f setFortranEnvironment
+export -f createModuleCheckPoint
+export -f writeModuleEnv
+export -f setupDefaults
+export -f get_fcompiler_cmd 
+export -f unsetFortranEnvironment
+export -f restoreModuleCheckPoint
 

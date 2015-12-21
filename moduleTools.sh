@@ -153,19 +153,15 @@ writeModuleList()
         touch ${modfile}
         module list -t 2>&1 | grep -v alps | grep -v '^- Package' | grep -v '^Currently Loaded' | sed 's/^/module load /g' > ${modfile}
 	  
-        # Workaround 
+        # Workaround for machines that store the modules in a predefined list
+        # such as kesch
         if [[ -n "$ENVIRONMENT_TEMPFILE" ]] ; then
-                #     cat ${modfile} | egrep -v "module load cce\/" > /tmp/tmp.${host}.${user}.$$
-                #     compilo=`cat ${modfile} | egrep "module load cce\/" | sed 's/module load/module swap/g'`
-                #     echo "${compilo}" >> /tmp/tmp.${host}.${user}.$$
-                #     /bin/mv -f /tmp/tmp.${host}.${user}.$$ ${modfile}
-                # else
-                cp $ENVIRONMENT_TEMPFILE ${modfile}
+            cp $ENVIRONMENT_TEMPFILE ${modfile}
         else 
             if [[ -z ${host} ]]; then
                 exitError 654 ${LINENO} "host is not defined"
             fi
-	  # workaround for Todi, Daint, and Lema
+	        # workaround for Todi, Daint, and Lema
             if [ "${host}" == "lema" -o "${host}" == "todi" -o "${host}" == "daint" ] ; then
                 cat ${modfile} | egrep -v "module load cce\/|module load gcc\/|module load pgi\/" > /tmp/tmp.${host}.${user}.$$
                 compilo=`cat ${modfile} | egrep "module load cce\/|module load gcc\/|module load pgi\/" | sed 's/module load/module swap/g'`

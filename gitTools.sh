@@ -137,7 +137,7 @@ function test_functions {
     echo Status: $(git_show_repository_status "${path}")
     echo Repository?: $(git_is_repository "${path}")
     echo Info: $(git_info "${path}")
-  	echo Info no repo: $(git_info "/")
+    echo Info no repo: $(git_info "/")
 }
 
 export -f git_show_origin

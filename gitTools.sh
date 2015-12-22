@@ -36,7 +36,7 @@ function git_show_branch {
     if [ -z "${path}" ] ; then
         path=$(pwd)
     fi
-    echo $(git -C "${path}" branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
+    echo $(git -C "${path}" branch 2> /dev/null | sed -n '/^\*/s/^\* //p')
 }
 
 # Show all the branch information and where the head is pointing 
@@ -55,7 +55,7 @@ function git_repository_is_clean {
     if [ -z "${path}" ] ; then
         path=$(pwd)
     fi
-    git -C "${path}" diff --quiet 2>/dev/null >&2 
+    git -C "${path}" diff --quiet &> /dev/null 
 }
 
 # Determines the status of a repository
@@ -79,7 +79,7 @@ function git_is_repository {
     if [ -z "${path}" ] ; then
         path=$(pwd)
     fi
-    git -C "${path}" rev-parse --is-inside-work-tree 2>/dev/null >&2
+    git -C "${path}" rev-parse --is-inside-work-tree &> /dev/null
 }
 
 # Show if path is a repository

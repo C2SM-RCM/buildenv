@@ -3,17 +3,17 @@
 function git_show_origin {
     path=$1
     if [ -z "${path}" ] ; then
-    	path=$(pwd)
+        path=$(pwd)
     fi
     echo $(git -C "${path}" config --get remote.origin.url)
- }
+}
 
 # Show the revision
 # echoes cf28a6f
 function git_show_revision {
     path=$1
     if [ -z "${path}" ] ; then
-    	path=$(pwd)
+        path=$(pwd)
     fi
     echo $(git -C "${path}" rev-parse --short HEAD)
 }
@@ -23,7 +23,7 @@ function git_show_revision {
 function git_show_checkindate {
     path=$1
     if [ -z "${path}" ] ; then
-    	path=$(pwd)
+        path=$(pwd)
     fi
     revision=$(git_show_revision "${path}")
     echo $(git -C "${path}" show -s --format=%ci ${revision})
@@ -32,9 +32,9 @@ function git_show_checkindate {
 # Show the current branch
 # echoes buildenv
 function git_show_branch {
-	path=$1
+    path=$1
     if [ -z "${path}" ] ; then
-    	path=$(pwd)
+        path=$(pwd)
     fi
     echo $(git -C "${path}" branch 2>/dev/null| sed -n '/^\*/s/^\* //p')
 }
@@ -42,9 +42,9 @@ function git_show_branch {
 # Show all the branch information and where the head is pointing 
 # echoes (HEAD -> buildenv, origin/buildenv)
 function git_show_branch_all {
-	path=$1
+    path=$1
     if [ -z "${path}" ] ; then
-    	path=$(pwd)
+        path=$(pwd)
     fi
     echo $(git -C "${path}" log -n 1 --pretty=%d HEAD)
 }
@@ -55,7 +55,7 @@ function git_repository_is_clean {
     if [ -z "${path}" ] ; then
         path=$(pwd)
     fi
-	git -C "${path}" diff --quiet 2>/dev/null >&2 
+    git -C "${path}" diff --quiet 2>/dev/null >&2 
 }
 
 # Determines the status of a repository
@@ -66,9 +66,9 @@ function git_show_repository_status {
         path=$(pwd)
     fi
     if git_repository_is_clean "${path}" ; then
-    	echo "clean"
+        echo "clean"
     else
-    	echo "dirty"
+        echo "dirty"
     fi
 }
 
@@ -91,9 +91,9 @@ function git_repository {
     fi
 
     if git_is_repository "${path}" ; then
-    	echo "true"
+        echo "true"
     else
-    	echo "false"
+        echo "false"
     fi
 }
 
@@ -108,18 +108,18 @@ function git_info {
         path=$(pwd)
     fi
     if ! git_is_repository "${path}" ; then
-    	echo "No git repository"
-    	exit 1
+        echo "No git repository"
+        exit 1
     fi
 
-	revision=$(git_show_revision "${path}")
-	branch=$(git_show_branch "${path}")
-	origin=$(git_show_origin "${path}")
-	dirty=""
-	if ! git_repository_is_clean "${path}" ; then
-		dirty=" ($(git_repository_status ${path}))"
-	fi
-	echo "Rev ${revision}${dirty} on ${branch} from ${origin}"
+    revision=$(git_show_revision "${path}")
+    branch=$(git_show_branch "${path}")
+    origin=$(git_show_origin "${path}")
+    dirty=""
+    if ! git_repository_is_clean "${path}" ; then
+      dirty=" ($(git_repository_status ${path}))"
+  fi
+  echo "Rev ${revision}${dirty} on ${branch} from ${origin}"
 }
 
 # Function to test the implementation

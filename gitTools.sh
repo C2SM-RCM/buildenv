@@ -60,7 +60,7 @@ function git_repository_is_clean {
 
 # Determines the status of a repository
 # echoes clean or dirty
-function git_repository_status {
+function git_show_repository_status {
     path=$1
     if [ -z "${path}" ] ; then
         path=$(pwd)
@@ -122,7 +122,7 @@ function git_info {
 	echo "Rev ${revision}${dirty} on ${branch} from ${origin}"
 }
 
-
+# Function to test the implementation
 function test_functions {
     path=$1
     if [ -z "${path}" ] ; then
@@ -134,13 +134,11 @@ function test_functions {
     echo Check in date: $(git_show_checkindate "${path}")
     echo Branch: $(git_show_branch "${path}")
     echo Branch all: $(git_show_branch_all "${path}")
-    echo Status: $(git_repository_status "${path}")
+    echo Status: $(git_show_repository_status "${path}")
     echo Repository?: $(git_is_repository "${path}")
     echo Info: $(git_info "${path}")
   	echo Info no repo: $(git_info "/")
 }
-
-test_functions
 
 export -f git_show_origin
 export -f git_show_revision
@@ -148,7 +146,7 @@ export -f git_show_checkindate
 export -f git_show_branch
 export -f git_show_branch_all
 export -f git_repository_is_clean
-export -f git_repository_status
+export -f git_show_repository_status
 export -f git_is_repository
 export -f git_repository
 export -f git_info

@@ -129,15 +129,15 @@ function test_functions {
         path=$(pwd)
     fi
 
-    echo Origin: $(git_show_origin "${path}")
-    echo Revision: $(git_show_revision "${path}")
-    echo Check in date: $(git_show_checkindate "${path}")
-    echo Branch: $(git_show_branch "${path}")
-    echo Branch all: $(git_show_branch_all "${path}")
-    echo Status: $(git_show_repository_status "${path}")
-    echo Repository?: $(git_is_repository "${path}")
-    echo Info: $(git_info "${path}")
-    echo Info no repo: $(git_info "/")
+    echo "Origin       :" $(git_show_origin "${path}")
+    echo "Revision     :" $(git_show_revision "${path}")
+    echo "Check in date:" $(git_show_checkindate "${path}")
+    echo "Branch       :" $(git_show_branch "${path}")
+    echo "Branch all   :" $(git_show_branch_all "${path}")
+    echo "Status       :" $(git_show_repository_status "${path}")
+    echo "Repository?  :" $(git_is_repository "${path}")
+    echo "Info         :" $(git_info "${path}")
+    echo "Info on /    :" $(git_info "/")
 }
 
 export -f git_show_origin

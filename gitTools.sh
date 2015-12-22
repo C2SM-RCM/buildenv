@@ -1,3 +1,7 @@
+###############################################################################
+# Git Helpers for the build environment
+###############################################################################
+
 # Show the origin 
 # echoes git@github.com:pspoerri/cosmo-pompa.git
 function git_show_origin {
@@ -103,7 +107,6 @@ function git_repository {
 # otherwise
 function git_info {
     path=$1
-    
     if [ -z "${path}" ] ; then
         path=$(pwd)
     fi

@@ -120,9 +120,9 @@ function git_info {
     origin=$(git_show_origin "${path}")
     dirty=""
     if ! git_repository_is_clean "${path}" ; then
-      dirty=" ($(git_repository_status ${path}))"
-  fi
-  echo "Rev ${revision}${dirty} on ${branch} from ${origin}"
+        dirty=" ($(git_repository_status ${path}))"
+    fi
+    echo "Rev ${revision}${dirty} on ${branch} from ${origin}"
 }
 
 # Function to test the implementation

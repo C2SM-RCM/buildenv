@@ -32,7 +32,7 @@ function git_repository {
 
 # Check the repository
 function _check_path {
-path=$(_get_path $1)
+    path=$(_get_path $1)
     if ! git_is_repository "${path}" ; then
         echo "Not a git repository"
         exit 1

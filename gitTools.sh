@@ -12,61 +12,6 @@ function _get_path {
     echo "$path"
 }
 
-# Show the origin 
-# echoes git@github.com:pspoerri/cosmo-pompa.git
-function git_show_origin {
-    path=$(_get_path $1)
-    echo $(git -C "${path}" config --get remote.origin.url)
-}
-
-# Show the revision
-# echoes cf28a6f
-function git_show_revision {
-    path=$(_get_path $1)
-    echo $(git -C "${path}" rev-parse --short HEAD)
-}
-
-# Show the check in date of the head
-# echoes 2015-12-21 10:42:20 +0100
-function git_show_checkindate {
-    path=$(_get_path $1)
-    revision=$(git_show_revision "${path}")
-    echo $(git -C "${path}" show -s --format=%ci ${revision})
-}
-
-# Show the current branch
-# echoes buildenv
-function git_show_branch {
-    path=$(_get_path $1)
-    echo $(git -C "${path}" rev-parse --abbrev-ref HEAD)
-}
-
-# Show all the branch information and where the head is pointing 
-# echoes (HEAD -> buildenv, origin/buildenv)
-function git_show_branch_all {
-    path=$(_get_path $1)
-    echo $(git -C "${path}" log -n 1 --pretty=%d HEAD)
-}
-
-# Determines if the branch is dirty or not. 
-function git_repository_is_clean {
-    path=$(_get_path $1)
-    # --quiet will invoke --exit-code which makes git exit with code 1 if there are 
-    # changes in the repository.
-    git -C "${path}" diff --quiet &> /dev/null 
-}
-
-# Determines the status of a repository
-# echoes clean or dirty
-function git_show_repository_status {
-    path=$(_get_path $1)
-    if git_repository_is_clean "${path}" ; then
-        echo "clean"
-    else
-        echo "dirty"
-    fi
-}
-
 # Check if path is a git repository
 # returns a unix 0, 1 return code depending on the status
 function git_is_repository {
@@ -85,16 +30,84 @@ function git_repository {
     fi
 }
 
+# Check the repository
+function _check_path {
+path=$(_get_path $1)
+    if ! git_is_repository "${path}" ; then
+        echo "Not a git repository"
+        exit 1
+    fi
+}
+
+# Show the origin 
+# echoes git@github.com:pspoerri/cosmo-pompa.git
+function git_show_origin {
+    path=$(_get_path $1)
+    if ! _check_path $1 ; then exit 1; fi
+    echo $(git -C "${path}" config --get remote.origin.url)
+}
+
+# Show the revision
+# echoes cf28a6f
+function git_show_revision {
+    path=$(_get_path $1)
+    if ! _check_path $1 ; then exit 1; fi
+    echo $(git -C "${path}" rev-parse --short HEAD)
+}
+
+# Show the check in date of the head
+# echoes 2015-12-21 10:42:20 +0100
+function git_show_checkindate {
+    path=$(_get_path $1)
+    if ! _check_path $1 ; then exit 1; fi
+    revision=$(git_show_revision "${path}")
+    echo $(git -C "${path}" show -s --format=%ci ${revision})
+}
+
+# Show the current branch
+# echoes buildenv
+function git_show_branch {
+    path=$(_get_path $1)
+    if ! _check_path $1 ; then exit 1; fi
+    echo $(git -C "${path}" rev-parse --abbrev-ref HEAD)
+}
+
+# Show all the branch information and where the head is pointing 
+# echoes (HEAD -> buildenv, origin/buildenv)
+function git_show_branch_all {
+    path=$(_get_path $1)
+    if ! _check_path $1 ; then exit 1; fi
+    echo $(git -C "${path}" log -n 1 --pretty=%d HEAD)
+}
+
+# Determines if the branch is dirty or not. 
+function git_repository_is_clean {
+    path=$(_get_path $1)
+    if ! _check_path $1 ; then exit 1; fi
+    # --quiet will invoke --exit-code which makes git exit with code 1 if there are 
+    # changes in the repository.
+    git -C "${path}" diff --quiet &> /dev/null 
+}
+
+# Determines the status of a repository
+# echoes clean or dirty
+function git_show_repository_status {
+    path=$(_get_path $1)
+    if ! _check_path $1 ; then exit 1; fi
+    if git_repository_is_clean "${path}" ; then
+        echo "clean"
+    else
+        echo "dirty"
+    fi
+}
+
 # Pretty print git info
 # echoes "No git repository" if we are not dealing with a git repository
 # echoes "Rev cf28a6f (dirty) on buildenv from git@github.com:pspoerri/cosmo-pompa.git"
 # otherwise
 function git_info {
     path=$(_get_path $1)
-    if ! git_is_repository $1 ; then
-        echo "No git repository"
-        exit 1
-    fi
+    if ! _check_path $1 ; then exit 1; fi
     revision=$(git_show_revision "${path}")
     branch=$(git_show_branch "${path}")
     origin=$(git_show_origin "${path}")
@@ -121,7 +134,14 @@ function test_functions {
     echo ""
     echo "Testing a unversioned folder"
     echo "---------------------------------------------------------------------"
-    echo "Info on /    :" $(git_info "/")
+    echo "Origin       :" $(git_show_origin /)
+    echo "Revision     :" $(git_show_revision /)
+    echo "Check in date:" $(git_show_checkindate /)
+    echo "Branch       :" $(git_show_branch /)
+    echo "Branch all   :" $(git_show_branch_all /)
+    echo "Status       :" $(git_show_repository_status /)
+    echo "In repository:" $(git_repository /)
+    echo "Info         :" $(git_info /)
     echo ""
     echo "Checking without arguments"
     echo "---------------------------------------------------------------------"

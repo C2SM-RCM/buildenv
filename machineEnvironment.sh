@@ -64,25 +64,6 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     mpilaunch="aprun"
     installdir=/project/c01/install/daint
     testdata=/scratch/dora/jenkins/data
-elif [ "`hostname | grep jupiter`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    export host="jupiter"
-    queue="batch"
-    nthreads=8
-    mpilaunch="aprun"
-    installdir="???"
-    testdata="???"
-elif [ "`hostname | grep castor`" != "" ] ; then
-    . /etc/bashrc
-    . /apps/castor/Modules/default/init/bash
-    module load slurm
-    export host="castor"
-    queue="normal"
-    nthreads=6
-    mpilaunch="mpiexec"
-    installdir=/project/c01/install/${host}
-    testdata=/scratch/castor/jenkins/castor/data
 elif [ "`hostname | grep santis`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash

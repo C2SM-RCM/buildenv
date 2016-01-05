@@ -115,7 +115,7 @@ elif [ "`hostname | grep bertie`" != "" ] ; then
     installdir="/home/spiros/Work/install"
     testdata="/home/spiros/Work/install/testdata"
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
-    . /etc/bashrc
+    . /etc/bashrc && true # In some conditions the omitted true triggered an error.
     . /usr/Modules/3.2.10/init/bash
     . /etc/profile.d/cray_pe.sh
     export host="kesch"

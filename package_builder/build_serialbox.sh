@@ -45,7 +45,7 @@ for c_ in ${compilers[@]}; do
     export compiler=${c_}
 
     if [[ ${install_local} == "yes" ]]; then
-        install_path_="${base_path}/install/${c_c}/"
+        install_path_="${base_path}/install/${c_}/"
         install_args="-i ${install_path_}"
     else
         install_path_="${install_dir}/serialbox/${c_}/"

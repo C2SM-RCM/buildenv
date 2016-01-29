@@ -55,6 +55,5 @@ if [ -f $package_buildscript ] ; then
     echo "Building specific package: ${package_buildscript} $fwd_args"
     ${package_buildscript} $fwd_args
 else
-    echo ${package_buildscript}
     exitError 2221 ${LINENO} "Package ${package} not known"
 fi

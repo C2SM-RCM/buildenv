@@ -40,14 +40,14 @@ writeModuleList ${base_path}/modules.log loaded "FORTRAN MODULES" ${base_path}/m
 if [[ ${install_local} == "yes" ]]; then
     install_args="--local"
 else
-    install_args="-i ${install_dir}/sertools/${c_}/"
+    install_args="-i ${install_dir}/serialbox/${c_}/"
 fi
 
 for c_ in ${compilers[@]}; do
     if [[ ${install_local} == "yes" ]]; then
         install_args="--local"
     else
-        install_args="-i ${install_dir}/sertools/${c_}/"
+        install_args="-i ${install_dir}/serialbox/${c_}/"
     fi
     get_fcompiler_cmd fcomp_cmd ${c_}
     if [[ -z ${fcomp_cmd} ]]; then

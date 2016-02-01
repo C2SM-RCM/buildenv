@@ -54,7 +54,7 @@ setupDefaults()
     # # MVAPICH
     export MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
     # # BOOST
-    export BOOST_PATH=/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10/include
+    export BOOST_INCLUDE_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10/include"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -138,7 +138,7 @@ EOF
     dycore_gpp='g++'
     dycore_gcc='gcc'
     cuda_gpp='g++'
-    boost_path="${BOOST_PATH}"
+    boost_path="${BOOST_INCLUDE_PATH}"
     #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
 

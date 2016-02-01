@@ -1,4 +1,4 @@
-#!/bin/bash -f
+#!/usr/bin/env bash
 
 exitError()
 {
@@ -8,10 +8,9 @@ exitError()
     exit $1
 }
 
-
 TEMP=$@
 eval set -- "$TEMP --"
-
+fwd_args=""
 while true; do
     case "$1" in
         --dir|-d) package_basedir=$2; shift 2;;
@@ -30,10 +29,8 @@ if [[ -z ${install_dir} ]]; then
 fi
 
 echo $@
-
 base_path=$PWD
 setupDefaults
-
 
 if [[ ${install_local} == "yes" ]]; then
     install_args="--local"
@@ -42,6 +39,7 @@ else
 fi
 
 for c_ in ${compilers[@]}; do
+    echo "Compiling and installing for $c_"
     export compiler=${c_}
 
     if [[ ${install_local} == "yes" ]]; then
@@ -66,6 +64,4 @@ for c_ in ${compilers[@]}; do
     cp modules_fortran.env ${install_path_}/modules.env
     unsetFortranEnvironment
 done
-
-
 

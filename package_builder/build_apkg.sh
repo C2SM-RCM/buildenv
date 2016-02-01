@@ -1,4 +1,4 @@
-#!/bin/bash -f
+#!/usr/bin/env bash
 
 exitError()
 {
@@ -53,7 +53,8 @@ fwd_args="${fwd_args} -d ${package_basedir} -i ${installdir}"
 package_buildscript="${BASEPATH_SCRIPT}/build_${package}.sh"
 if [ -f $package_buildscript ] ; then
     echo "Building specific package: ${package_buildscript} $fwd_args"
-    ${package_buildscript} $fwd_args
+    . ${package_buildscript} $fwd_args
 else
     exitError 2221 ${LINENO} "Package ${package} not known"
 fi
+

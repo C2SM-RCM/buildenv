@@ -229,7 +229,7 @@ EOF
 EOF
         ;;
     * )
-        echo "ERROR: ${compiler} Unsupported compiler encountered in setCppEnvironment" 1>&2
+        echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
     

@@ -27,6 +27,8 @@ setupDefaults()
     targets=(cpu)
     compilers=(gnu pgi cray)
     fcompiler_cmds=(ftn)
+    
+    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -118,7 +120,7 @@ setCppEnvironment()
     dycore_gpp='CC'
     dycore_gcc='cc'
     cuda_gpp='g++'
-    boost_path=/apps/todi/boost/1.49/include/boost-1.49.0
+    boost_path="${BOOST_PATH}/include"
     use_mpi_compiler=OFF
     mpi_path=${CRAY_MPICH2_DIR}
 }

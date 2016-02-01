@@ -1,4 +1,4 @@
-#!/bin/bash -f
+#!/usr/bin/env bash
 
 exitError()
 {
@@ -8,10 +8,9 @@ exitError()
     exit $1
 }
 
-
 TEMP=$@
 eval set -- "$TEMP --"
-
+fwd_args=""
 while true; do
     case "$1" in
         --dir|-d) package_basedir=$2; shift 2;;
@@ -30,32 +29,39 @@ if [[ -z ${install_dir} ]]; then
 fi
 
 echo $@
-
 base_path=$PWD
 setupDefaults
-setFortranEnvironment
-writeModuleList ${base_path}/modules.log loaded "FORTRAN MODULES" ${base_path}/modules_fortran.env
-
 
 if [[ ${install_local} == "yes" ]]; then
     install_args="--local"
 else
-    install_args="-i ${install_dir}/sertools/${c_}/"
+    install_args="-i ${install_dir}/serialbox/${c_}/"
 fi
 
 for c_ in ${compilers[@]}; do
+    echo "Compiling and installing for $c_"
+    export compiler=${c_}
+
     if [[ ${install_local} == "yes" ]]; then
-        install_args="--local"
+        install_path_="${base_path}/install/${c_}/"
+        install_args="-i ${install_path_}"
     else
-        install_args="-i ${install_dir}/sertools/${c_}/"
+        install_path_="${install_dir}/serialbox/${c_}/"
+        install_args="-i ${install_path_}/"
     fi
+
+    setFortranEnvironment
+    writeModuleList ${base_path}/modules.log loaded "FORTRAN MODULES" ${base_path}/modules_fortran.env
+
     get_fcompiler_cmd fcomp_cmd ${c_}
     if [[ -z ${fcomp_cmd} ]]; then
         exitError 3387 ${LINENO} "could not set the fortran compiler you are building with"
     fi
     echo "Building for fortran compiler: ${fcomp_cmd}"
     ${package_basedir}/test/build.sh --fcompiler ${fcomp_cmd} ${install_args} -z ${fwd_args}
+    
+    # Copy module files
+    cp modules_fortran.env ${install_path_}/modules.env
+    unsetFortranEnvironment
 done
-
-unsetFortranEnvironment
 

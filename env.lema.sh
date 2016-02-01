@@ -28,7 +28,7 @@ setupDefaults()
     compilers=(gnu pgi cray)
     fcompiler_cmds=(ftn)
     
-    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10/"
+    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10"
 
     # default options
     if [ -z "${target}" ] ; then

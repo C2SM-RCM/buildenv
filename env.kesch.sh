@@ -54,7 +54,7 @@ setupDefaults()
     # # MVAPICH
     export MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
     # # BOOST
-    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10/"
+    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10"
 
     # default options
     if [ -z "${target}" ] ; then

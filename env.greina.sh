@@ -28,7 +28,7 @@ setupDefaults()
     compilers=(gnu cray)
     fcompiler_cmds=(gfortran)
 
-    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10"
+    export BOOST_PATH="/cm/shared/apps/boost/1.56_gcc4.8.4"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -164,7 +164,7 @@ setFortranEnvironment()
     dycore_gpp='g++'
     dycore_gcc='gcc'
     cuda_gpp='g++'
-    boost_path=/users/cosuna/software/boost_1_49_0
+    boost_path="${BOOST_PATH}/include"
     use_mpi_compiler=OFF
     mpi_path=${CRAY_MPICH2_DIR}
     old_prgenv="none"

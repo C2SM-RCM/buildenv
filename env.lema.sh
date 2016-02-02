@@ -117,12 +117,16 @@ setCppEnvironment()
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
+
     dycore_gpp='CC'
     dycore_gcc='cc'
     cuda_gpp='g++'
     boost_path="${BOOST_PATH}/include"
     use_mpi_compiler=OFF
     mpi_path=${CRAY_MPICH2_DIR}
+
+    export CXX=CC
+    export CC=cc
 }
 
 # This function unloads modules and removes variables for compiling in C++
@@ -170,6 +174,9 @@ unsetCppEnvironment()
     unset boost_path
     unset use_mpi_compiler
     unset mpi_path
+
+    unset CXX
+    unset CC
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part
@@ -220,6 +227,8 @@ setFortranEnvironment()
     esac
 
     # standard modules (part 2)
+    export CXX=CC
+    export CC=cc
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -267,6 +276,9 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
+
+    unset CXX
+    unset CC
 }
 
 export -f setFortranEnvironment

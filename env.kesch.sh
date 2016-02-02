@@ -151,6 +151,9 @@ EOF
     
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
+
+    export CXX=g++
+    export CC=gcc
 }
 
 # This function unloads modules and removes variables for compiling in C++
@@ -177,6 +180,9 @@ unsetCppEnvironment()
 
     export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
     unset OLD_LD_LIBRARY_PATH
+
+    unset CXX
+    unset CC
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part
@@ -213,7 +219,7 @@ setFortranEnvironment()
             module load cray-hdf5/1.8.13
             module load GCC/4.9.3-binutils-2.25
 EOF
-
+        export FC=ftn
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -227,6 +233,7 @@ EOF
             module load netCDF-Fortran
             module load HDF5
 EOF
+        export FC=gfortran
         ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setCppEnvironment" 1>&2
@@ -238,6 +245,10 @@ EOF
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
+
+    # We have gcc for both gnu and cray environments
+    export CXX=g++
+    export CC=gcc
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -257,6 +268,10 @@ unsetFortranEnvironment()
 
     export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
     unset OLD_LD_LIBRARY_PATH
+
+    unset CXX
+    unset CC
+    unset FC
 }
 
 

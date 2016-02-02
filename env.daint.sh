@@ -124,6 +124,9 @@ setCppEnvironment()
     boost_path="${BOOST_PATH}/include"
     use_mpi_compiler=OFF
     mpi_path=${CRAY_MPICH2_DIR}
+
+    export CXX=g++
+    export CC=gcc
 }
 
 # This function unloads modules and removes variables for compiling in C++
@@ -172,6 +175,9 @@ unsetCppEnvironment()
     unset boost_path
     unset use_mpi_compiler
     unset mpi_path
+
+    unset CXX
+    unset CC
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part
@@ -205,10 +211,16 @@ setFortranEnvironment()
     cray )
         module unload cce
         module load cce/8.4.0
+        export CXX=CC
+        export CC=cc
+        export FC=ftn
         ;;
     gnu )
         module unload gcc
         module load gcc/4.8.2
+        export CXX=g++
+        export CC=gcc
+        export FC=gfortran
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -259,6 +271,10 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
+
+    unset CXX
+    unset CC
+    unset FC
 }
 
 export -f setFortranEnvironment

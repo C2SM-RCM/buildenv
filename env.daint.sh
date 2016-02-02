@@ -213,12 +213,14 @@ setFortranEnvironment()
         module load cce/8.4.0
         export CXX=CC
         export CC=cc
+        export FC=ftn
         ;;
     gnu )
         module unload gcc
         module load gcc/4.8.2
         export CXX=g++
         export CC=gcc
+        export FC=gfortran
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -269,9 +271,10 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
-    
+
     unset CXX
     unset CC
+    unset FC
 }
 
 export -f setFortranEnvironment

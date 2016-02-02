@@ -171,6 +171,7 @@ setFortranEnvironment()
 
     export CXX=g++
     export CC=gcc
+    export FC=gfortran
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -195,6 +196,7 @@ unsetFortranEnvironment()
 
     unset CXX
     unset CC
+    unset FC
 }
 
 get_fcompiler_cmd()

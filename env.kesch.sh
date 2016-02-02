@@ -219,7 +219,7 @@ setFortranEnvironment()
             module load cray-hdf5/1.8.13
             module load GCC/4.9.3-binutils-2.25
 EOF
-
+        export FC=ftn
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -233,6 +233,7 @@ EOF
             module load netCDF-Fortran
             module load HDF5
 EOF
+        export FC=gfortran
         ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setCppEnvironment" 1>&2
@@ -270,6 +271,7 @@ unsetFortranEnvironment()
 
     unset CXX
     unset CC
+    unset FC
 }
 
 

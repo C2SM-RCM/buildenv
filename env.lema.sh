@@ -177,6 +177,7 @@ unsetCppEnvironment()
 
     unset CXX
     unset CC
+    unset FC
 }
 
 # This function loads modules and sets up variables for compiling the Fortran part
@@ -209,17 +210,20 @@ setFortranEnvironment()
         module load cray-mpich/6.2.2
         module load netcdf
         module swap xt-asyncpe xt-asyncpe/5.18
+        export FC=ftn
         ;;
     pgi )
         module unload pgi
         module load pgi/13.6.0
         module load xt-mpich2/5.4.4
         module load netcdf
+        export FC=ftn
         ;;
     gnu )
         module unload gcc
         module load gcc/4.8.2
         module load cray-netcdf
+        export FC=gfortran
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -279,6 +283,7 @@ unsetFortranEnvironment()
 
     unset CXX
     unset CC
+    unset FC
 }
 
 export -f setFortranEnvironment

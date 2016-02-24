@@ -35,6 +35,7 @@ restoreModuleCheckPoint()
 #   targets           list of possible targets (e.g. gpu, cpu)
 #   compilers         list of possible compilers for Fortran parts
 #   target            default target
+#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)        
 #   compiler          default compiler to use for Fortran parts
 #   debug             build in debugging mode (yes/no)
 #   cleanup           clean before build (yes/no)
@@ -104,6 +105,7 @@ get_fcompiler_cmd()
 #   dycore_gpp        C++ compiler for dycore
 #   dycore_gcc        C compiler for dycore
 #   cuda_gpp          C++ used by nvcc as backend
+#   boost_path        path to the Boost installation to use (deprecated, see BOOST_PATH)
 #   use_mpi_compiler  use MPI compiler wrappers?
 #
 setCppEnvironment()
@@ -137,6 +139,7 @@ EOF
     dycore_gpp='g++'
     dycore_gcc='gcc'
     cuda_gpp='g++'
+    boost_path="${BOOST_PATH}/include"
     #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
 
@@ -171,6 +174,7 @@ unsetCppEnvironment()
     unset dycore_gpp
     unset dycore_gcc
     unset cuda_gpp
+    unset boost_path
     unset use_mpi_compiler
 
     unset old_prgenv

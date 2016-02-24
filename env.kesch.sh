@@ -104,7 +104,6 @@ get_fcompiler_cmd()
 #   dycore_gpp        C++ compiler for dycore
 #   dycore_gcc        C compiler for dycore
 #   cuda_gpp          C++ used by nvcc as backend
-#   boost_path        path to the Boost installation to use
 #   use_mpi_compiler  use MPI compiler wrappers?
 #
 setCppEnvironment()
@@ -138,7 +137,6 @@ EOF
     dycore_gpp='g++'
     dycore_gcc='gcc'
     cuda_gpp='g++'
-    boost_path="${BOOST_PATH}/include"
     #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
 
@@ -173,7 +171,6 @@ unsetCppEnvironment()
     unset dycore_gpp
     unset dycore_gcc
     unset cuda_gpp
-    unset boost_path
     unset use_mpi_compiler
 
     unset old_prgenv

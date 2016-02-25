@@ -118,12 +118,7 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
     . /usr/Modules/3.2.10/init/bash
     . /etc/profile.d/cray_pe.sh
-#XL_TEST: this is only used until Kesch kerene upgrade is completed
-    if [ "`hostname | grep keschln-0003`" ] ; then
-	export host="kesch-test"
-    else
 	export host="kesch"
-    fi
     queue="debug"
     nthreads=1
     mpilaunch="srun"

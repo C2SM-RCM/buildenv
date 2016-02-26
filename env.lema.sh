@@ -30,7 +30,7 @@ setupDefaults()
     fcompiler_cmds=(ftn)
     
     # Temporary version from Luca Marsella
-    export BOOST_PATH="/apps/albis/sandbox/lucamar/lib/boost/gnu"
+    export BOOST_PATH="/apps/albis/boost/1.60.0/gnu_482"
 
     # default options
     if [ -z "${target}" ] ; then

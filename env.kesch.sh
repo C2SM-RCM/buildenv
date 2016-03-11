@@ -35,6 +35,7 @@ restoreModuleCheckPoint()
 #   targets           list of possible targets (e.g. gpu, cpu)
 #   compilers         list of possible compilers for Fortran parts
 #   target            default target
+#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)        
 #   compiler          default compiler to use for Fortran parts
 #   debug             build in debugging mode (yes/no)
 #   cleanup           clean before build (yes/no)
@@ -54,7 +55,7 @@ setupDefaults()
     # # MVAPICH
     export MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
     # # BOOST
-    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10"
+    export BOOST_PATH="/apps/escha/UES/RH6.7/easybuild/software/Boost/1.49.0-gmvolf-15.11-Python-2.7.10"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -104,7 +105,7 @@ get_fcompiler_cmd()
 #   dycore_gpp        C++ compiler for dycore
 #   dycore_gcc        C compiler for dycore
 #   cuda_gpp          C++ used by nvcc as backend
-#   boost_path        path to the Boost installation to use
+#   boost_path        path to the Boost installation to use (deprecated, see BOOST_PATH)
 #   use_mpi_compiler  use MPI compiler wrappers?
 #
 setCppEnvironment()

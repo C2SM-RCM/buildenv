@@ -16,6 +16,7 @@
 #   targets           list of possible targets (e.g. gpu, cpu)
 #   compilers         list of possible compilers for Fortran parts
 #   target            default target
+#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)        
 #   compiler          default compiler to use for Fortran parts
 #   debug             build in debugging mode (yes/no)
 #   cleanup           clean before build (yes/no)
@@ -28,7 +29,8 @@ setupDefaults()
     compilers=(gnu pgi cray)
     fcompiler_cmds=(ftn)
     
-    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10"
+    # Temporary version from Luca Marsella
+    export BOOST_PATH="/apps/albis/boost/1.60.0/gnu_482"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -75,7 +77,7 @@ get_fcompiler_cmd()
 #   dycore_gpp        C++ compiler for dycore
 #   dycore_gcc        C compiler for dycore
 #   cuda_gpp          C++ used by nvcc as backend
-#   boost_path        path to the Boost installation to use
+#   boost_path        path to the Boost installation to use (deprecated, see BOOST_PATH)
 #   use_mpi_compiler  use MPI compiler wrappers?
 #   mpi_path          path to the MPI installation to use
 #

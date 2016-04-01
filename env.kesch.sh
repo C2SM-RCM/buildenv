@@ -70,7 +70,11 @@ setupDefaults()
 
     # fortran compiler command
     if [ -z "${fcompiler_cmd}" ] ; then
-        fcompiler_cmd=${FC}
+        if [ "${compiler}" == "gnu" ] ; then
+            fcompiler_cmd="gfortran"
+         else
+            fcompiler_cmd="ftn"
+        fi
     fi
 }
 

@@ -118,7 +118,11 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
     . /usr/Modules/3.2.10/init/bash
     . /etc/profile.d/cray_pe.sh
+    if [ "${NODE_NAME}" == kesch-pgi ] ; then
+	export host="kesch-pgi"
+    else
 	export host="kesch"
+    fi
     queue="debug"
     nthreads=1
     mpilaunch="srun"

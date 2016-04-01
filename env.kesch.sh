@@ -45,7 +45,7 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray)
+    compilers=(gnu cray pgi)
     fcompiler_cmds=(ftn)
 
 
@@ -236,6 +236,16 @@ EOF
 EOF
         export FC=gfortran
         ;;
+    pgi ) 
+        cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # Generated with the build script
+            # implicit module purge
+            module load craype-haswell
+            module load GCC/4.9.3-binutils-2.25
+            module load PrgEnv-pgi/16.3
+EOF
+        export FC=mpif90
+        ;;	
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
@@ -247,7 +257,7 @@ EOF
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
-    # We have gcc for both gnu and cray environments
+    # We have gcc for gnu, cray and pgi environments
     export CXX=g++
     export CC=gcc
 }

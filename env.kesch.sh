@@ -260,6 +260,21 @@ EOF
     # We have gcc for gnu, cray and pgi environments
     export CXX=g++
     export CC=gcc
+
+    # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
+    if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
+	echo "Info : No Cray CCE licence available, setting CRAYLMD_LICENSE_FILE to escha"
+	export CRAYLMD_LICENSE_FILE=27010@escha-mgmt1,27010@escha-mgmt2,27010@escha-login3
+	# Test if the licence is now available otherwise print info message
+	if `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
+	    echo "!! Warning !! No Cray CCE licence available"
+	    echo "Licence usage on kesch:"
+	    klicstat
+	    echo "Licence usage on escha:"
+	    elistat
+	fi
+    fi
+
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts

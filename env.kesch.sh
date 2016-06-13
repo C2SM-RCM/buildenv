@@ -132,6 +132,8 @@ setCppEnvironment()
         module load mvapich2gdr_gnu/2.1_cuda_7.0
         module load GCC/4.9.3-binutils-2.25
         module load cray-libsci_acc/3.3.0
+        export LD_LIBRARY_PATH=/scratch/dipsank/gdr/next-gdr/mvapich2/install/lib:$LD_LIBRARY_PATH
+        export CPATH=/scratch/dipsank/gdr/next-gdr/mvapich2/install/include/:$CPATH
 EOF
    
     module purge
@@ -152,7 +154,7 @@ EOF
     
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-
+    export ENABLE_PERFORMANCE_METERS=OFF
     export CXX=g++
     export CC=gcc
 }
@@ -178,10 +180,10 @@ unsetCppEnvironment()
     unset use_mpi_compiler
 
     unset old_prgenv
-
+    
     export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
     unset OLD_LD_LIBRARY_PATH
-
+    unset ENABLE_PERFORMANCE_METERS
     unset CXX
     unset CC
 }
@@ -219,6 +221,8 @@ setFortranEnvironment()
             module load cray-netcdf/4.3.2
             module load cray-hdf5/1.8.13
             module load GCC/4.9.3-binutils-2.25
+            export LD_LIBRARY_PATH=/scratch/dipsank/gdr/next-gdr/mvapich2/install/lib:$LD_LIBRARY_PATH
+            export CPATH=/scratch/dipsank/gdr/next-gdr/mvapich2/install/include/:$CPATH
 EOF
         export FC=ftn
         ;;

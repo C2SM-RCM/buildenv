@@ -136,7 +136,7 @@ setCppEnvironment()
         export LD_LIBRARY_PATH=$NEXT_GDR/lib:$LD_LIBRARY_PATH
         export CPATH=$NEXT_GDR/include/:$CPATH
         export MPI_C_LIBRARIES=$NEXT_GDR/lib/libmpi.so
-        export MPI_CXX_LIBRARIES=$NEXT_GDR/lib/libmpicxx.so:$MPI_C_LIBRARIES
+        export MPI_CXX_LIBRARIES="$NEXT_GDR/lib/libmpicxx.so;$NEXT_GDR/lib/libmpi.so"
         export MPI_C_INCLUDE_PATH=$NEXT_GDR/include
         export MPI_CXX_INCLUDE_PATH=$NEXT_GDR/include
 EOF

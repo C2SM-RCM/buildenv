@@ -150,6 +150,7 @@ EOF
         dycore_openmp=OFF  # Otherwise, switch off
     fi
     
+    export ENABLE_PERFORMANCE_METERS=OFF
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
@@ -181,7 +182,7 @@ unsetCppEnvironment()
 
     export LD_LIBRARY_PATH=${OLD_LD_LIBRARY_PATH}
     unset OLD_LD_LIBRARY_PATH
-
+    unset ENABLE_PERFORMANCE_METERS
     unset CXX
     unset CC
 }

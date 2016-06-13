@@ -129,16 +129,16 @@ setCppEnvironment()
         # implicit module purge
         module load craype-haswell
         module load craype-network-infiniband
-        module load mvapich2gdr_gnu/2.1_cuda_7.0
+        module load cudatoolkit/7.0.28
         module load GCC/4.9.3-binutils-2.25
         module load cray-libsci_acc/3.3.0
         export NEXT_GDR=/scratch/dipsank/gdr/next-gdr/mvapich2/install
-        export LD_LIBRARY_PATH=$NEXT_GDR/lib/libmpicxx.so:$LD_LIBRARY_PATH
-        export CPATH=$NEXT_GDR/install/include/:$CPATH
-        export MPI_C_LIBRARIES=$NEXT_GDR/lib/libmpi.so
-        export MPI_CXX_LIBRARIES=$NEXT_GDR/lib/libmpichcxx.so:$NEXT_GDR/lib/libmpicxx.so:$MPI_C_LIBRARIES
-        export MPI_C_INCLUDE_PATH=$NEXT_GDR/include
-        export MPI_CXX_INCLUDE_PATH=$NEXT_GDR/include
+        export LD_LIBRARY_PATH=$NEXT_GDR/lib:$LD_LIBRARY_PATH
+        export CPATH=$NEXT_GDR/include/:$CPATH
+        #export MPI_C_LIBRARIES=$NEXT_GDR/lib/libmpi.so
+        #export MPI_CXX_LIBRARIES=$NEXT_GDR/lib/libmpichcxx.so:$NEXT_GDR/lib/libmpicxx.so:$MPI_C_LIBRARIES
+        #export MPI_C_INCLUDE_PATH=$NEXT_GDR/include
+        #export MPI_CXX_INCLUDE_PATH=$NEXT_GDR/include
 EOF
    
     module purge

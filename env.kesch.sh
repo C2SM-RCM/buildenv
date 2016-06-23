@@ -132,7 +132,7 @@ setCppEnvironment()
         module load cudatoolkit/7.0.28
         module load GCC/4.9.3-binutils-2.25
         module load cray-libsci_acc/3.3.0
-        export NEXT_GDR=/scratch/dipsank/gdr/next-gdr/mvapich2/install
+        export NEXT_GDR=/scratch/dipsank/gdr/2.2rc1/mvapich2/install
         export LD_LIBRARY_PATH=$NEXT_GDR/lib:$LD_LIBRARY_PATH
         export CPATH=$NEXT_GDR/include/:$CPATH
         export MPI_C_LIBRARIES=$NEXT_GDR/lib/libmpi.so
@@ -226,8 +226,8 @@ setFortranEnvironment()
             module load cray-netcdf/4.3.2
             module load cray-hdf5/1.8.13
             module load GCC/4.9.3-binutils-2.25
-            export LD_LIBRARY_PATH=/scratch/dipsank/gdr/next-gdr/mvapich2/install/lib:$LD_LIBRARY_PATH
-            export CPATH=/scratch/dipsank/gdr/next-gdr/mvapich2/install/include/:$CPATH
+            export LD_LIBRARY_PATH=/scratch/dipsank/gdr/2.2rc1/mvapich2/install/lib:$LD_LIBRARY_PATH
+            export CPATH=/scratch/dipsank/gdr/2.2rc1/mvapich2/install/include/:$CPATH
 EOF
         export FC=ftn
         ;;

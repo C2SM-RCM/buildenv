@@ -130,7 +130,7 @@ setCppEnvironment()
         module load craype-haswell
         module load craype-network-infiniband
         module load mvapich2gdr_gnu/2.1_cuda_7.0
-        module load GCC/4.9.3-binutils-2.25
+        module load GCC/5.3.0-binutils-2.25 
         module load cray-libsci_acc/3.3.0
 EOF
    
@@ -241,7 +241,7 @@ EOF
             # Generated with the build script
             # implicit module purge
             module load craype-haswell
-            module load GCC/4.9.3-binutils-2.25
+            module load GCC/5.3.0-binutils-2.25 
             module load PrgEnv-pgi/16.3
 EOF
         export FC=mpif90

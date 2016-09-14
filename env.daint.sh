@@ -97,7 +97,7 @@ setCppEnvironment()
     module load gcc/4.8.2
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia35
-        module swap cudatoolkit/7.0.28-1.0502.10742.5.1
+        module swap cudatoolkit
     fi
 
     # Fortran compiler specific modules and setup
@@ -204,7 +204,6 @@ setFortranEnvironment()
     module load cmake
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia35
-        module swap cudatoolkit/7.0.28-1.0502.10742.5.1
     fi
 
     # compiler specific modules

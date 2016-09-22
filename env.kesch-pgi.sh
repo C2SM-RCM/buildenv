@@ -242,7 +242,7 @@ EOF
             # implicit module purge
             module load craype-haswell
             module load GCC/4.9.3-binutils-2.25
-            module load PrgEnv-pgi/16.3
+            module load PrgEnv-pgi/16.7
 EOF
         export FC=mpif90
         ;;	

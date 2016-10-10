@@ -29,7 +29,7 @@ setupDefaults()
     fcompiler_cmds=(ftn)
 
     # Module display boost
-    export BOOST_PATH="/apps/daint/5.2.UP02/boost/1.58.0/gnu_482"
+    export BOOST_PATH="/apps/escha/UES/RH6.7/easybuild/software/Boost/1.49.0-gmvolf-15.11-Python-2.7.10/include/"
 
     # default options
     if [ -z "${target}" ] ; then

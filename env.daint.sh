@@ -29,7 +29,7 @@ setupDefaults()
     fcompiler_cmds=(ftn)
 
     # Module display boost
-    export BOOST_PATH="/apps/daint/5.2.UP02/boost/1.58.0/gnu_482"
+    export BOOST_PATH="/users/jenkins/Code/boost-1.62.0"
 
     # default options
     if [ -z "${target}" ] ; then

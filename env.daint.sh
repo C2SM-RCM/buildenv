@@ -29,7 +29,7 @@ setupDefaults()
     fcompiler_cmds=(ftn)
 
     # Module display boost
-    export BOOST_PATH="/users/spoerrip/Code/boost-1.49.0/"
+    export BOOST_PATH="/users/jenkins/Code/boost-1.49.0"
 
     # default options
     if [ -z "${target}" ] ; then

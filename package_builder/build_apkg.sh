@@ -33,18 +33,18 @@ envloc="${BASEPATH_SCRIPT}/.."
 
 # setup module environment and default queue
 if [ ! -f ${envloc}/machineEnvironment.sh ] ; then
-    exitError 2222 ${LINENO} "could not find ${envloc}/env/machineEnvironment.sh"
+    exitError 2222 ${LINENO} "could not find ${envloc}/machineEnvironment.sh"
 fi
 source ${envloc}/machineEnvironment.sh
 # load machine dependent functions
 if [ ! -f ${envloc}/env.${host}.sh ] ; then
-    exitError 2223 ${LINENO} "could not find ${envloc}/env/env.${host}.sh"
+    exitError 2223 ${LINENO} "could not find ${envloc}/env.${host}.sh"
 fi
 source ${envloc}/env.${host}.sh
 
 # load module tools
 if [ ! -f ${envloc}/moduleTools.sh ] ; then
-    exitError 1203 ${LINENO} "could not find ${envloc}/env/moduleTools.sh"
+    exitError 1203 ${LINENO} "could not find ${envloc}/moduleTools.sh"
 fi
 source ${envloc}/moduleTools.sh
 

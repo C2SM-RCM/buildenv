@@ -8,6 +8,7 @@ exitError()
     exit $1
 }
 
+package_basedir=$(pwd)
 
 TEMP=$@
 eval set -- "$TEMP --"
@@ -15,10 +16,18 @@ while true; do
     case "$1" in
         --package|-p) package=$2; shift 2;;
         --dir|-d) package_basedir=$2; shift 2;;
+        --help|-h) help_enabled=yes; fwd_args="$fwd_args $1"; shift;;
         -- ) shift; break ;;
         * ) fwd_args="$fwd_args $1"; shift ;;
     esac
 done
+
+if [[ "${help_enabled}" == "yes" ]]; then
+    echo "Available Options:"
+    echo "* --help.  |-h {print help}"
+    echo "* --package|-p {package name}     Required"
+    echo "* --dir.   |-d {package dir}      The package basedir. Default: \$(pwd)"
+fi
 
 if [[ -z ${package} ]]; then
     exitError 2220 ${LINENO} "package option has to be specified"

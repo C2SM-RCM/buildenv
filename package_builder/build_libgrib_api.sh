@@ -121,11 +121,6 @@ build_compiler_target()
     # Set F77 compiler to F90
     export F77=$FC
 
-    # Special override for Cray
-    if [ "${compiler}" == "cray" ]; then
-        export FCFLAGS="-g -hnoacc -e m -hfp_trap"
-    fi
-
     echo "Compiling and installing for $compiler (install path: $install_path)"
 
     if [ $? -ne 0 ]; then

@@ -92,13 +92,10 @@ setCppEnvironment()
     fi
     
     # standard modules (part 1)
-    module load cmake
-    module unload gcc
-    module load gcc/4.8.2
     if [ "${target}" == "gpu" ] ; then
-        module load craype-accel-nvidia35
-        module swap cudatoolkit/7.0.28-1.0502.10742.5.1
+        module load craype-accel-nvidia60
     fi
+    module load CMake
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -151,14 +148,13 @@ unsetCppEnvironment()
         exit 1
     esac
 
+    module unload CMake
+    module unload ncurses
     # remove standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
-        module unload craype-accel-nvidia35
-        module unload cudatoolkit
+        module unload craype-accel-nvidia60
     fi
-    module unload gcc/4.8.2
-    module load gcc
-    module unload cmake
+
 
     # restore programming environment (only on Cray)
     if [ -z "${old_prgenv}" ] ; then
@@ -201,24 +197,23 @@ setFortranEnvironment()
     fi
 
     # standard modules (part 1)
-    module load cmake
+    module load CMake
     if [ "${target}" == "gpu" ] ; then
-        module load craype-accel-nvidia35
-        module swap cudatoolkit/7.0.28-1.0502.10742.5.1
+        module load craype-accel-nvidia60
     fi
 
     # compiler specific modules
     case "${compiler}" in
     cray )
         module unload cce
-        module load cce/8.4.0
+        module load cce/8.5.5
+        # Load gcc/5.3.0 to link with the C++ Dynamical Core
+        module load gcc/5.3.0
         export CXX=CC
         export CC=cc
         export FC=ftn
         ;;
     gnu )
-        module unload gcc
-        module load gcc/4.8.2
         export CXX=g++
         export CC=gcc
         export FC=gfortran
@@ -246,8 +241,7 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module unload cce/8.4.0
-        module load cce
+        module unload gcc/5.3.0
         ;;
     gnu )
         module unload gcc/4.8.2
@@ -259,10 +253,10 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module unload cmake
+    module unload CMake
+    module unload ncurses 
     if [ "${target}" == "gpu" ] ; then
-        module unload craype-accel-nvidia35
-        module unload cudatoolkit
+        module unload craype-accel-nvidia60
     fi
 
     # swap back to original programming environment (only on Cray machines)

@@ -31,6 +31,9 @@ setupDefaults()
     # Module display boost
     export BOOST_PATH="/project/c01/install/daint/boost"
 
+    # Check if ncurses was loaded before
+    export BUILDENV_NCURSES_LOADED=`module list -t 2>&1 | grep "ncurses"`
+    
     # default options
     if [ -z "${target}" ] ; then
         target="gpu"
@@ -95,6 +98,7 @@ setCppEnvironment()
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
     fi
+    
     module load CMake
 
     # Fortran compiler specific modules and setup
@@ -149,7 +153,12 @@ unsetCppEnvironment()
     esac
 
     module unload CMake
-    module unload ncurses
+    
+    # unload curses in case it was already loaded
+    if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
+        module unload ncurses
+    fi
+    
     # remove standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia60
@@ -254,7 +263,12 @@ unsetFortranEnvironment()
 
     # remove standard modules (part 1)
     module unload CMake
-    module unload ncurses 
+    # unload curses in case it was already loaded
+    if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
+        module unload ncurses
+    fi
+    
+    # GPU specific unload
     if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia60
     fi

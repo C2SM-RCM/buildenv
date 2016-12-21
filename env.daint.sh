@@ -107,6 +107,8 @@ setCppEnvironment()
         ;;
     gnu )
         ;;
+    pgi )
+        ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
         exit 1
@@ -146,6 +148,8 @@ unsetCppEnvironment()
     cray )
         ;;
     gnu )
+        ;;
+    pgi )
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetCppEnvironment" 1>&2

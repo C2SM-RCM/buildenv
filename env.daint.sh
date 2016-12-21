@@ -25,7 +25,7 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray)
+    compilers=(gnu cray pgi)
     fcompiler_cmds=(ftn)
 
     # Module display boost
@@ -223,9 +223,20 @@ setFortranEnvironment()
         export FC=ftn
         ;;
     gnu )
-        export CXX=g++
-        export CC=gcc
-        export FC=gfortran
+        module unload gcc
+        module load gcc/5.3.0
+        export CXX=CC
+        export CC=cc
+        export FC=ftn
+        ;;
+    pgi )
+        module unload pgi
+        module load pgi/16.9.0
+        # Load gcc/5.3.0 to link with the C++ Dynamical Core
+        module load gcc/5.3.0
+        export CXX=CC
+        export CC=cc
+        export FC=ftn
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -253,8 +264,11 @@ unsetFortranEnvironment()
         module unload gcc/5.3.0
         ;;
     gnu )
-        module unload gcc/4.8.2
+        module unload gcc/5.3.0
         module load gcc
+        ;;
+    pgi )
+        module unload gcc/5.3.0
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

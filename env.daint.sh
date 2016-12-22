@@ -208,7 +208,9 @@ setFortranEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-${compiler}
     fi
-
+    
+    old_ldflags="${LDFLAGS}"
+    
     # standard modules (part 1)
     module load CMake
     if [ "${target}" == "gpu" ] ; then
@@ -225,6 +227,7 @@ setFortranEnvironment()
         export CXX=CC
         export CC=cc
         export FC=ftn
+        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64:${LDFLAGS}"
         ;;
     gnu )
         module unload gcc
@@ -241,6 +244,7 @@ setFortranEnvironment()
         export CXX=CC
         export CC=cc
         export FC=ftn
+        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64:${LDFLAGS}"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -298,7 +302,10 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
-
+    
+    export LDFLAGS="${old_ldflags}"
+    unset old_ldflags
+    
     unset CXX
     unset CC
     unset FC

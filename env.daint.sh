@@ -227,7 +227,7 @@ setFortranEnvironment()
         export CXX=CC
         export CC=cc
         export FC=ftn
-        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64:${LDFLAGS}"
+        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64 ${LDFLAGS}"
         ;;
     gnu )
         module unload gcc
@@ -244,7 +244,7 @@ setFortranEnvironment()
         export CXX=CC
         export CC=cc
         export FC=ftn
-        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64:${LDFLAGS}"
+        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64 ${LDFLAGS}"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2

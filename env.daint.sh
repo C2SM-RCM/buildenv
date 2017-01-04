@@ -241,6 +241,7 @@ setFortranEnvironment()
         module load pgi/16.9.0
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
+        module load cray-mpich-abi
         export CXX=CC
         export CC=cc
         export FC=ftn
@@ -277,6 +278,7 @@ unsetFortranEnvironment()
         ;;
     pgi )
         module unload gcc/5.3.0
+        module unload cray-mpich-abi
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

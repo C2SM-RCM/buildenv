@@ -242,9 +242,9 @@ setFortranEnvironment()
         module load pgi/16.9.0
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
-        export CXX=CC
-        export CC=cc
-        export FC=ftn
+        export CXX=$GCC_PATH/snos/bin/g++
+        export CC=$GCC_PATH/snos/bin/gcc
+        export FC=pgfortran
         export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64 ${LDFLAGS}"
         ;;
     * )

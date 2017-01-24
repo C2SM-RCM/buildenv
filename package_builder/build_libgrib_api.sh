@@ -123,7 +123,7 @@ build_compiler_target()
 
     echo "Compiling and installing for $compiler (install path: $install_path)"
     
-    if [ "${host}" -eq "daint" ]; then
+    if [ "${host}" == "daint" ]; then
         # Remove accelerator target to avoid issue with CUDA
         export CRAY_ACCEL_TARGET=
     fi

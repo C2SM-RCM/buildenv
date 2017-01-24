@@ -224,10 +224,11 @@ setFortranEnvironment()
         module load cce/8.5.5
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
-        export CXX=CC
-        export CC=cc
+        # Override C++ and C compiler
+        export CXX=$GCC_PATH/snos/g++
+        export CC=$GCC_PATH/snos/gcc
         export FC=ftn
-        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64 ${LDFLAGS}"
+        export LDFLAGS="-L$GCC_PATH/snos/lib64 ${LDFLAGS}"
         ;;
     gnu )
         module unload gcc

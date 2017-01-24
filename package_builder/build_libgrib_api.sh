@@ -122,7 +122,11 @@ build_compiler_target()
     export F77=$FC
 
     echo "Compiling and installing for $compiler (install path: $install_path)"
-
+    
+    if [ "${host}" -eq "daint" ]; then
+        # Remove accelerator target to avoid issue with CUDA
+        export CRAY_ACCEL_TARGET=
+    fi
     if [ $? -ne 0 ]; then
         exitError 4331 ${LINENO} "Invalid fortran environment"
     fi

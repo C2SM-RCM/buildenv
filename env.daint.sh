@@ -244,7 +244,7 @@ setFortranEnvironment()
         module load gcc/5.3.0
         export CXX=$GCC_PATH/snos/bin/g++
         export CC=$GCC_PATH/snos/bin/gcc
-        export FC=pgfortran
+        export FC=ftn
         export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64 ${LDFLAGS}"
         ;;
     * )

@@ -220,9 +220,7 @@ setFortranEnvironment()
             module load cray-hdf5/1.8.13
             module load GCC/4.9.3-binutils-2.25
 EOF
-
-        export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
-	export FC=ftn
+        export FC=ftn
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -255,6 +253,9 @@ EOF
     
     module purge
     source $ENVIRONMENT_TEMPFILE
+    
+    # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
+    export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}

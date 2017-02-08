@@ -220,7 +220,9 @@ setFortranEnvironment()
             module load cray-hdf5/1.8.13
             module load GCC/4.9.3-binutils-2.25
 EOF
-        export FC=ftn
+
+        export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
+	export FC=ftn
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF

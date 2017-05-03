@@ -244,6 +244,8 @@ EOF
             module load craype-haswell
             module load GCC/4.9.3-binutils-2.25
             module load PrgEnv-pgi/16.7
+	    module unload cudatoolkit/7.0.28
+	    module swap mvapich2gdr_pgi/2.2a_cuda_7.0 mvapich2gdr_pgi/2.2_cuda_7.5
 EOF
         export FC=mpif90
         ;;	

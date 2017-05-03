@@ -53,7 +53,7 @@ setupDefaults()
     export NVIDIA_CUDA_ARCH="sm_37"
 
     # # MVAPICH
-    export MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
+    export MVAPICH_MODULE="mvapich2gdr_gnu/2.2_cuda7.5"
     # # BOOST
     export BOOST_PATH="/apps/escha/UES/RH6.7/easybuild/software/Boost/1.49.0-gmvolf-15.11-Python-2.7.10"
 
@@ -129,7 +129,7 @@ setCppEnvironment()
         # implicit module purge
         module load craype-haswell
         module load craype-network-infiniband
-        module load mvapich2gdr_gnu/2.1_cuda_7.0
+        module load mvapich2gdr_gnu/2.2_cuda_7.5
         module load GCC/4.9.3-binutils-2.25
         module load cray-libsci_acc/3.3.0
 EOF
@@ -215,7 +215,8 @@ setFortranEnvironment()
             module swap cce/8.4.4
             module unload mvapich2_cce
             module load cray-libsci_acc/3.3.0
-            module load mvapich2gdr_gnu/2.1_cuda_7.0
+	    module unload cudatoolkit
+            module load mvapich2gdr_gnu/2.2_cuda_7.5
             module load cray-netcdf/4.3.2
             module load cray-hdf5/1.8.13
             module load GCC/4.9.3-binutils-2.25

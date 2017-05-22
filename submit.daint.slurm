@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH --constraint=gpu
 #SBATCH --job-name=<NAME>
 #SBATCH --ntasks=<NTASKS>
 #SBATCH --ntasks-per-node=<NTASKSPERNODE>

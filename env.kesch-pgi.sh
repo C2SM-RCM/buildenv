@@ -212,7 +212,7 @@ setFortranEnvironment()
             module load craype-accel-nvidia35
             module load PrgEnv-cray/15.10_cuda_7.0
             module load cmake/3.1.3
-            module swap cce/8.4.0a
+            module swap cce/8.4.4
             module unload mvapich2_cce
             module load cray-libsci_acc/3.3.0
             module load mvapich2gdr_gnu/2.1_cuda_7.0
@@ -242,7 +242,7 @@ EOF
             # implicit module purge
             module load craype-haswell
             module load GCC/4.9.3-binutils-2.25
-            module load PrgEnv-pgi/16.3
+            module load PrgEnv-pgi/16.7
 EOF
         export FC=mpif90
         ;;	

@@ -54,7 +54,7 @@ elif [ "`hostname | grep daint`" != "" ] ; then
     nthreads=8
     mpilaunch="srun"
     installdir=/project/c01/install/${host}
-    testdata=/scratch/daint/jenkins/data
+    testdata=/scratch/snx3000/jenkins/data
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash

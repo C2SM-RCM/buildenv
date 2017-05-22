@@ -25,12 +25,15 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray)
+    compilers=(gnu cray pgi)
     fcompiler_cmds=(ftn)
 
     # Module display boost
-    export BOOST_PATH="/apps/daint/5.2.UP02/boost/1.58.0/gnu_482"
+    export BOOST_PATH="/project/c01/install/daint/boost"
 
+    # Check if ncurses was loaded before
+    export BUILDENV_NCURSES_LOADED=`module list -t 2>&1 | grep "ncurses"`
+    
     # default options
     if [ -z "${target}" ] ; then
         target="gpu"
@@ -39,7 +42,7 @@ setupDefaults()
         compiler="cray"
     fi
     if [ -z "${cuda_arch}" ] ; then
-        cuda_arch="sm_35"
+        cuda_arch="sm_60"
     fi
 
     # fortran compiler command
@@ -92,19 +95,19 @@ setCppEnvironment()
     fi
     
     # standard modules (part 1)
-    module load cmake
-    module unload gcc
-    module load gcc/4.8.2
     if [ "${target}" == "gpu" ] ; then
-        module load craype-accel-nvidia35
-        module swap cudatoolkit/7.0.28-1.0502.10742.5.1
+        module load craype-accel-nvidia60
     fi
+    
+    module load CMake
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     cray )
         ;;
     gnu )
+        ;;
+    pgi )
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setCppEnvironment" 1>&2
@@ -146,19 +149,25 @@ unsetCppEnvironment()
         ;;
     gnu )
         ;;
+    pgi )
+        ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetCppEnvironment" 1>&2
         exit 1
     esac
 
+    module unload CMake
+    
+    # unload curses in case it was already loaded
+    if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
+        module unload ncurses
+    fi
+    
     # remove standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
-        module unload craype-accel-nvidia35
-        module unload cudatoolkit
+        module unload craype-accel-nvidia60
     fi
-    module unload gcc/4.8.2
-    module load gcc
-    module unload cmake
+
 
     # restore programming environment (only on Cray)
     if [ -z "${old_prgenv}" ] ; then
@@ -199,29 +208,44 @@ setFortranEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-${compiler}
     fi
-
+    
+    old_ldflags="${LDFLAGS}"
+    
     # standard modules (part 1)
-    module load cmake
+    module load CMake
     if [ "${target}" == "gpu" ] ; then
-        module load craype-accel-nvidia35
-        module swap cudatoolkit/7.0.28-1.0502.10742.5.1
+        module load craype-accel-nvidia60
     fi
 
     # compiler specific modules
     case "${compiler}" in
     cray )
         module unload cce
-        module load cce/8.4.0
+        module load cce/8.5.5
+        # Load gcc/5.3.0 to link with the C++ Dynamical Core
+        module load gcc/5.3.0
+        # Override C++ and C compiler
+        export CXX=$GCC_PATH/snos/bin/g++
+        export CC=$GCC_PATH/snos/bin/gcc
+        export FC=ftn
+        export LDFLAGS="-L$GCC_PATH/snos/lib64 ${LDFLAGS}"
+        ;;
+    gnu )
+        module unload gcc
+        module load gcc/5.3.0
         export CXX=CC
         export CC=cc
         export FC=ftn
         ;;
-    gnu )
-        module unload gcc
-        module load gcc/4.8.2
-        export CXX=g++
-        export CC=gcc
-        export FC=gfortran
+    pgi )
+        module unload pgi
+        module load pgi/16.9.0
+        # Load gcc/5.3.0 to link with the C++ Dynamical Core
+        module load gcc/5.3.0
+        export CXX=$GCC_PATH/snos/bin/g++
+        export CC=$GCC_PATH/snos/bin/gcc
+        export FC=ftn
+        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64 ${LDFLAGS}"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -246,12 +270,14 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-        module unload cce/8.4.0
-        module load cce
+        module unload gcc/5.3.0
         ;;
     gnu )
-        module unload gcc/4.8.2
+        module unload gcc/5.3.0
         module load gcc
+        ;;
+    pgi )
+        module unload gcc/5.3.0
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2
@@ -259,10 +285,15 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module unload cmake
+    module unload CMake
+    # unload curses in case it was already loaded
+    if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
+        module unload ncurses
+    fi
+    
+    # GPU specific unload
     if [ "${target}" == "gpu" ] ; then
-        module unload craype-accel-nvidia35
-        module unload cudatoolkit
+        module unload craype-accel-nvidia60
     fi
 
     # swap back to original programming environment (only on Cray machines)
@@ -272,7 +303,10 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
-
+    
+    export LDFLAGS="${old_ldflags}"
+    unset old_ldflags
+    
     unset CXX
     unset CC
     unset FC

@@ -2,6 +2,8 @@
 module load git/2.8.4
 git clone git@github.com:MeteoSwiss-APN/cosmo-pompa
 cd cosmo-pompa
+git config user.email "jenkins@cscs.ch"
+git config user.name "Mr. Jenkins"
 git remote add -f testsuite git@github.com:C2SM-RCM/testsuite
 git subtree pull --prefix cosmo/test/testsuite/src/ testsuite ${BRANCH} --squash -m "Update testsuite"
 cd cosmo/test

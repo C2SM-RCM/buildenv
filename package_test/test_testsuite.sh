@@ -1,5 +1,5 @@
 #!/bin/bash -e
-
+echo ${host}
 if [ "${host}" == "kesch" ] || [ "${host}" == "kesch-pgi" ]; then
   module load git/2.8.4
 fi

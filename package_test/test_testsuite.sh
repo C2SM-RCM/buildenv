@@ -1,5 +1,8 @@
 #!/bin/bash -e
+
+if [ "`hostname | grep kesch`" != "" ] ; then
 module load git/2.8.4
+fi
 
 # First, test cosmo-pompa
 git clone git@github.com:MeteoSwiss-APN/cosmo-pompa

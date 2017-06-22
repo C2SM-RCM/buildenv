@@ -1,9 +1,5 @@
 #!/bin/bash -e
-echo ${host}
-if [ "${host}" == "kesch" ] || [ "${host}" == "kesch-pgi" ]; then
-  module load git/2.8.4
-fi
-
+module load git/2.8.4
 git clone git@github.com:MeteoSwiss-APN/cosmo-pompa
 cd cosmo-pompa
 git remote add -f testsuite git@github.com:C2SM-RCM/testsuite

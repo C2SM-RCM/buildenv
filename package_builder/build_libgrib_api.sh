@@ -66,12 +66,6 @@ setupDefaults
 source ${package_basedir}/version.sh
 grib_api_version="${GRIB_API_MAJOR_VERSION}.${GRIB_API_MINOR_VERSION}.${GRIB_API_REVISION_VERSION}${GRIB_API_MCH_PATCH}"
 
-if [[ ${install_local} == "yes" ]]; then
-    install_path_prefix_="${base_path}/install"
-else
-    install_path_prefix_="${install_dir}/libgrib_api/${grib_api_version}"
-fi
-
 if [[ -z "${jasper_dir}" ]]; then
     jasper_dir="${install_dir}/libjasper"
 fi
@@ -81,7 +75,13 @@ cosmo_definitions_dir="cosmo_definitions"
 # Temporary COSMO Definitions download location
 cosmo_definitions_path=${base_path}/${cosmo_definitions_dir}
 
+resource_version=$(cat $cosmo_definitions_path/RELEASE)
 
+if [[ ${install_local} == "yes" ]]; then
+    install_path_prefix_="${base_path}/install"
+else
+    install_path_prefix_="${install_dir}/libgrib_api/${resource_version}"
+fi
 
 # Download the cosmo_definitions to the current base_path
 get_cosmo_definitions() 

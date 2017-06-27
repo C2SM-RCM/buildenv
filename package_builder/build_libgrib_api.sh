@@ -103,8 +103,9 @@ get_cosmo_definitions()
     popd
 
     local cosmo_definitions_version_=$(cat $cosmo_definitions_path/RELEASE)
+    local grib_api_version_short=${GRIB_API_MAJOR_VERSION}.${GRIB_API_MINOR_VERSION}.${GRIB_API_REVISION_VERSION}
 
-    if [[ "${cosmo_definitions_version_}" != "v${grib_api_version}"* ]]; then
+    if [[ "${cosmo_definitions_version_}" != "v${grib_api_version_short}"* ]]; then
         exitError 4213 ${LINENO} "grib api ${grib_api_version_} and cosmo definitions version ${cosmo_definitions_version_} mismatch. "
     fi
 }

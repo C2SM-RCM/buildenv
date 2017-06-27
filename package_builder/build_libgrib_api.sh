@@ -64,7 +64,7 @@ setupDefaults
 
 # Obtain 
 source ${package_basedir}/version.sh
-grib_api_version="${GRIB_API_MAJOR_VERSION}.${GRIB_API_MINOR_VERSION}.${GRIB_API_REVISION_VERSION}"
+grib_api_version="${GRIB_API_MAJOR_VERSION}.${GRIB_API_MINOR_VERSION}.${GRIB_API_REVISION_VERSION}${GRIB_API_MCH_PATCH}"
 
 if [[ ${install_local} == "yes" ]]; then
     install_path_prefix_="${base_path}/install"

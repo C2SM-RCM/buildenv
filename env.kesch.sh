@@ -133,7 +133,16 @@ setCppEnvironment()
         module load GCC/4.9.3-binutils-2.25
         module load cray-libsci_acc/3.3.0
 EOF
-   
+
+    if [ "${SCOREP_ENABLED}" == "ON" ]; then
+        cat >> $ENVIRONMENT_TEMPFILE <<- EOF
+            module use /apps/common/UES/sandbox/jgp/easybuild.eff/keschln/modules/all
+            module use /apps/common/UES/RHAT6/easybuild/modules/all
+            module load Score-P/3.1-gmvapich2-15.11_cuda_7.0_gdr
+            module load binutils/2.27-libiberty
+EOF
+    fi
+
     module purge
     source $ENVIRONMENT_TEMPFILE
     dycore_gpp='g++'
@@ -143,13 +152,13 @@ EOF
     #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
 
-        # set global variables
+    # set global variables
     if [ "${compiler}" == "gnu" ] ; then
         dycore_openmp=ON   # OpenMP only works if GNU is also used for Fortran parts
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
-    
+
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
@@ -166,7 +175,7 @@ EOF
 unsetCppEnvironment()
 {
     restoreModuleCheckPoint
-    
+
     rm $ENVIRONMENT_TEMPFILE
     unset ENVIRONMENT_TEMPFILE
 
@@ -201,7 +210,7 @@ setFortranEnvironment()
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
-    
+
     case "${compiler}" in
     cray )
         # Provided by CSCS
@@ -220,6 +229,16 @@ setFortranEnvironment()
             module load cray-hdf5/1.8.13
             module load GCC/4.9.3-binutils-2.25
 EOF
+
+        if [ "${SCOREP_ENABLED}" == "ON" ]; then
+            cat >> $ENVIRONMENT_TEMPFILE <<- EOF
+                module use /apps/common/UES/sandbox/jgp/easybuild.eff/keschln/modules/all
+                module use /apps/common/UES/RHAT6/easybuild/modules/all
+                module load Score-P/3.1-gmvapich2-15.11_cuda_7.0_gdr
+                module load binutils/2.27-libiberty
+EOF
+        fi
+
         export FC=ftn
         ;;
     gnu )
@@ -236,7 +255,7 @@ EOF
 EOF
         export FC=gfortran
         ;;
-    pgi ) 
+    pgi )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
             # implicit module purge
@@ -245,15 +264,16 @@ EOF
             module load PrgEnv-pgi/16.7
 EOF
         export FC=mpif90
-        ;;	
+        ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
-    
+
     module purge
     source $ENVIRONMENT_TEMPFILE
-    
+    export LINKER_X86_64=$(which ld)
+
     # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
     export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
 
@@ -266,16 +286,16 @@ EOF
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
     if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
-	echo "Info : No Cray CCE licence available, setting CRAYLMD_LICENSE_FILE to escha"
-	export CRAYLMD_LICENSE_FILE=27010@escha-mgmt1,27010@escha-mgmt2,27010@escha-login3
-	# Test if the licence is now available otherwise print info message
-	if `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
-	    echo "!! Warning !! No Cray CCE licence available"
-	    echo "Licence usage on kesch:"
-	    klicstat
-	    echo "Licence usage on escha:"
-	    elistat
-	fi
+        echo "Info : No Cray CCE licence available, setting CRAYLMD_LICENSE_FILE to escha"
+        export CRAYLMD_LICENSE_FILE=27010@escha-mgmt1,27010@escha-mgmt2,27010@escha-login3
+        # Test if the licence is now available otherwise print info message
+        if `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
+            echo "!! Warning !! No Cray CCE licence available"
+            echo "Licence usage on kesch:"
+            klicstat
+            echo "Licence usage on escha:"
+            elistat
+        fi
     fi
 
 }

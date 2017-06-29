@@ -25,5 +25,6 @@ git remote add -f testsuite git@github.com:C2SM-RCM/testsuite
 git subtree pull --prefix test/testsuite/src/ testsuite ${BRANCH} --squash -m "Update testsuite"
 cd test
 test -f ./jenkins/jenkins.sh || exit 1
+export target="release"
 ./jenkins/jenkins.sh test
 

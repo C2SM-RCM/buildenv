@@ -136,10 +136,9 @@ EOF
 
     if [ "${SCOREP_ENABLED}" == "ON" ]; then
         cat >> $ENVIRONMENT_TEMPFILE <<- EOF
-            module use /apps/common/UES/sandbox/jgp/easybuild.eff/keschln/modules/all
             module use /apps/common/UES/RHAT6/easybuild/modules/all
+            module use /apps/escha/UES/RH6.7/sandbox-scorep/modules/all
             module load Score-P/3.1-gmvapich2-15.11_cuda_7.0_gdr
-            module load binutils/2.27-libiberty
 EOF
     fi
 
@@ -232,10 +231,9 @@ EOF
 
         if [ "${SCOREP_ENABLED}" == "ON" ]; then
             cat >> $ENVIRONMENT_TEMPFILE <<- EOF
-                module use /apps/common/UES/sandbox/jgp/easybuild.eff/keschln/modules/all
-                module use /apps/common/UES/RHAT6/easybuild/modules/all
-                module load Score-P/3.1-gmvapich2-15.11_cuda_7.0_gdr
-                module load binutils/2.27-libiberty
+            module use /apps/common/UES/RHAT6/easybuild/modules/all
+            module use /apps/escha/UES/RH6.7/sandbox-scorep/modules/all
+            module load Score-P/3.1-gmvapich2-15.11_cuda_7.0_gdr
 EOF
         fi
 

@@ -37,16 +37,7 @@ installdir=""   # directory where libraries are installed
 testdata=""     # directory where unittestdata is stored
 
 # setup machine specifics
-if [ "`hostname | grep lema`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    export host="lema"
-    queue="dev"
-    nthreads=12
-    mpilaunch="aprun"
-    installdir=/project/c01/install/${host}
-    testdata=/scratch/jenkins/data
-elif [ "`hostname | grep daint`" != "" ] ; then
+if [ "`hostname | grep daint`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
     export host="daint"
@@ -64,34 +55,6 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     mpilaunch="aprun"
     installdir=/project/c01/install/daint
     testdata=/scratch/dora/jenkins/data
-elif [ "`hostname | grep jupiter`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    export host="jupiter"
-    queue="batch"
-    nthreads=8
-    mpilaunch="aprun"
-    installdir="???"
-    testdata="???"
-elif [ "`hostname | grep castor`" != "" ] ; then
-    . /etc/bashrc
-    . /apps/castor/Modules/default/init/bash
-    module load slurm
-    export host="castor"
-    queue="normal"
-    nthreads=6
-    mpilaunch="mpiexec"
-    installdir=/project/c01/install/${host}
-    testdata=/scratch/castor/jenkins/castor/data
-elif [ "`hostname | grep santis`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    export host="santis"
-    queue="normal"
-    nthreads=8
-    mpilaunch="aprun"
-    installdir="???"
-    testdata="???"
 elif [ "`hostname | grep durian`" != "" ] ; then
     shopt -s expand_aliases
     alias sbatch='eval'

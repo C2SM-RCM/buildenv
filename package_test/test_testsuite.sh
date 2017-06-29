@@ -26,5 +26,6 @@ git subtree pull --prefix test/testsuite/src/ testsuite ${BRANCH} --squash -m "U
 cd test
 test -f ./jenkins/jenkins.sh || exit 1
 export target="release"
+export compiler="gnu"
 ./jenkins/jenkins.sh test
 

@@ -6,7 +6,7 @@
 #SBATCH --output=<OUTFILE>
 #SBATCH --time=00:45:00
 #SBATCH --gres=gpu:2
-#SBATCH --account=c01
+#SBATCH --account=c14
 
 ########################################################
 

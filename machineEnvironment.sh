@@ -37,23 +37,14 @@ installdir=""   # directory where libraries are installed
 testdata=""     # directory where unittestdata is stored
 
 # setup machine specifics
-if [ "`hostname | grep lema`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    export host="lema"
-    queue="dev"
-    nthreads=12
-    mpilaunch="aprun"
-    installdir=/project/c01/install/${host}
-    testdata=/scratch/jenkins/data
-elif [ "`hostname | grep daint`" != "" ] ; then
+if [ "`hostname | grep daint`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
     export host="daint"
     queue="normal"
     nthreads=8
     mpilaunch="srun"
-    installdir=/project/c01/install/${host}
+    installdir=/project/c14/install/${host}
     testdata=/scratch/snx3000/jenkins/data
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
@@ -62,58 +53,8 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
-    installdir=/project/c01/install/daint
+    installdir=/project/c14/install/daint
     testdata=/scratch/dora/jenkins/data
-elif [ "`hostname | grep jupiter`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    export host="jupiter"
-    queue="batch"
-    nthreads=8
-    mpilaunch="aprun"
-    installdir="???"
-    testdata="???"
-elif [ "`hostname | grep castor`" != "" ] ; then
-    . /etc/bashrc
-    . /apps/castor/Modules/default/init/bash
-    module load slurm
-    export host="castor"
-    queue="normal"
-    nthreads=6
-    mpilaunch="mpiexec"
-    installdir=/project/c01/install/${host}
-    testdata=/scratch/castor/jenkins/castor/data
-elif [ "`hostname | grep santis`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    export host="santis"
-    queue="normal"
-    nthreads=8
-    mpilaunch="aprun"
-    installdir="???"
-    testdata="???"
-elif [ "`hostname | grep durian`" != "" ] ; then
-    shopt -s expand_aliases
-    alias sbatch='eval'
-    alias squeue='echo'
-    alias module='echo $* 2>/dev/null 1>/dev/null'
-    export host="durian"
-    queue="normal"
-    nthreads=4
-    mpilaunch="mpirun"
-    installdir="/Users/fuhrer/Desktop/install"
-    testdata="/Users/fuhrer/Desktop/install/testdata"
-elif [ "`hostname | grep bertie`" != "" ] ; then
-    shopt -s expand_aliases
-    alias sbatch='eval'
-    alias squeue='echo'
-    alias module='echo $* 2>/dev/null 1>/dev/null'
-    export host="bertie"
-    queue="normal"
-    nthreads=4
-    mpilaunch="mpirun"
-    installdir="/home/spiros/Work/install"
-    testdata="/home/spiros/Work/install/testdata"
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
     . /usr/Modules/3.2.10/init/bash
@@ -126,7 +67,7 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     queue="debug"
     nthreads=1
     mpilaunch="srun"
-    installdir="/project/c01/install/${host}"
+    installdir="/project/c14/install/${host}"
     testdata="/scratch/jenkins/data"
 elif [ "`hostname | grep greina`" != "" ] ; then
     . /etc/bashrc

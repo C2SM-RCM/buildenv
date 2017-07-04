@@ -44,7 +44,7 @@ if [ "`hostname | grep daint`" != "" ] ; then
     queue="normal"
     nthreads=8
     mpilaunch="srun"
-    installdir=/project/c14/install/${host}
+    installdir=/project/c01/install/${host}
     testdata=/scratch/snx3000/jenkins/data
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
@@ -53,7 +53,7 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     queue="normal"
     nthreads=8
     mpilaunch="aprun"
-    installdir=/project/c14/install/daint
+    installdir=/project/c01/install/daint
     testdata=/scratch/dora/jenkins/data
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
@@ -67,7 +67,7 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     queue="debug"
     nthreads=1
     mpilaunch="srun"
-    installdir="/project/c14/install/${host}"
+    installdir="/project/c01/install/${host}"
     testdata="/scratch/jenkins/data"
 elif [ "`hostname | grep greina`" != "" ] ; then
     . /etc/bashrc

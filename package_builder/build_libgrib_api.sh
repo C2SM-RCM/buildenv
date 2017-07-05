@@ -75,14 +75,6 @@ cosmo_definitions_dir="cosmo_definitions"
 # Temporary COSMO Definitions download location
 cosmo_definitions_path=${base_path}/${cosmo_definitions_dir}
 
-resource_version=$(cat $cosmo_definitions_path/RELEASE)
-
-if [[ ${install_local} == "yes" ]]; then
-    install_path_prefix_="${base_path}/install"
-else
-    install_path_prefix_="${install_dir}/libgrib_api/${resource_version}"
-fi
-
 # Download the cosmo_definitions to the current base_path
 get_cosmo_definitions() 
 {   
@@ -202,6 +194,15 @@ EOF
 
 # Build
 get_cosmo_definitions
+
+resource_version=$(cat $cosmo_definitions_path/RELEASE)
+
+if [[ ${install_local} == "yes" ]]; then
+    install_path_prefix_="${base_path}/install"
+else
+    install_path_prefix_="${install_dir}/libgrib_api/${resource_version}"
+fi
+
 if [ "${compiler_target}" != "all" ]; then
     if [ "${install_local}" != "yes" ] ; then
         install_path_prefix_="${install_path_prefix_}/${compiler_target}"

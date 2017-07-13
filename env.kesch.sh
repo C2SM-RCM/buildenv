@@ -127,13 +127,13 @@ setCppEnvironment()
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         # Generated with the build script
         # implicit module purge
-        craype-network-infiniband
-        craype-haswell
-        git/2.6.0
-        tmux/2.1
-        cudatoolkit/8.0.61
-        mvapich2gdr_gnu/2.2_cuda_8.0
-        gcc/4.9.1
+        module load craype-network-infiniband
+        module load craype-haswell
+        module load git/2.6.0
+        module load tmux/2.1
+        module load cudatoolkit/8.0.61
+        module load mvapich2gdr_gnu/2.2_cuda_8.0
+        module load gcc/4.9.1
 EOF
    
     module purge

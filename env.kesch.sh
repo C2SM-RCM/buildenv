@@ -53,9 +53,9 @@ setupDefaults()
     export NVIDIA_CUDA_ARCH="sm_37"
 
     # # MVAPICH
-    export MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
+    export MVAPICH_MODULE="mvapich2_gnu/2.2rc1.0.2"
     # # BOOST
-    export BOOST_PATH="/apps/escha/UES/RH6.7/easybuild/software/Boost/1.49.0-gmvolf-15.11-Python-2.7.10"
+    export BOOST_PATH="/users/jenkins/Code/boost-1.49.0/"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -127,11 +127,13 @@ setCppEnvironment()
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         # Generated with the build script
         # implicit module purge
-        module load craype-haswell
-        module load craype-network-infiniband
-        module load mvapich2gdr_gnu/2.1_cuda_7.0
-        module load GCC/4.9.3-binutils-2.25
-        module load cray-libsci_acc/3.3.0
+        craype-network-infiniband
+        craype-haswell
+        git/2.6.0
+        tmux/2.1
+        cudatoolkit/8.0.61
+        mvapich2gdr_gnu/2.2_cuda_8.0
+        gcc/4.9.1
 EOF
    
     module purge

@@ -134,6 +134,8 @@ setCppEnvironment()
         module load cudatoolkit/8.0.61
         module load mvapich2gdr_gnu/2.2_cuda_8.0
         module load gcc/4.9.1
+        module load cmake/3.7.2
+
 EOF
    
     module purge

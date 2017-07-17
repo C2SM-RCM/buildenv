@@ -68,8 +68,9 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     nthreads=1
     mpilaunch="srun"
     installdir="/project/c14/install/${host}"
-    if [ "$(hostname)" == "keschcn-0001"* ]; then
+    if [ "$(hostname)" == "keschcn-0001" ]; then
         installdir="/scratch/spoerrip/proj_tds/install"
+        echo "Special installdir ${installdir}"
     fi
     testdata="/scratch/jenkins/data"
 elif [ "`hostname | grep greina`" != "" ] ; then

@@ -218,15 +218,15 @@ setFortranEnvironment()
             # implicit module purge
             module load craype-haswell
             module load craype-accel-nvidia35
-            module load PrgEnv-cray/15.10_cuda_7.0
-            module load cmake/3.1.3
-            module swap cce/8.4.4
+            module load PrgEnv-cray/1.0.2
             module unload mvapich2_cce
-            module load cray-libsci_acc/3.3.0
-            module load mvapich2gdr_gnu/2.1_cuda_7.0
-            module load cray-netcdf/4.3.2
-            module load cray-hdf5/1.8.13
-            module load GCC/4.9.3-binutils-2.25
+            module unload cray-libsci
+            module load cray-libsci_acc/17.03.1
+            module load mvapich2gdr_gnu/2.2_cuda_8.0
+#            module load cray-netcdf/4.3.2
+#            module load cray-hdf5/1.8.13
+            module load cmake/3.1.3
+            module load gcc/5.4.0-2.26
 EOF
         export FC=ftn
         ;;

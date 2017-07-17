@@ -49,7 +49,7 @@ setupDefaults()
     fcompiler_cmds=(ftn)
 
 
-    export BASE_MODULES="craype-haswell cmake/3.1.3"
+    export BASE_MODULES="craype-haswell"
     export NVIDIA_CUDA_ARCH="sm_37"
 
     # # MVAPICH
@@ -218,6 +218,7 @@ setFortranEnvironment()
             # implicit module purge
             module load craype-haswell
             module load craype-accel-nvidia35
+            module load craype-network-infiniband
             module load PrgEnv-cray/1.0.2
             module unload mvapich2_cce
             module unload cray-libsci

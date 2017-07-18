@@ -221,16 +221,14 @@ setFortranEnvironment()
             module load craype-network-infiniband
             module load PrgEnv-cray/1.0.2
             module unload mvapich2_cce
-            module unload cray-libsci
             module load cray-libsci_acc/17.03.1
             module load mvapich2gdr_gnu/2.2_cuda_8.0
 #            module load cray-netcdf/4.3.2
 #            module load cray-hdf5/1.8.13
             module load cmake/3.7.2
             module load gcc/5.4.0-2.26
-            export FC=$FTN_X86_64
 EOF
-        export FC=ftn
+        export FC="ftn -D__CRAY_FORTRAN__"
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF

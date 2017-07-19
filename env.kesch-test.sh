@@ -35,6 +35,7 @@ restoreModuleCheckPoint()
 #   targets           list of possible targets (e.g. gpu, cpu)
 #   compilers         list of possible compilers for Fortran parts
 #   target            default target
+#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)        
 #   compiler          default compiler to use for Fortran parts
 #   debug             build in debugging mode (yes/no)
 #   cleanup           clean before build (yes/no)
@@ -44,17 +45,17 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray)
+    compilers=(gnu cray pgi)
     fcompiler_cmds=(ftn)
 
 
-    export BASE_MODULES="craype-haswell cmake/3.1.3"
+    export BASE_MODULES="craype-haswell"
     export NVIDIA_CUDA_ARCH="sm_37"
 
     # # MVAPICH
-    export MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
+    export MVAPICH_MODULE="mvapich2_gnu/2.2rc1.0.2"
     # # BOOST
-    export BOOST_PATH="/apps/escha/easybuild/software/Boost/1.49.0-gmvolf-2015b-Python-2.7.10"
+    export BOOST_PATH="/users/jenkins/Code/boost-1.49.0/"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -71,7 +72,7 @@ setupDefaults()
     if [ -z "${fcompiler_cmd}" ] ; then
         if [ "${compiler}" == "gnu" ] ; then
             fcompiler_cmd="gfortran"
-        else
+         else
             fcompiler_cmd="ftn"
         fi
     fi
@@ -104,7 +105,7 @@ get_fcompiler_cmd()
 #   dycore_gpp        C++ compiler for dycore
 #   dycore_gcc        C compiler for dycore
 #   cuda_gpp          C++ used by nvcc as backend
-#   boost_path        path to the Boost installation to use
+#   boost_path        path to the Boost installation to use (deprecated, see BOOST_PATH)
 #   use_mpi_compiler  use MPI compiler wrappers?
 #
 setCppEnvironment()
@@ -126,11 +127,19 @@ setCppEnvironment()
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         # Generated with the build script
         # implicit module purge
-        module load craype-haswell
+        module purge
         module load craype-network-infiniband
-        module load mvapich2gdr_gnu/2.1_cuda_7.0
-        module load GCC/4.9.3-binutils-2.25
-        module load cray-libsci_acc/3.3.0
+        module load craype-haswell
+        module load craype-accel-nvidia35
+        module load cray-libsci
+        module load git/2.6.0
+        module load tmux/2.1
+        module load cudatoolkit/8.0.61
+        module load mvapich2gdr_gnu/2.2_cuda_8.0
+        module load gcc/5.4.0-2.26
+        #module load gcc/4.8.1
+        module load cmake/3.7.2
+
 EOF
    
     module purge
@@ -209,17 +218,17 @@ setFortranEnvironment()
             # implicit module purge
             module load craype-haswell
             module load craype-accel-nvidia35
-            module load PrgEnv-cray/15.10_cuda_7.0
-            module load cmake/3.1.3
-            module swap cce/8.4.0a
+            module load craype-network-infiniband
+            module load PrgEnv-cray/1.0.2
             module unload mvapich2_cce
-            module load cray-libsci_acc/3.3.0
-            module load mvapich2gdr_gnu/2.1_cuda_7.0
-            module load cray-netcdf/4.3.2
-            module load cray-hdf5/1.8.13
-            module load GCC/4.9.3-binutils-2.25
+            module load cray-libsci_acc/17.03.1
+            module load mvapich2gdr_gnu/2.2_cuda_8.0
+#            module load cray-netcdf/4.3.2
+#            module load cray-hdf5/1.8.13
+            module load cmake/3.7.2
+            module load gcc/5.4.0-2.26
 EOF
-        export FC=ftn
+        export FC="ftn -D__CRAY_FORTRAN__"
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -235,6 +244,16 @@ EOF
 EOF
         export FC=gfortran
         ;;
+    pgi ) 
+        cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # Generated with the build script
+            # implicit module purge
+            module load craype-haswell
+            module load GCC/4.9.3-binutils-2.25
+            module load PrgEnv-pgi/16.7
+EOF
+        export FC=mpif90
+        ;;	
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
@@ -242,13 +261,31 @@ EOF
     
     module purge
     source $ENVIRONMENT_TEMPFILE
+    
+    # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
+    export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
-    # We have gcc for both gnu and cray environments
+    # We have gcc for gnu, cray and pgi environments
     export CXX=g++
     export CC=gcc
+
+    # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
+    if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
+	echo "Info : No Cray CCE licence available, setting CRAYLMD_LICENSE_FILE to escha"
+	export CRAYLMD_LICENSE_FILE=27010@escha-mgmt1,27010@escha-mgmt2,27010@escha-login3
+	# Test if the licence is now available otherwise print info message
+	if `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
+	    echo "!! Warning !! No Cray CCE licence available"
+	    echo "Licence usage on kesch:"
+	    klicstat
+	    echo "Licence usage on escha:"
+	    elistat
+	fi
+    fi
+
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts

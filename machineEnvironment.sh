@@ -57,7 +57,7 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     testdata=/scratch/dora/jenkins/data
 elif [ "$(hostname)" = "keschcn-0001" ]; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
-    export host="kesch-tds"
+    export host="kesch-test"
     echo "The host is ${host}"
     queue="debug"
     nthreads=1

@@ -8,9 +8,6 @@
 #SBATCH --gres=gpu:1
 #SBATCH --partition=debug
 #SBATCH --account=s83
-#SBATCH -w keschcn-0012
-#SBATCH --res syscheck
-
 
 ########################################################
 

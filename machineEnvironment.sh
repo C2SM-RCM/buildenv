@@ -63,7 +63,7 @@ elif [ "$(hostname)" = "keschcn-0001" ]; then
     nthreads=1
     mpilaunch="srun"
     installdir="/project/c14/install/${host}"
-    testdata="/scratch/jenkins/data"
+    testdata="/scratch/jenkins/data/test"
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
     . /usr/Modules/3.2.10/init/bash

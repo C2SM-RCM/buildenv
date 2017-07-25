@@ -225,8 +225,7 @@ setFortranEnvironment()
             module load gcc/5.4.0-2.26
             module load cmake/3.7.2
 EOF
-        export FC="ftn -D__CRAY_FORTRAN__ -ef -I$EBROOTNETCDFMINFORTRAN/include -L$EBROOTNETCDFMINFORTRAN/lib
--lnetcdff -L$EBROOTNETCDF/lib64 -lnetcdf"
+        export FC="ftn -D__CRAY_FORTRAN__ -ef -I$EBROOTNETCDFMINFORTRAN/include -L$EBROOTNETCDFMINFORTRAN/lib -lnetcdff -L$EBROOTNETCDF/lib64 -lnetcdf"
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF

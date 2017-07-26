@@ -224,11 +224,9 @@ setFortranEnvironment()
             module switch mvapich2_cce/2.2rc1.0.3_cuda80 cray-mvapich2-gdr-4.cuda8.0.mofed3.4.slurm
             module load gcc/5.4.0-2.26
             module load cmake/3.7.2
-#            module swap cce/8.6.0 cce/8.5.8
-
+            module swap cce/8.6.0 cce/8.5.8
 EOF
             export FC="ftn -D__CRAY_FORTRAN__"
-            #-ef -I\$EBROOTNETCDFMINFORTRAN/include -L\$EBROOTNETCDFMINFORTRAN/lib -lnetcdff -L\$EBROOTNETCDF/lib64 -lnetcdf"
 
         ;;
     gnu )

@@ -226,7 +226,7 @@ setFortranEnvironment()
             module load cmake/3.7.2
             module swap cce/8.6.0 cce/8.5.8
 EOF
-            export FC="ftn -D__CRAY_FORTRAN__ -ef"
+            export FC="ftn -D__CRAY_FORTRAN__"
 
         ;;
     gnu )

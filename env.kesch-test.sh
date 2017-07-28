@@ -219,12 +219,11 @@ setFortranEnvironment()
             module load craype-haswell
             module load craype-accel-nvidia35
             module load craype-network-infiniband
-            module use /apps/escha/UES/RH7.3_PE17.02/sandbox-hdf5-17.06/modules/all
+            module use /apps/escha/UES/RH7.3_PE17.02/sandbox-hdf5-17.06-2/modules/all
             module load netCDF-Fortran/4.4.4-CrayCCE-17.06
-            module switch mvapich2_cce/2.2rc1.0.3_cuda80 cray-mvapich2-gdr-4.cuda8.0.mofed3.4.slurm
+            module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2gdr_gnu/2.2_cuda_8.0
             module load gcc/5.4.0-2.26
             module load cmake/3.7.2
-            module swap cce/8.6.0 cce/8.5.8
 EOF
             export FC="ftn -D__CRAY_FORTRAN__"
 

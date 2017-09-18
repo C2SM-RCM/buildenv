@@ -137,9 +137,7 @@ setCppEnvironment()
         module load cudatoolkit/8.0.61
         module load mvapich2gdr_gnu/2.2_cuda_8.0
         module load gcc/5.4.0-2.26
-        #module load gcc/4.8.1
-        module load cmake/3.7.2
-
+        module load cmake/3.9.1
 EOF
    
     module purge
@@ -223,7 +221,7 @@ setFortranEnvironment()
             module load netCDF-Fortran/4.4.4-CrayCCE-17.06
             module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2gdr_gnu/2.2_cuda_8.0
             module load gcc/5.4.0-2.26
-            module load cmake/3.7.2
+            module load cmake/3.9.1
 EOF
             export FC="ftn -D__CRAY_FORTRAN__"
 

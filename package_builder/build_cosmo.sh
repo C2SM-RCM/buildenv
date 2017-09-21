@@ -118,7 +118,7 @@ printConfig()
 	echo "VERBOSE:                 ${verbosity}"
 	echo "CLEAN:                   ${cleanup}"
 	echo "DO STELLA-DYCORE COMPIL: ${doGNU}"
-	echo "DO POMPA COMPILATION:    ${doGNU}"
+	echo "DO POMPA COMPILATION:    ${doPompa}"
 	echo "==============================================================="
 }
 

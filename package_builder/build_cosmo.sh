@@ -31,6 +31,7 @@ showUsage()
 	echo "-l        STELLA K-Level"
 	echo "-z        Clean builds"
 	echo "-g        Do GNU build: Stella and the CPP Dycore"
+	echo "-p        Do Cosmo-Pompa build"
 }
 
 # set defaults and process command line options
@@ -46,6 +47,7 @@ parseOptions()
 	verbosity=OFF
 	cleanup=OFF
 	doGNU=OFF
+	doPompa=OFF
 
 	while getopts "h4c:t:s:f:l:vzg" opt; do
 		case "${opt}" in
@@ -80,6 +82,9 @@ parseOptions()
 		g) 
 		    doGNU=ON
 		    ;;
+		p) 
+		    doPompa=ON
+		    ;;
 		\?) 
 		    showUsage
 		    exitError 601 ${LINENO} "invalid command line option (-${OPTARG})"
@@ -104,15 +109,16 @@ printConfig()
 	echo "==============================================================="
 	echo "BUILD CONFIGURATION"
 	echo "==============================================================="
-	echo "SINGLE PRECISION:    ${singleprec}"
-	echo "COMPILER:            ${compiler}"
-	echo "TARGET:              ${target}"
-	echo "SLAVE:               ${slave}"
-	echo "K-FLAT:              ${kflat}"
-	echo "K-LEVEL:             ${klevel}"
-	echo "VERBOSE:             ${verbosity}"
-	echo "CLEAN:               ${cleanup}"
-	echo "DO GNU COMPILATION:  ${doGNU}"
+	echo "SINGLE PRECISION:        ${singleprec}"
+	echo "COMPILER:                ${compiler}"
+	echo "TARGET:                  ${target}"
+	echo "SLAVE:                   ${slave}"
+	echo "K-FLAT:                  ${kflat}"
+	echo "K-LEVEL:                 ${klevel}"
+	echo "VERBOSE:                 ${verbosity}"
+	echo "CLEAN:                   ${cleanup}"
+	echo "DO STELLA-DYCORE COMPIL: ${doGNU}"
+	echo "DO POMPA COMPILATION:    ${doGNU}"
 	echo "==============================================================="
 }
 
@@ -142,8 +148,8 @@ setupBuilds()
 	# compiler (for Stella and the Dycore)
   gnuCompiler="gnu"
 	# path and directory structures
-	stellapath="/project/c14/install/${slave}/crclim/stella_kflat8_klevel40/${compiler}"
-	dycorepath="/project/c14/install/${slave}/crclim/dycore_cordex/${target}/${compiler}"
+	stellapath="/project/c14/install/${slave}/crclim/stella_kflat8_klevel40/${gnuCompiler}"
+	dycorepath="/project/c14/install/${slave}/crclim/dycore_cordex/${target}/${gnuCompiler}"
 	cosmopath="/project/c14/install/${slave}/crclim/cosmo_cordex/${target}/${compiler}"
 
 	# clean previous install path
@@ -180,7 +186,7 @@ doDycore()
 }
 
 # compile and install cosmo-pompa
-doCosmo()
+doCosmoCompilation()
 {
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"	
 	test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}" -z
@@ -212,7 +218,9 @@ if [ ${doGNU} == "ON" ] ; then
 	doGnuOnlyCompilation
 fi
 
-doCosmo
+if [ ${doPompa} == "ON" ] ; then
+	doCosmoCompilation
+fi
 
 # end without errors
 echo "####### finished: $0 $* (PID=$$ HOST=$HOSTNAME TIME=$(date '+%D %H:%M:%S'))"

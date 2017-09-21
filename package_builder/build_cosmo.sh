@@ -57,11 +57,9 @@ parseOptions()
 		    singleprec=ON 
 		    ;;
 		c) 
-				echo "CACA2 >${OPTARG}"
 		    compiler=$OPTARG 
 		    ;;
-		t) 
-				echo "CACA1 >${OPTARG}"
+		t) 			
 		    target=$OPTARG
 		    ;;
 		s)

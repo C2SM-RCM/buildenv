@@ -47,7 +47,7 @@ parseOptions()
 	cleanup=OFF
 	doGNU=OFF
 
-	while getopts "h4:c:t:s:f:lvzg" opt; do
+	while getopts "h4c:t:s:f:l:vzg" opt; do
 		case "${opt}" in
 		h) 
 				showUsage
@@ -98,7 +98,6 @@ checkOptions()
 	test -n "${kflat}" || exitError 606 ${LINENO} "Option <flat> is not set"
 	test -n "${klevel}" || exitError 607 ${LINENO} "Option <klevel> is not set"
 }
-
 
 printConfig()
 {
@@ -202,6 +201,7 @@ checkOptions
 
 printConfig
 
+exit 1
 # clone
 cloneTheRepos
 

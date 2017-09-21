@@ -104,15 +104,15 @@ printConfig()
 	echo "==============================================================="
 	echo "BUILD CONFIGURATION"
 	echo "==============================================================="
-	echo "SINGLE PRECISION    ${singleprec}"
-	echo "COMPILER            ${compiler}"
-	echo "TARGET              ${target}"
-	echo "SLAVE               ${slave}"
-	echo "K-FLAT              ${kflat}"
-	echo "K-LEVEL             ${klevel}"
-	echo "VERBOSE             ${verbosity}"
-	echo "CLEAN               ${cleanup}"
-	echo "DO GNU COMPILATION  ${doGNU}"
+	echo "SINGLE PRECISION:    ${singleprec}"
+	echo "COMPILER:            ${compiler}"
+	echo "TARGET:              ${target}"
+	echo "SLAVE:               ${slave}"
+	echo "K-FLAT:              ${kflat}"
+	echo "K-LEVEL:             ${klevel}"
+	echo "VERBOSE:             ${verbosity}"
+	echo "CLEAN:               ${cleanup}"
+	echo "DO GNU COMPILATION:  ${doGNU}"
 	echo "==============================================================="
 }
 
@@ -201,7 +201,6 @@ checkOptions
 
 printConfig
 
-exit 1
 # clone
 cloneTheRepos
 

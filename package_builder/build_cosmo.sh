@@ -36,6 +36,7 @@ showUsage()
 # set defaults and process command line options
 parseOptions()
 {	
+	local OPTIND
 	singleprec=OFF
 	compiler=""
 	target=""
@@ -46,8 +47,8 @@ parseOptions()
 	cleanup=OFF
 	doGNU=OFF
 
-	while getopts "h:4ctsfl:v:z:g" opt; do
-		case $opt in
+	while getopts "h4:c:t:s:f:lvzg" opt; do
+		case "${opt}" in
 		h) 
 				showUsage
 			  exit 0 
@@ -56,9 +57,11 @@ parseOptions()
 		    singleprec=ON 
 		    ;;
 		c) 
+				echo "CACA2 >${OPTARG}"
 		    compiler=$OPTARG 
 		    ;;
 		t) 
+				echo "CACA1 >${OPTARG}"
 		    target=$OPTARG
 		    ;;
 		s)
@@ -83,12 +86,9 @@ parseOptions()
 		    showUsage
 		    exitError 601 ${LINENO} "invalid command line option (-${OPTARG})"
 		    ;;
-		:) 
-		    showUsage
-		    exitError 602 ${LINENO} "command line option (-${OPTARG}) requires argument"
-		    ;;
 		esac
 	done
+	shift $((OPTIND-1))
 }
 
 # make sure the working variable are set
@@ -201,6 +201,7 @@ parseOptions "$@"
 
 # check the command line options
 checkOptions
+
 printConfig
 
 # clone

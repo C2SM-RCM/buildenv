@@ -131,6 +131,9 @@ printConfig()
 # clone the repositories
 cloneTheRepos()
 {	
+	# clean the previous clone (simpler solution)
+	\rm -rf stella
+	\rm -rf cosmo-pompa
 	git clone git@github.com:MeteoSwiss-APN/stella.git --branch crclim
 	git clone git@github.com:C2SM-RCM/cosmo-pompa.git --branch crclim
 }

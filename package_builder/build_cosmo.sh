@@ -25,7 +25,7 @@ showUsage()
 	echo "optional arguments:"
 	echo "-4        Single precision (default: OFF)"
 	echo "-t        Target (e.g. cpu or gpu)"
-  echo "-c        Compiler (e.g. gnu, cray or pgi)"
+	echo "-c        Compiler (e.g. gnu, cray or pgi)"
 	echo "-s        Slave (the machine)"
 	echo "-f        STELLA K-Flat"
 	echo "-l        STELLA K-Level"
@@ -54,8 +54,8 @@ parseOptions()
 	while getopts "h4c:t:s:f:l:vzgdp" opt; do
 		case "${opt}" in
 		h) 
-				showUsage
-			  exit 0 
+		    showUsage
+		    exit 0 
 		  	;;
 		4) 
 		    singleprec=ON 
@@ -67,14 +67,14 @@ parseOptions()
 		    target=$OPTARG
 		    ;;
 		s)
-				slave=$OPTARG
-				;;
+		    slave=$OPTARG
+		    ;;
 		f)
-				kflat=$OPTARG
-				;;
+		    kflat=$OPTARG
+		    ;;
 		l)
-				klevel=$OPTARG
-				;;
+		    klevel=$OPTARG
+		    ;;
 		v) 
 		    verbosity=ON
 		    ;;
@@ -152,9 +152,9 @@ setupBuilds()
 	fi
 
 	# compiler (for Stella and the Dycore)
-  gnuCompiler="gnu"
+	gnuCompiler="gnu"
 	# path and directory structures
-	stellapath="/project/c14/install/${slave}/crclim/stella_kflat8_klevel40/${gnuCompiler}"
+	stellapath="/project/c14/install/${slave}/crclim/stella_kflat${kflat}_klevel${klevel}/${target}/${gnuCompiler}"
 	dycorepath="/project/c14/install/${slave}/crclim/dycore_cordex/${target}/${gnuCompiler}"
 	cosmopath="/project/c14/install/${slave}/crclim/cosmo_cordex/${target}/${compiler}"
 
@@ -179,7 +179,7 @@ doDycoreCompilation()
 {
 	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"	
 	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -z
-  retCode=$?
+	retCode=$?
 	tryExit $retCode "DYCORE BUILD"
 	cd ../.. || exitError 611 ${LINENO} "Unable to go back"
 }
@@ -228,4 +228,3 @@ fi
 # end without errors
 echo "####### finished: $0 $* (PID=$$ HOST=$HOSTNAME TIME=$(date '+%D %H:%M:%S'))"
 exit 0
-

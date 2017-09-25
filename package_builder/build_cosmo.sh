@@ -132,8 +132,10 @@ printConfig()
 cloneTheRepos()
 {	
 	# clean the previous clone (simpler solution)
+	echo "Clean previous directories (stella and cosmo-pompa)"
 	\rm -rf stella
 	\rm -rf cosmo-pompa
+	echo "Clone stella and cosmo-pompa"
 	git clone git@github.com:MeteoSwiss-APN/stella.git --branch crclim
 	git clone git@github.com:C2SM-RCM/cosmo-pompa.git --branch crclim
 }

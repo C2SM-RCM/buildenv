@@ -30,7 +30,8 @@ showUsage()
 	echo "-f        STELLA K-Flat"
 	echo "-l        STELLA K-Level"
 	echo "-z        Clean builds"
-	echo "-g        Do GNU build: Stella and the CPP Dycore"
+	echo "-g        Do GNU build: Stella"
+	echo "-d        Do GNU build: the CPP Dycore"
 	echo "-p        Do Cosmo-Pompa build"
 }
 
@@ -46,10 +47,11 @@ parseOptions()
 	klevel=""
 	verbosity=OFF
 	cleanup=OFF
-	doGNU=OFF
+	doStella=OFF
+	doDycore=OFF
 	doPompa=OFF
 
-	while getopts "h4c:t:s:f:l:vzg" opt; do
+	while getopts "h4c:t:s:f:l:vzgdp" opt; do
 		case "${opt}" in
 		h) 
 				showUsage
@@ -80,7 +82,10 @@ parseOptions()
 		    cleanup=ON
 		    ;;
 		g) 
-		    doGNU=ON
+		    doStella=ON
+		    ;;
+		d) 
+		    doDycore=ON
 		    ;;
 		p) 
 		    doPompa=ON
@@ -117,7 +122,8 @@ printConfig()
 	echo "K-LEVEL:                 ${klevel}"
 	echo "VERBOSE:                 ${verbosity}"
 	echo "CLEAN:                   ${cleanup}"
-	echo "DO STELLA-DYCORE COMPIL: ${doGNU}"
+	echo "DO STELLA COMPILATION:   ${doStella}"
+	echo "DO DYCORE COMPILATION:   ${doDycore}"
 	echo "DO POMPA COMPILATION:    ${doPompa}"
 	echo "==============================================================="
 }
@@ -158,15 +164,8 @@ setupBuilds()
 	\rm -rf "${cosmopath:?}/"*
 }
 
-# compile and install stella and the dycore
-doGnuOnlyCompilation()
-{
-	doStella
-	doDycore
-}
-
 # compile and install stella
-doStella()
+doStellaCompilation()
 {
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
 	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z
@@ -176,7 +175,7 @@ doStella()
 }
 
 # compile and install the dycore
-doDycore()
+doDycoreCompilation()
 {
 	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"	
 	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -z
@@ -214,8 +213,12 @@ cloneTheRepos
 setupBuilds
 
 # compile and install
-if [ ${doGNU} == "ON" ] ; then
-	doGnuOnlyCompilation
+if [ ${doStella} == "ON" ] ; then
+	doStellaCompilation
+fi
+
+if [ ${doDycore} == "ON" ] ; then
+	doDycoreCompilation
 fi
 
 if [ ${doPompa} == "ON" ] ; then

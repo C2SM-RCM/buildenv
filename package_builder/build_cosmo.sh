@@ -40,6 +40,7 @@ parseOptions()
 {	
 	local OPTIND
 	singleprec=OFF
+	projName=""
 	compiler=""
 	target=""
 	slave=""
@@ -50,8 +51,9 @@ parseOptions()
 	doStella=OFF
 	doDycore=OFF
 	doPompa=OFF
+	doRepro=OFF
 
-	while getopts "h4c:t:s:f:l:vzgdp" opt; do
+	while getopts "h4n:c:t:s:f:l:vzgdpx" opt; do
 		case "${opt}" in
 		h) 
 		    showUsage
@@ -59,6 +61,9 @@ parseOptions()
 		  	;;
 		4) 
 		    singleprec=ON 
+		    ;;
+		n)
+		    projName=$OPTARG 
 		    ;;
 		c) 
 		    compiler=$OPTARG 
@@ -90,6 +95,9 @@ parseOptions()
 		p) 
 		    doPompa=ON
 		    ;;
+		p)
+		    doRepro=ON
+		    ;;
 		\?) 
 		    showUsage
 		    exitError 601 ${LINENO} "invalid command line option (-${OPTARG})"
@@ -114,17 +122,19 @@ printConfig()
 	echo "==============================================================="
 	echo "BUILD CONFIGURATION"
 	echo "==============================================================="
-	echo "SINGLE PRECISION:        ${singleprec}"
-	echo "COMPILER:                ${compiler}"
-	echo "TARGET:                  ${target}"
-	echo "SLAVE:                   ${slave}"
-	echo "K-FLAT:                  ${kflat}"
-	echo "K-LEVEL:                 ${klevel}"
-	echo "VERBOSE:                 ${verbosity}"
-	echo "CLEAN:                   ${cleanup}"
-	echo "DO STELLA COMPILATION:   ${doStella}"
-	echo "DO DYCORE COMPILATION:   ${doDycore}"
-	echo "DO POMPA COMPILATION:    ${doPompa}"
+	echo "PROJECT NAME:             ${projName}"
+	echo "SINGLE PRECISION:         ${singleprec}"
+	echo "COMPILER:                 ${compiler}"
+	echo "TARGET:                   ${target}"
+	echo "SLAVE:                    ${slave}"
+	echo "K-FLAT:                   ${kflat}"
+	echo "K-LEVEL:                  ${klevel}"
+	echo "BIT-REPRO:                ${doRepro}"
+	echo "VERBOSE:                  ${verbosity}"
+	echo "CLEAN:                    ${cleanup}"
+	echo "DO STELLA COMPILATION:    ${doStella}"
+	echo "DO DYCORE COMPILATION:    ${doDycore}"
+	echo "DO POMPA COMPILATION:     ${doPompa}"
 	echo "==============================================================="
 }
 
@@ -159,9 +169,9 @@ setupBuilds()
 	# compiler (for Stella and the Dycore)
 	gnuCompiler="gnu"
 	# path and directory structures
-	stellapath="/project/c14/install/${slave}/crclim/stella_kflat${kflat}_klevel${klevel}/${target}/${gnuCompiler}"
-	dycorepath="/project/c14/install/${slave}/crclim/dycore_cordex/${target}/${gnuCompiler}"
-	cosmopath="/project/c14/install/${slave}/crclim/cosmo_cordex/${target}/${compiler}"
+	stellapath="/project/c14/install/${slave}/crclim/stella_kflat${kflat}_klevel${klevel}/${projName}/${target}/${gnuCompiler}"
+	dycorepath="/project/c14/install/${slave}/crclim/dycore/${projName}/${target}/${gnuCompiler}"
+	cosmopath="/project/c14/install/${slave}/crclim/cosmo/${projName}/${target}/${compiler}"
 
 	# clean previous install path
 	\rm -rf "${stellapath:?}/"*
@@ -173,8 +183,14 @@ setupBuilds()
 doStellaCompilation()
 {
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
-	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z
-	retCode=$?
+	if [ ${doRepro} == "ON" ] ; then
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z
+		retCode=$?
+	else
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z
+		retCode=$?
+	fi
+	
 	tryExit $retCode "STELLA BUILD"
 	cd .. || exitError 609 ${LINENO} "Unable to go back"
 }

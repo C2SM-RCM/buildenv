@@ -24,6 +24,7 @@ showUsage()
 	echo ""
 	echo "optional arguments:"
 	echo "-4        Single precision (default: OFF)"
+	echo "-n        The name of the project"
 	echo "-t        Target (e.g. cpu or gpu)"
 	echo "-c        Compiler (e.g. gnu, cray or pgi)"
 	echo "-s        Slave (the machine)"
@@ -33,6 +34,7 @@ showUsage()
 	echo "-g        Do GNU build: Stella"
 	echo "-d        Do GNU build: the CPP Dycore"
 	echo "-p        Do Cosmo-Pompa build"
+	echo "-x        Do bit-reproducible build"
 }
 
 # set defaults and process command line options
@@ -95,7 +97,7 @@ parseOptions()
 		p) 
 		    doPompa=ON
 		    ;;
-		p)
+		x)
 		    doRepro=ON
 		    ;;
 		\?) 
@@ -184,7 +186,7 @@ doStellaCompilation()
 {
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
 	if [ ${doRepro} == "ON" ] ; then
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z -x
 		retCode=$?
 	else
 		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z
@@ -198,8 +200,8 @@ doStellaCompilation()
 # compile and install the dycore
 doDycoreCompilation()
 {
-	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"	
-	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -z
+	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"
+	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -s "${stellapath}" -z
 	retCode=$?
 	tryExit $retCode "DYCORE BUILD"
 	cd ../.. || exitError 611 ${LINENO} "Unable to go back"
@@ -208,7 +210,7 @@ doDycoreCompilation()
 # compile and install cosmo-pompa
 doCosmoCompilation()
 {
-	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"	
+	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"
 	test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}" -z
 	retCode=$?
 	tryExit $retCode "COSMO BUILD"

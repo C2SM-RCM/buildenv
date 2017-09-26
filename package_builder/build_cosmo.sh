@@ -175,10 +175,18 @@ setupBuilds()
 	dycorepath="/project/c14/install/${slave}/crclim/dycore/${projName}/${target}/${gnuCompiler}"
 	cosmopath="/project/c14/install/${slave}/crclim/cosmo/${projName}/${target}/${compiler}"
 
-	# clean previous install path
-	\rm -rf "${stellapath:?}/"*
-	\rm -rf "${dycorepath:?}/"*
-	\rm -rf "${cosmopath:?}/"*
+	# clean previous install path if needed
+	if [ ${doStella} == "ON" ] ; then
+		\rm -rf "${stellapath:?}/"*
+	fi
+	
+	if [ ${doDycore} == "ON" ] ; then
+		\rm -rf "${dycorepath:?}/"*
+	fi
+
+	if [ ${doPompa} == "ON" ] ; then
+		\rm -rf "${cosmopath:?}/"*
+	fi
 }
 
 # compile and install stella

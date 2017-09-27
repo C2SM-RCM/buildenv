@@ -20,11 +20,15 @@ tryExit()
 
 showUsage()
 {
-	echo "usage: $(basename "$0") [-h] [-4] [-t target] [-c compiler] [-s slave] [-f kflat] [-l klevel] [-z]"
+	echo "usage: $(basename "$0") -t target -c compiler -s slave -b stella branch -o stella org -a cosmo branch -q cosmo org [-4] [-f kflat] [-l klevel] [-z] [-h]"
 	echo ""
 	echo "optional arguments:"
 	echo "-4        Single precision (default: OFF)"
 	echo "-n        The name of the project"
+	echo "-o        The STELLA github repository organisation"
+	echo "-b        The STELLA branch to checkout"	
+	echo "-q        The COSMO-POMPA github repository organisation"
+	echo "-a        The COSMO-POMPA branch to checkout"	
 	echo "-t        Target (e.g. cpu or gpu)"
 	echo "-c        Compiler (e.g. gnu, cray or pgi)"
 	echo "-s        Slave (the machine)"
@@ -34,7 +38,7 @@ showUsage()
 	echo "-g        Do GNU build: Stella"
 	echo "-d        Do GNU build: the CPP Dycore"
 	echo "-p        Do Cosmo-Pompa build"
-	echo "-x        Do bit-reproducible build"
+	echo "-x        Do bit-reproducible build"	
 }
 
 # set defaults and process command line options
@@ -48,6 +52,10 @@ parseOptions()
 	slave=""
 	kflat=""
 	klevel=""
+	stellaBranch=""
+	stellaOrg=""
+	cosmoBranch=""
+	cosmoOrg=""
 	verbosity=OFF
 	cleanup=OFF
 	doStella=OFF
@@ -55,7 +63,7 @@ parseOptions()
 	doPompa=OFF
 	doRepro=OFF
 
-	while getopts "h4n:c:t:s:f:l:vzgdpx" opt; do
+	while getopts "h4n:c:t:s:f:l:b:o:a:q:vzgdpx" opt; do
 		case "${opt}" in
 		h) 
 		    showUsage
@@ -69,6 +77,18 @@ parseOptions()
 		    ;;
 		c) 
 		    compiler=$OPTARG 
+		    ;;
+		b)
+		    stellaBranch=$OPTARG 
+		    ;;
+		o) 
+		    stellaOrg=$OPTARG 
+		    ;;
+		a)
+		    cosmoBranch=$OPTARG 
+		    ;;
+		q) 
+		    cosmoOrg=$OPTARG
 		    ;;
 		t) 			
 		    target=$OPTARG
@@ -126,6 +146,10 @@ printConfig()
 	echo "==============================================================="
 	echo "PROJECT NAME:             ${projName}"
 	echo "SINGLE PRECISION:         ${singleprec}"
+	echo "STELLA ORGANISATION:      ${stellaOrg}"
+	echo "STELLA BRANCH:            ${stellaBranch}"
+	echo "COSMO ORGANISATION:       ${cosmoOrg}"
+	echo "COSMO BRANCH:             ${cosmoBranch}"
 	echo "COMPILER:                 ${compiler}"
 	echo "TARGET:                   ${target}"
 	echo "SLAVE:                    ${slave}"
@@ -148,8 +172,8 @@ cloneTheRepos()
 	\rm -rf stella
 	\rm -rf cosmo-pompa
 	echo "Clone stella and cosmo-pompa"
-	git clone git@github.com:MeteoSwiss-APN/stella.git --branch crclim
-	git clone git@github.com:C2SM-RCM/cosmo-pompa.git --branch crclim
+	git clone git@github.com:"${stellaOrg}"/stella.git --branch "${stellaBranch}"
+	git clone git@github.com:"${cosmoOrg}"/cosmo-pompa.git --branch "${cosmoBranch}"
 }
 
 setupBuilds()
@@ -183,7 +207,7 @@ setupBuilds()
 	if [ ${doDycore} == "ON" ] ; then
 		\rm -rf "${dycorepath:?}/"*
 	fi
-
+	
 	if [ ${doPompa} == "ON" ] ; then
 		\rm -rf "${cosmopath:?}/"*
 	fi

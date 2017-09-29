@@ -40,6 +40,7 @@ testdata=""     # directory where unittestdata is stored
 if [ "`hostname | grep daint`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
+    . /etc/bash.bashrc.local
     export host="daint"
     queue="normal"
     nthreads=8

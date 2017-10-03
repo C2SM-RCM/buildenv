@@ -220,17 +220,7 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     cray )
-	
-	export MODULERCFILE=/opt/cray/pe/cdt/16.11/modulerc 	
-	module switch atp/2.0.4 
-	module switch cce/8.5.5 
-	module switch cray-libsci/16.11.1 
-	module switch cray-mpich/7.5.0 
-	module switch craype/2.5.8 
-	module switch modules/3.2.10.5 
-	module switch perftools-base/6.4.3 
-	module switch pmi/5.0.10-1.0000.11050.0.0.ari 
-        # module load cce/8.5.5
+        module load cce/8.6.1
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
         # Override C++ and C compiler
@@ -279,16 +269,6 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     cray )
-	unset MODULERCFILE
-	module switch atp 
-	module switch cce 
-	module unload cray-libsci_acc/16.11.1 #this is required  because the libsci is loaded twice
-	module switch cray-libsci
-	module switch cray-mpich 
-	module switch craype 
-	module switch modules 
-	module switch perftools-base 
-	module switch pmi
         module unload gcc/5.3.0
         ;;
     gnu )

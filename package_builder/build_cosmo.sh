@@ -20,25 +20,30 @@ tryExit()
 
 showUsage()
 {
-	echo "usage: $(basename "$0") -t target -c compiler -s slave -b stella branch -o stella org -a cosmo branch -q cosmo org [-4] [-f kflat] [-l klevel] [-z] [-h]"
+	echo "usage: $(basename "$0") -i install_prefix -t target -c compiler -s slave -b stella_branch -o stella_org -a cosmo_branch -q cosmo_org [-4] [-f kflat] [-l klevel] [-z] [-h]"
 	echo ""
-	echo "optional arguments:"
-	echo "-4        Single precision (default: OFF)"
-	echo "-n        The name of the project"
-	echo "-o        The STELLA github repository organisation"
-	echo "-b        The STELLA branch to checkout"	
-	echo "-q        The COSMO-POMPA github repository organisation"
-	echo "-a        The COSMO-POMPA branch to checkout"	
+	echo "mandatory arguments:"
 	echo "-t        Target (e.g. cpu or gpu)"
-	echo "-c        Compiler (e.g. gnu, cray or pgi)"
 	echo "-s        Slave (the machine)"
 	echo "-f        STELLA K-Flat"
 	echo "-l        STELLA K-Level"
+	echo "-n        The name of the project"
+	echo "-b        The STELLA branch to checkout (e.g. crclim)"	
+	echo "-o        The STELLA github repository organisation (e.g. C2SM-RCM)"
+	echo "-a        The COSMO-POMPA branch to checkout (e.g. crclim)"	
+	echo "-q        The COSMO-POMPA github repository organisation (e.g. C2SM-RCM)"
+	echo ""
+	echo "optional arguments:"
+	echo "-h        Show help"
+	echo "-4        Single precision (default: OFF)"
+	echo "-c        Compiler (e.g. gnu, cray or pgi)"
+	echo "-v        Verbose mode"
 	echo "-z        Clean builds"
-	echo "-g        Do GNU build: Stella"
-	echo "-d        Do GNU build: the CPP Dycore"
+	echo "-g        Do Stella GNU build"
+	echo "-d        Do CPP Dycore GNU build"
 	echo "-p        Do Cosmo-Pompa build"
-	echo "-x        Do bit-reproducible build"	
+	echo "-i        Install prefix"
+	echo "-x        Do bit-reproducible build"
 }
 
 # set defaults and process command line options
@@ -56,6 +61,7 @@ parseOptions()
 	stellaOrg=""
 	cosmoBranch=""
 	cosmoOrg=""
+	instPrefix=""
 	verbosity=OFF
 	cleanup=OFF
 	doStella=OFF
@@ -63,7 +69,7 @@ parseOptions()
 	doPompa=OFF
 	doRepro=OFF
 
-	while getopts "h4n:c:t:s:f:l:b:o:a:q:vzgdpx" opt; do
+	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:x" opt; do
 		case "${opt}" in
 		h) 
 		    showUsage
@@ -117,6 +123,9 @@ parseOptions()
 		p) 
 		    doPompa=ON
 		    ;;
+		i)
+		    instPrefix=$OPTARG
+		    ;;
 		x)
 		    doRepro=ON
 		    ;;
@@ -132,11 +141,16 @@ parseOptions()
 # make sure the working variable are set
 checkOptions()
 {	
-	test -n "${compiler}" || exitError 603 ${LINENO} "Option <compiler> is not set"
-	test -n "${target}" || exitError 604 ${LINENO} "Option <target> is not set"
-	test -n "${slave}" || exitError 605 ${LINENO} "Option <slave> is not set"
-	test -n "${kflat}" || exitError 606 ${LINENO} "Option <flat> is not set"
-	test -n "${klevel}" || exitError 607 ${LINENO} "Option <klevel> is not set"
+	test -n "${compiler}"     || exitError 603 ${LINENO} "Option <compiler> is not set"
+	test -n "${target}"       || exitError 604 ${LINENO} "Option <target> is not set"
+	test -n "${slave}"        || exitError 605 ${LINENO} "Option <slave> is not set"
+	test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
+	test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
+	test -n "${projName}"     || exitError 663 ${LINENO} "Option <projName> is not set"
+	test -n "${stellaBranch}" || exitError 665 ${LINENO} "Option <stellaBranch> is not set"
+	test -n "${stellaOrg}"    || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
+	test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
+	test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 }
 
 printConfig()
@@ -161,6 +175,7 @@ printConfig()
 	echo "DO STELLA COMPILATION:    ${doStella}"
 	echo "DO DYCORE COMPILATION:    ${doDycore}"
 	echo "DO POMPA COMPILATION:     ${doPompa}"
+	echo "INSTALL PREFIX:           ${instPrefix}"
 	echo "==============================================================="
 }
 
@@ -195,9 +210,9 @@ setupBuilds()
 	# compiler (for Stella and the Dycore)
 	gnuCompiler="gnu"
 	# path and directory structures
-	stellapath="/project/c14/install/${slave}/crclim/stella_kflat${kflat}_klevel${klevel}/${projName}/${target}/${gnuCompiler}"
-	dycorepath="/project/c14/install/${slave}/crclim/dycore/${projName}/${target}/${gnuCompiler}"
-	cosmopath="/project/c14/install/${slave}/crclim/cosmo/${projName}/${target}/${compiler}"
+	stellapath="${instPrefix}/${slave}/crclim/stella_kflat${kflat}_klevel${klevel}/${projName}/${target}/${gnuCompiler}"
+	dycorepath="${instPrefix}/${slave}/crclim/dycore/${projName}/${target}/${gnuCompiler}"
+	cosmopath="${instPrefix}/${slave}/crclim/cosmo/${projName}/${target}/${compiler}"
 
 	# clean previous install path if needed
 	if [ ${doStella} == "ON" ] ; then
@@ -218,10 +233,10 @@ doStellaCompilation()
 {
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
 	if [ ${doRepro} == "ON" ] ; then
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z -x
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -x
 		retCode=$?
 	else
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -z
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}"
 		retCode=$?
 	fi
 	
@@ -233,7 +248,7 @@ doStellaCompilation()
 doDycoreCompilation()
 {
 	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"
-	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -s "${stellapath}" -z
+	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -s "${stellapath}"
 	retCode=$?
 	tryExit $retCode "DYCORE BUILD"
 	cd ../.. || exitError 611 ${LINENO} "Unable to go back"
@@ -243,7 +258,7 @@ doDycoreCompilation()
 doCosmoCompilation()
 {
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"
-	test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}" -z
+	test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
 	retCode=$?
 	tryExit $retCode "COSMO BUILD"
 	cd ../.. || exitError 612 ${LINENO} "Unable to go back"

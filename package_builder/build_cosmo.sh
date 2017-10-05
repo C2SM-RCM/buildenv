@@ -144,13 +144,26 @@ checkOptions()
 	test -n "${compiler}"     || exitError 603 ${LINENO} "Option <compiler> is not set"
 	test -n "${target}"       || exitError 604 ${LINENO} "Option <target> is not set"
 	test -n "${slave}"        || exitError 605 ${LINENO} "Option <slave> is not set"
-	test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
-	test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
 	test -n "${projName}"     || exitError 663 ${LINENO} "Option <projName> is not set"
-	test -n "${stellaBranch}" || exitError 665 ${LINENO} "Option <stellaBranch> is not set"
-	test -n "${stellaOrg}"    || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
-	test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
-	test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
+
+	if [ ${doStella} == "ON" ] ; then
+		test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
+		test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
+		test -n "${stellaBranch}" || exitError 665 ${LINENO} "Option <stellaBranch> is not set"
+		test -n "${stellaOrg}"    || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
+	fi
+
+	if [ ${doDycore} == "ON" ] ; then
+		test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
+		test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
+		test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
+		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
+	fi
+	
+	if [ ${doPompa} == "ON" ] ; then
+		test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
+		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
+	fi
 }
 
 printConfig()
@@ -182,13 +195,21 @@ printConfig()
 # clone the repositories
 cloneTheRepos()
 {	
-	# clean the previous clone (simpler solution)
-	echo "Clean previous directories (stella and cosmo-pompa)"
-	\rm -rf stella
-	\rm -rf cosmo-pompa
-	echo "Clone stella and cosmo-pompa"
-	git clone git@github.com:"${stellaOrg}"/stella.git --branch "${stellaBranch}"
-	git clone git@github.com:"${cosmoOrg}"/cosmo-pompa.git --branch "${cosmoBranch}"
+	# note that we clean the previous clone and they're supposed to be installed   
+	# on another directory (simpler solution)
+	if [ ${doStella} == "ON" ] ; then
+		echo "Clean previous stella directories"
+		\rm -rf stella
+		echo "Clone stella"
+		git clone git@github.com:"${stellaOrg}"/stella.git --branch "${stellaBranch}"
+	fi
+
+	if [ ${doDycore} == "ON" ] || [ ${doPompa} == "ON" ] ; then
+		echo "Clean previous cosmo-pompa directories"
+		\rm -rf cosmo-pompa
+		echo "Clone cosmo-pompa (with dycore)"
+		git clone git@github.com:"${cosmoOrg}"/cosmo-pompa.git --branch "${cosmoBranch}"
+	fi
 }
 
 setupBuilds()
@@ -209,6 +230,7 @@ setupBuilds()
 
 	# compiler (for Stella and the Dycore)
 	gnuCompiler="gnu"
+	
 	# path and directory structures
 	stellapath="${instPrefix}/${slave}/crclim/stella_kflat${kflat}_klevel${klevel}/${projName}/${target}/${gnuCompiler}"
 	dycorepath="${instPrefix}/${slave}/crclim/dycore/${projName}/${target}/${gnuCompiler}"

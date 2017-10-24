@@ -20,30 +20,34 @@ tryExit()
 
 showUsage()
 {
-	echo "usage: $(basename "$0") -i install_prefix -t target -c compiler -s slave -b stella_branch -o stella_org -a cosmo_branch -q cosmo_org [-4] [-f kflat] [-l klevel] [-z] [-h]"
+	usage="usage: $(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"
+	usage="${usage} [-g] [-d] [-p] [-h] [-n name] [-s slave] [-b branch] [-f flat] [-l level] [-a branch] [-4] [-v] [-z] [-i prefix] [-x]"
+
+	echo "${usage}"
+	echo ""
+	echo "-h        Show help"
 	echo ""
 	echo "mandatory arguments:"
-	echo "-t        Target (e.g. cpu or gpu)"
-	echo "-s        Slave (the machine)"
-	echo "-f        STELLA K-Flat"
-	echo "-l        STELLA K-Level"
-	echo "-n        The name of the project"
-	echo "-b        The STELLA branch to checkout (e.g. crclim)"	
-	echo "-o        The STELLA github repository organisation (e.g. C2SM-RCM)"
-	echo "-a        The COSMO-POMPA branch to checkout (e.g. crclim)"	
-	echo "-q        The COSMO-POMPA github repository organisation (e.g. C2SM-RCM)"
-	echo ""
-	echo "optional arguments:"
-	echo "-h        Show help"
-	echo "-4        Single precision (default: OFF)"
 	echo "-c        Compiler (e.g. gnu, cray or pgi)"
-	echo "-v        Verbose mode"
-	echo "-z        Clean builds"
-	echo "-g        Do Stella GNU build"
-	echo "-d        Do CPP Dycore GNU build"
-	echo "-p        Do Cosmo-Pompa build"
-	echo "-i        Install prefix"
-	echo "-x        Do bit-reproducible build"
+	echo "-t        Target (e.g. cpu or gpu)"					
+	echo "-o        The STELLA github repository organisation (e.g. C2SM-RCM), if build requested (with -g)"	
+	echo "-q        The COSMO-POMPA github repository organisation (e.g. C2SM-RCM), if build requested (with -d or -p)"
+	echo ""
+	echo "optional arguments:"	
+	echo "-n        The name of the project, default EMPTY"
+	echo "-s        Slave (the machine), default EMPTY"
+	echo "-b        The STELLA branch to checkout (e.g. crclim), default: master"
+	echo "-f        STELLA K-Flat, default 19"
+	echo "-l        STELLA K-Level, default 60"
+	echo "-a        The COSMO-POMPA branch to checkout (e.g. crclim), default: master"
+	echo "-4        Single precision, default: OFF"
+	echo "-v        Verbose mode, default: OFF"
+	echo "-z        Clean builds, default: OFF"
+	echo "-g        Do Stella GNU build, default: OFF"
+	echo "-d        Do CPP Dycore GNU build, default: OFF"
+	echo "-p        Do Cosmo-Pompa build, default: OFF"
+	echo "-i        Install prefix, default: ."
+	echo "-x        Do bit-reproducible build, default: OFF"
 }
 
 # set defaults and process command line options
@@ -57,11 +61,11 @@ parseOptions()
 	slave=""
 	kflat=""
 	klevel=""
-	stellaBranch=""
+	stellaBranch="master"
 	stellaOrg=""
-	cosmoBranch=""
+	cosmoBranch="master"
 	cosmoOrg=""
-	instPrefix=""
+	instPrefix="."
 	verbosity=OFF
 	cleanup=OFF
 	doStella=OFF
@@ -143,25 +147,25 @@ checkOptions()
 {	
 	test -n "${compiler}"     || exitError 603 ${LINENO} "Option <compiler> is not set"
 	test -n "${target}"       || exitError 604 ${LINENO} "Option <target> is not set"
-	test -n "${slave}"        || exitError 605 ${LINENO} "Option <slave> is not set"
-	test -n "${projName}"     || exitError 663 ${LINENO} "Option <projName> is not set"
+	#test -n "${slave}"        || exitError 605 ${LINENO} "Option <slave> is not set"
+	#test -n "${projName}"     || exitError 663 ${LINENO} "Option <projName> is not set"
 
 	if [ ${doStella} == "ON" ] ; then
-		test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
-		test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
-		test -n "${stellaBranch}" || exitError 665 ${LINENO} "Option <stellaBranch> is not set"
+		#test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
+		#test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
+		#test -n "${stellaBranch}" || exitError 665 ${LINENO} "Option <stellaBranch> is not set"
 		test -n "${stellaOrg}"    || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
 	fi
 
 	if [ ${doDycore} == "ON" ] ; then
-		test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
-		test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
-		test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
+		#test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
+		#test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
+		#test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
 		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 	fi
 	
 	if [ ${doPompa} == "ON" ] ; then
-		test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
+		#test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
 		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 	fi
 }
@@ -180,8 +184,16 @@ printConfig()
 	echo "COMPILER:                 ${compiler}"
 	echo "TARGET:                   ${target}"
 	echo "SLAVE:                    ${slave}"
-	echo "K-FLAT:                   ${kflat}"
-	echo "K-LEVEL:                  ${klevel}"
+	if [ -z ${kflat+x} ]; then
+		echo "K-FLAT:                   DEFAULT"
+	else
+		echo "K-FLAT:                   ${kflat}"
+	fi
+	if [ -z ${klevel+x} ]; then
+		echo "K-LEVEL:                  ${klevel}"
+	else
+		echo "K-LEVEL:                  DEFAULT"
+	fi	
 	echo "BIT-REPRO:                ${doRepro}"
 	echo "VERBOSE:                  ${verbosity}"
 	echo "CLEAN:                    ${cleanup}"
@@ -230,11 +242,20 @@ setupBuilds()
 
 	# compiler (for Stella and the Dycore)
 	gnuCompiler="gnu"
+
+	stellaDirName="stella"
+	if [ "${kflat}x" != "x" ]; then
+		stellaDirName="${stellaDirName}_kflat${kflat}"
+	fi
+
+	if [ "${klevel}x" != "x" ]; then
+		stellaDirName="${stellaDirName}_klevel${klevel}"
+	fi
 	
 	# path and directory structures
-	stellapath="${instPrefix}/${slave}/crclim/stella_kflat${kflat}_klevel${klevel}/${projName}/${target}/${gnuCompiler}"
-	dycorepath="${instPrefix}/${slave}/crclim/dycore/${projName}/${target}/${gnuCompiler}"
-	cosmopath="${instPrefix}/${slave}/crclim/cosmo/${projName}/${target}/${compiler}"
+	stellapath="${instPrefix}/${slave}/${projName}/${stellaDirName}/${target}/${gnuCompiler}"
+	dycorepath="${instPrefix}/${slave}/${projName}/dycore/${target}/${gnuCompiler}"
+	cosmopath="${instPrefix}/${slave}/${projName}/cosmo/${target}/${compiler}"
 
 	# clean previous install path if needed
 	if [ ${doStella} == "ON" ] ; then
@@ -253,12 +274,25 @@ setupBuilds()
 # compile and install stella
 doStellaCompilation()
 {
+	kFlatLevels=""
+	if [ -z ${kflat+x} ]; then
+		echo "K-FLAT is unset using default";
+	else
+		kFlatLevels="${kFlatLevels} -f ${kflat}"
+	fi
+
+	if [ -z ${klevel+x} ]; then
+		echo "K-LEVELS is unset using default";
+	else
+		kFlatLevels="${kFlatLevels} -k ${klevel}"
+	fi
+
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
 	if [ ${doRepro} == "ON" ] ; then
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}" -x
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" "${kFlatLevels}" -x
 		retCode=$?
 	else
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" -f "${kflat}" -k "${klevel}"
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" "${kFlatLevels}"
 		retCode=$?
 	fi
 	
@@ -297,6 +331,9 @@ parseOptions "$@"
 checkOptions
 
 printConfig
+
+echo "WARNING TEST MODE"
+exit 1
 
 # clone
 cloneTheRepos

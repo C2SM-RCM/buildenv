@@ -99,7 +99,7 @@ setCppEnvironment()
         module load craype-accel-nvidia60
     fi
     
-    module load CMake
+    module load CMake/3.8.1
 
     # Fortran compiler specific modules and setup
     case "${compiler}" in

@@ -19,23 +19,27 @@ tryExit()
 }
 
 showUsage()
-{
-	usage="usage: $(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"
+{	
+	echo "Clone, compile and install COSMO-POMPA. "
+	echo "WARNING:"
+	echo "- the script clones the repositories in the working directory"
+	echo "- the script clones only what is built (see -g, -d or -p)"
+	echo "- the script deletes the stella and cosmo-pompa in the working directory before doing a clone (if needed)"
+
+	usage="USAGE: $(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"
 	usage="${usage} [-g] [-d] [-p] [-h] [-n name] [-s slave] [-b branch] [-f flat] [-l level] [-a branch] [-4] [-v] [-z] [-i prefix] [-x]"
 
-	echo "Clone, compile and install COSMO-POMPA. "
-	echo "WARNING: the script deletes "
 	echo "${usage}"
 	echo ""
 	echo "-h        Show help"
 	echo ""
-	echo "mandatory arguments:"
+	echo "Mandatory arguments:"
 	echo "-c        Compiler (e.g. gnu, cray or pgi)"
 	echo "-t        Target (e.g. cpu or gpu)"					
 	echo "-o        The STELLA github repository organisation (e.g. MeteoSwiss-APN), if build requested (with -g)"	
 	echo "-q        The COSMO-POMPA github repository organisation (e.g. C2SM-RCM), if build requested (with -d or -p)"
 	echo ""
-	echo "optional arguments:"	
+	echo "Optional arguments, see default:"	
 	echo "-n        The name of the project, default EMPTY"
 	echo "-s        Slave (the machine), default EMPTY"
 	echo "-b        The STELLA branch to checkout (e.g. crclim), default: master"
@@ -48,7 +52,7 @@ showUsage()
 	echo "-g        Do Stella GNU build, default: OFF"
 	echo "-d        Do CPP Dycore GNU build, default: OFF"
 	echo "-p        Do Cosmo-Pompa build, default: OFF"
-	echo "-i        Install prefix, default: ."
+	echo "-i        Install prefix, default: current working directory"
 	echo "-x        Do bit-reproducible build, default: OFF"
 }
 
@@ -205,8 +209,16 @@ printConfig()
 	echo "  COSMO ORGANISATION:       ${cosmoOrg}"
 	echo "  COSMO BRANCH:             ${cosmoBranch}"
 	echo "INSTALL PATHS"
-	echo "  SLAVE:                    ${slave}"
-	echo "  PROJECT NAME:             ${projName}"
+	if [ -z ${slave+x} ]; then
+		echo "  SLAVE:                    ${slave}"
+	else
+		echo "  SLAVE:                    N/A"
+	fi
+	if [ -z ${projName+x} ]; then
+		echo "  PROJECT NAME:             ${projName}"
+	else
+		echo "  PROJECT NAME:             N/A"
+	fi
 	echo "  INSTALL PREFIX:           ${instPrefix}"
 	echo "  STELLA INSTALL:           ${stellapath}"
 	echo "  DYCORE INSTALL:           ${dycorepath}"

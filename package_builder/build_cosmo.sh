@@ -23,6 +23,8 @@ showUsage()
 	usage="usage: $(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"
 	usage="${usage} [-g] [-d] [-p] [-h] [-n name] [-s slave] [-b branch] [-f flat] [-l level] [-a branch] [-4] [-v] [-z] [-i prefix] [-x]"
 
+	echo "Clone, compile and install COSMO-POMPA. "
+	echo "WARNING: the script deletes "
 	echo "${usage}"
 	echo ""
 	echo "-h        Show help"
@@ -30,7 +32,7 @@ showUsage()
 	echo "mandatory arguments:"
 	echo "-c        Compiler (e.g. gnu, cray or pgi)"
 	echo "-t        Target (e.g. cpu or gpu)"					
-	echo "-o        The STELLA github repository organisation (e.g. C2SM-RCM), if build requested (with -g)"	
+	echo "-o        The STELLA github repository organisation (e.g. MeteoSwiss-APN), if build requested (with -g)"	
 	echo "-q        The COSMO-POMPA github repository organisation (e.g. C2SM-RCM), if build requested (with -d or -p)"
 	echo ""
 	echo "optional arguments:"	
@@ -145,6 +147,7 @@ parseOptions()
 # make sure the working variable are set
 checkOptions()
 {	
+	echo "INFO: checking mandatory options"
 	test -n "${compiler}"     || exitError 603 ${LINENO} "Option <compiler> is not set"
 	test -n "${target}"       || exitError 604 ${LINENO} "Option <target> is not set"
 	#test -n "${slave}"        || exitError 605 ${LINENO} "Option <slave> is not set"
@@ -175,50 +178,64 @@ printConfig()
 	echo "==============================================================="
 	echo "BUILD CONFIGURATION"
 	echo "==============================================================="
-	echo "PROJECT NAME:             ${projName}"
-	echo "SINGLE PRECISION:         ${singleprec}"
-	echo "STELLA ORGANISATION:      ${stellaOrg}"
-	echo "STELLA BRANCH:            ${stellaBranch}"
-	echo "COSMO ORGANISATION:       ${cosmoOrg}"
-	echo "COSMO BRANCH:             ${cosmoBranch}"
+	echo "DO STELLA COMPILATION:    ${doStella}"
+	echo "DO DYCORE COMPILATION:    ${doDycore}"
+	echo "DO POMPA COMPILATION:     ${doPompa}"
+	echo ""
 	echo "COMPILER:                 ${compiler}"
 	echo "TARGET:                   ${target}"
-	echo "SLAVE:                    ${slave}"
+	echo "SINGLE PRECISION:         ${singleprec}"
+	echo "BIT-REPRO:                ${doRepro}"
+	echo "VERBOSE:                  ${verbosity}"
+	echo "CLEAN:                    ${cleanup}"
+	echo ""
+	echo "STELLA ORGANISATION:      ${stellaOrg}"
+	echo "STELLA BRANCH:            ${stellaBranch}"
 	if [ -z ${kflat+x} ]; then
-		echo "K-FLAT:                   DEFAULT"
-	else
 		echo "K-FLAT:                   ${kflat}"
+	else
+		echo "K-FLAT:                   DEFAULT"
 	fi
 	if [ -z ${klevel+x} ]; then
 		echo "K-LEVEL:                  ${klevel}"
 	else
 		echo "K-LEVEL:                  DEFAULT"
 	fi	
-	echo "BIT-REPRO:                ${doRepro}"
-	echo "VERBOSE:                  ${verbosity}"
-	echo "CLEAN:                    ${cleanup}"
-	echo "DO STELLA COMPILATION:    ${doStella}"
-	echo "DO DYCORE COMPILATION:    ${doDycore}"
-	echo "DO POMPA COMPILATION:     ${doPompa}"
+	echo ""
+	echo "COSMO ORGANISATION:       ${cosmoOrg}"
+	echo "COSMO BRANCH:             ${cosmoBranch}"
+	echo ""
+	echo "SLAVE:                    ${slave}"
+	echo "PROJECT NAME:             ${projName}"
 	echo "INSTALL PREFIX:           ${instPrefix}"
+	echo "STELLA INSTALL:           ${stellapath}"
+	echo "DYCORE INSTALL:           ${dycorepath}"
+	echo "COSMO INSTALL:            ${cosmopath}"
 	echo "==============================================================="
 }
 
 # clone the repositories
 cloneTheRepos()
-{	
+{		
+	echo "INFO: Cloning needed repositories"
 	# note that we clean the previous clone and they're supposed to be installed   
-	# on another directory (simpler solution)
+	# on another directory (simpler solution)	
 	if [ ${doStella} == "ON" ] ; then
-		echo "Clean previous stella directories"
-		\rm -rf stella
+		echo "WARNING: Cleaning previous stella directories in 5 [s]"
+		sleep 5
+		if [ -d stella ]; then
+			\rm -rf stella
+		fi
 		echo "Clone stella"
 		git clone git@github.com:"${stellaOrg}"/stella.git --branch "${stellaBranch}"
 	fi
 
 	if [ ${doDycore} == "ON" ] || [ ${doPompa} == "ON" ] ; then
-		echo "Clean previous cosmo-pompa directories"
-		\rm -rf cosmo-pompa
+		echo "WARNING: cleaning previous cosmo-pompa directories in 5 [s]"
+		sleep 5
+		if [ -d cosmo-pompa ]; then
+			\rm -rf cosmo-pompa
+		fi
 		echo "Clone cosmo-pompa (with dycore)"
 		git clone git@github.com:"${cosmoOrg}"/cosmo-pompa.git --branch "${cosmoBranch}"
 	fi
@@ -256,17 +273,20 @@ setupBuilds()
 	stellapath="${instPrefix}/${slave}/${projName}/${stellaDirName}/${target}/${gnuCompiler}"
 	dycorepath="${instPrefix}/${slave}/${projName}/dycore/${target}/${gnuCompiler}"
 	cosmopath="${instPrefix}/${slave}/${projName}/cosmo/${target}/${compiler}"
+}
 
+cleanPreviousInstall() 
+{
 	# clean previous install path if needed
-	if [ ${doStella} == "ON" ] ; then
+	if [ ${doStella} == "ON" ] && [ -d "${stellapath}" ] ; then
 		\rm -rf "${stellapath:?}/"*
 	fi
 	
-	if [ ${doDycore} == "ON" ] ; then
+	if [ ${doDycore} == "ON" ] && [ -d "${dycorepath}" ] ; then
 		\rm -rf "${dycorepath:?}/"*
 	fi
 	
-	if [ ${doPompa} == "ON" ] ; then
+	if [ ${doPompa} == "ON" ] && [ -d "${cosmopath}" ] ; then
 		\rm -rf "${cosmopath:?}/"*
 	fi
 }
@@ -276,15 +296,15 @@ doStellaCompilation()
 {
 	kFlatLevels=""
 	if [ -z ${kflat+x} ]; then
-		echo "K-FLAT is unset using default";
-	else
 		kFlatLevels="${kFlatLevels} -f ${kflat}"
+	else
+		echo "K-FLAT is unset using default"
 	fi
 
 	if [ -z ${klevel+x} ]; then
-		echo "K-LEVELS is unset using default";
-	else
 		kFlatLevels="${kFlatLevels} -k ${klevel}"
+	else
+		echo "K-LEVELS is unset using default"
 	fi
 
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
@@ -330,16 +350,16 @@ parseOptions "$@"
 # check the command line options
 checkOptions
 
-printConfig
+# setup
+setupBuilds
 
-echo "WARNING TEST MODE"
-exit 1
+printConfig
 
 # clone
 cloneTheRepos
 
-# setup
-setupBuilds
+# clean
+cleanPreviousInstall
 
 # compile and install
 if [ ${doStella} == "ON" ] ; then

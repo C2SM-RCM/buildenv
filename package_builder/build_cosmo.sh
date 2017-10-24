@@ -21,12 +21,14 @@ tryExit()
 showUsage()
 {	
 	echo "Clone, compile and install COSMO-POMPA. "
+	echo ""
 	echo "WARNING:"
 	echo "- the script clones the repositories in the working directory"
 	echo "- the script clones only what is built (see -g, -d or -p)"
 	echo "- the script deletes the stella and cosmo-pompa in the working directory before doing a clone (if needed)"
-
-	usage="USAGE: $(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"
+	echo ""
+	echo "USAGE:"
+	usage="$(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"
 	usage="${usage} [-g] [-d] [-p] [-h] [-n name] [-s slave] [-b branch] [-f flat] [-l level] [-a branch] [-4] [-v] [-z] [-i prefix] [-x]"
 
 	echo "${usage}"
@@ -185,7 +187,7 @@ printConfig()
 	echo "  VERBOSE:                  ${verbosity}"
 	echo "  CLEAN:                    ${cleanup}"
 	echo "REPOSITORIES"
-	echo "  STELLA ORGANISATION:      ${stellaOrg}"
+	echo "  STELLA ORGANIZATION:      ${stellaOrg}"
 	echo "  STELLA BRANCH:            ${stellaBranch}"
 	if [ -z ${kflat+x} ]; then
 		echo "  K-FLAT:                   ${kflat}"
@@ -197,7 +199,7 @@ printConfig()
 	else
 		echo "  K-LEVEL:                  DEFAULT"
 	fi	
-	echo "  COSMO ORGANISATION:       ${cosmoOrg}"
+	echo "  COSMO ORGANIZATION:       ${cosmoOrg}"
 	echo "  COSMO BRANCH:             ${cosmoBranch}"
 	echo "INSTALL PATHS"
 	if [ -z ${slave+x} ]; then
@@ -273,7 +275,7 @@ setupBuilds()
 	fi
 	
 	# path and directory structures
-	stellapath="${instPrefix}/${slave}/${projName}/${stellaDirName}/${target}/${gnuCompiler}"
+	stellapath="${instPrefix}/${slave}/${projName}/${stellaDirName}/${gnuCompiler}"
 	dycorepath="${instPrefix}/${slave}/${projName}/dycore/${target}/${gnuCompiler}"
 	cosmopath="${instPrefix}/${slave}/${projName}/cosmo/${target}/${compiler}"
 }

@@ -154,25 +154,16 @@ checkOptions()
 	echo "INFO: checking mandatory options"
 	test -n "${compiler}"     || exitError 603 ${LINENO} "Option <compiler> is not set"
 	test -n "${target}"       || exitError 604 ${LINENO} "Option <target> is not set"
-	#test -n "${slave}"        || exitError 605 ${LINENO} "Option <slave> is not set"
-	#test -n "${projName}"     || exitError 663 ${LINENO} "Option <projName> is not set"
 
 	if [ ${doStella} == "ON" ] ; then
-		#test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
-		#test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
-		#test -n "${stellaBranch}" || exitError 665 ${LINENO} "Option <stellaBranch> is not set"
 		test -n "${stellaOrg}"    || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
 	fi
 
 	if [ ${doDycore} == "ON" ] ; then
-		#test -n "${kflat}"        || exitError 606 ${LINENO} "Option <flat> is not set"
-		#test -n "${klevel}"       || exitError 607 ${LINENO} "Option <klevel> is not set"
-		#test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
 		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 	fi
 	
 	if [ ${doPompa} == "ON" ] ; then
-		#test -n "${cosmoBranch}"  || exitError 667 ${LINENO} "Option <cosmoBranch> is not set"
 		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 	fi
 }

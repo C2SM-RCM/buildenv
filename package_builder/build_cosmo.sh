@@ -67,7 +67,7 @@ parseOptions()
 	stellaOrg=""
 	cosmoBranch="master"
 	cosmoOrg=""
-	instPrefix="."
+	instPrefix=$(pwd)
 	verbosity=OFF
 	cleanup=OFF
 	doStella=OFF

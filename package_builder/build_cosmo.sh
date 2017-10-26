@@ -285,7 +285,7 @@ setupBuilds()
 	
 	# path and directory structures
 	installDir="${instPrefix}/${slave}/${projName}"
-	stellapath="${installDir}/${stellaDirName}/${gnuCompiler}"
+	stellapath="${installDir}/${stellaDirName}/${target}/${gnuCompiler}"
 	dycorepath="${installDir}/dycore/${target}/${gnuCompiler}"
 	cosmopath="${installDir}/cosmo/${target}/${compiler}"
 }

@@ -190,14 +190,14 @@ printConfig()
 	echo "  STELLA ORGANIZATION:      ${stellaOrg}"
 	echo "  STELLA BRANCH:            ${stellaBranch}"
 	if [ -z ${kflat+x} ]; then
-		echo "  K-FLAT:                   ${kflat}"
-	else
 		echo "  K-FLAT:                   DEFAULT"
+	else
+		echo "  K-FLAT:                   ${kflat}"
 	fi
 	if [ -z ${klevel+x} ]; then
-		echo "  K-LEVEL:                  ${klevel}"
-	else
 		echo "  K-LEVEL:                  DEFAULT"
+	else
+		echo "  K-LEVEL:                  ${klevel}"
 	fi	
 	echo "  COSMO ORGANIZATION:       ${cosmoOrg}"
 	echo "  COSMO BRANCH:             ${cosmoBranch}"
@@ -301,15 +301,15 @@ doStellaCompilation()
 {
 	kFlatLevels=""
 	if [ -z ${kflat+x} ]; then
-		kFlatLevels="${kFlatLevels} -f ${kflat}"
-	else
 		echo "K-FLAT is unset using default"
+	else
+		kFlatLevels="${kFlatLevels} -f ${kflat}"		
 	fi
 
 	if [ -z ${klevel+x} ]; then
-		kFlatLevels="${kFlatLevels} -k ${klevel}"
-	else
 		echo "K-LEVELS is unset using default"
+	else
+		kFlatLevels="${kFlatLevels} -k ${klevel}"
 	fi
 
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"

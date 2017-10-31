@@ -76,12 +76,18 @@ parseOptions()
 	instPrefix=$(pwd)
 	verbosity=OFF
 	cleanup=OFF
+	# compile stella
 	doStella=OFF
+	# compile the dycore
 	doDycore=OFF
+	# compile cosmo
 	doPompa=OFF
+	# make reproducible executable
 	doRepro=OFF
+	# the CRCLIM branch
+	crclimBranch="crclim"
 
-	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:x" opt; do
+	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:xw:" opt; do
 		case "${opt}" in
 		h) 
 		    showUsage
@@ -141,6 +147,9 @@ parseOptions()
 		x)
 		    doRepro=ON
 		    ;;
+		w)
+			crclimBranch=$OPTARG
+			;;
 		\?) 
 		    showUsage
 		    exitError 601 ${LINENO} "invalid command line option (-${OPTARG})"
@@ -275,9 +284,10 @@ setupBuilds()
 	fi
 	
 	# path and directory structures
-	stellapath="${instPrefix}/${slave}/${projName}/${stellaDirName}/${gnuCompiler}"
-	dycorepath="${instPrefix}/${slave}/${projName}/dycore/${target}/${gnuCompiler}"
-	cosmopath="${instPrefix}/${slave}/${projName}/cosmo/${target}/${compiler}"
+	installDir="${instPrefix}/${slave}/${projName}"
+	stellapath="${installDir}/${stellaDirName}/${target}/${gnuCompiler}"
+	dycorepath="${installDir}/dycore/${target}/${gnuCompiler}"
+	cosmopath="${installDir}/cosmo/${target}/${compiler}"
 }
 
 cleanPreviousInstall() 
@@ -339,7 +349,12 @@ doDycoreCompilation()
 doCosmoCompilation()
 {
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"
-	test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
+	if [ "${cosmoBranch}" == "${crclimBranch}"] ; then
+		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
+	else
+		export INSTALL_DIR=$instPrefix
+		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}"
+	fi
 	retCode=$?
 	tryExit $retCode "COSMO BUILD"
 	cd ../.. || exitError 612 ${LINENO} "Unable to go back"
@@ -348,6 +363,8 @@ doCosmoCompilation()
 # ===================================================
 # MAIN LIKE
 # ===================================================
+
+
 
 # parse command line options (pass all of them to function)
 parseOptions "$@"

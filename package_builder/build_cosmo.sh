@@ -198,15 +198,15 @@ printConfig()
 	echo "REPOSITORIES"
 	echo "  STELLA ORGANIZATION:      ${stellaOrg}"
 	echo "  STELLA BRANCH:            ${stellaBranch}"
-	if [ -z ${kflat+x} ]; then
-		echo "  K-FLAT:                   DEFAULT"
-	else
+	if [ "${kflat}x" != "x" ]; then
 		echo "  K-FLAT:                   ${kflat}"
-	fi
-	if [ -z ${klevel+x} ]; then
-		echo "  K-LEVEL:                  DEFAULT"
 	else
+		echo "  K-FLAT:                   DEFAULT"
+	fi
+	if [ "${klevel}x" != "x" ]; then
 		echo "  K-LEVEL:                  ${klevel}"
+	else
+		echo "  K-LEVEL:                  DEFAULT"
 	fi	
 	echo "  COSMO ORGANIZATION:       ${cosmoOrg}"
 	echo "  COSMO BRANCH:             ${cosmoBranch}"
@@ -310,16 +310,16 @@ cleanPreviousInstall()
 doStellaCompilation()
 {
 	kFlatLevels=""
-	if [ -z ${kflat+x} ]; then
-		echo "K-FLAT is unset using default"
-	else
+	if [ "${kflat}x" != "x" ]; then
 		kFlatLevels="${kFlatLevels} -f ${kflat}"		
+	else
+		echo "K-FLAT is unset using default"
 	fi
 
-	if [ -z ${klevel+x} ]; then
-		echo "K-LEVELS is unset using default"
-	else
+	if [ "${klevel}x" != "x" ]; then
 		kFlatLevels="${kFlatLevels} -k ${klevel}"
+	else
+		echo "K-LEVELS is unset using default"
 	fi
 
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
@@ -348,8 +348,8 @@ doDycoreCompilation()
 # compile and install cosmo-pompa
 doCosmoCompilation()
 {
-	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"
-	if [ "${cosmoBranch}" == "${crclimBranch}"] ; then
+	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"	
+	if [ "${cosmoBranch}" == "${crclimBranch}" ] ; then
 		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
 	else
 		export INSTALL_DIR=$instPrefix

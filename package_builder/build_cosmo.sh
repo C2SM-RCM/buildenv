@@ -364,8 +364,6 @@ doCosmoCompilation()
 # MAIN LIKE
 # ===================================================
 
-
-
 # parse command line options (pass all of them to function)
 parseOptions "$@"
 

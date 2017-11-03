@@ -340,7 +340,7 @@ doStellaCompilation()
 doDycoreCompilation()
 {
 	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"
-	if [ ${jenkinsPath} == "OFF" ]
+	if [ ${jenkinsPath} == "OFF" ] ; then
 		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -s "${stellapath}"
 	else
 		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}"
@@ -354,7 +354,7 @@ doDycoreCompilation()
 doCosmoCompilation()
 {
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"	
-	if [ ${jenkinsPath} == "OFF" ]
+	if [ ${jenkinsPath} == "OFF" ] ; then
 		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
 	else
 		# export INSTALL_DIR=$instPrefix

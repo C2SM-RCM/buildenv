@@ -56,6 +56,7 @@ showUsage()
 	echo "-p        Do Cosmo-Pompa build, default: OFF"
 	echo "-i        Install prefix, default: current working directory"
 	echo "-x        Do bit-reproducible build, default: OFF"
+	echo "-j        Use the default install path instead of the constructed installation path"
 }
 
 # set defaults and process command line options
@@ -85,9 +86,9 @@ parseOptions()
 	# make reproducible executable
 	doRepro=OFF
 	# the CRCLIM branch
-	crclimBranch="crclim"
+	jenkinsPath=OFF
 
-	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:xw:" opt; do
+	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:xj" opt; do
 		case "${opt}" in
 		h) 
 		    showUsage
@@ -147,8 +148,8 @@ parseOptions()
 		x)
 		    doRepro=ON
 		    ;;
-		w)
-			crclimBranch=$OPTARG
+		j)
+			jenkinsPath=ON
 			;;
 		\?) 
 		    showUsage
@@ -339,7 +340,11 @@ doStellaCompilation()
 doDycoreCompilation()
 {
 	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"
-	test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -s "${stellapath}"
+	if [ ${jenkinsPath} == "OFF" ]
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -s "${stellapath}"
+	else
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}"
+	fi
 	retCode=$?
 	tryExit $retCode "DYCORE BUILD"
 	cd ../.. || exitError 611 ${LINENO} "Unable to go back"
@@ -349,10 +354,10 @@ doDycoreCompilation()
 doCosmoCompilation()
 {
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"	
-	if [ "${cosmoBranch}" == "${crclimBranch}" ] ; then
+	if [ ${jenkinsPath} == "OFF" ]
 		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
 	else
-		export INSTALL_DIR=$instPrefix
+		# export INSTALL_DIR=$instPrefix
 		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}"
 	fi
 	retCode=$?

@@ -56,7 +56,7 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     mpilaunch="aprun"
     installdir=/project/c14/install/daint
     testdata=/scratch/dora/jenkins/data
-elif [ "$(hostname)" = "keschcn-0001" ]; then
+elif [ "$(hostname)" = "keschcn-0002" ]; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
     export host="kesch-test"
     echo "The host is ${host}"

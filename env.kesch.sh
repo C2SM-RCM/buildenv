@@ -243,7 +243,7 @@ EOF
             module load craype-haswell
             module load craype-network-infiniband
             module load PrgEnv-gnu/17.02
-            module load cmake/3.7.2
+            module load cmake/3.9.1
             module load netcdf-fortran/4.4.4-gmvolf-17.02
             module load hdf5/1.8.18-gmvolf-17.02
 EOF

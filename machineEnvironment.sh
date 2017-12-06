@@ -56,15 +56,16 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     mpilaunch="aprun"
     installdir=/project/c14/install/daint
     testdata=/scratch/dora/jenkins/data
-elif [[ "$(hostname)" == "keschcn-"* ]]; then
-    . /etc/bashrc && true # In some conditions the omitted true triggered an error.
-    export host="kesch-test"
-    echo "The host is ${host}"
-    queue="debug"
-    nthreads=1
-    mpilaunch="srun"
-    installdir="/project/c14/install/${host}"
-    testdata="/scratch/jenkins/data"
+## Disabled block for testing a particular kesch node with special environment
+#elif [[ "$(hostname)" == "keschcn-"* ]]; then
+#    . /etc/bashrc && true # In some conditions the omitted true triggered an error.
+#    export host="kesch-test"
+#    echo "The host is ${host}"
+#    queue="debug"
+#    nthreads=1
+#    mpilaunch="srun"
+#    installdir="/project/c14/install/${host}"
+#    testdata="/scratch/jenkins/data"
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
     . /usr/Modules/3.2.10/init/bash

@@ -49,13 +49,13 @@ setupDefaults()
     fcompiler_cmds=(ftn)
 
 
-    export BASE_MODULES="craype-haswell cmake/3.1.3"
+    export BASE_MODULES="craype-haswell"
     export NVIDIA_CUDA_ARCH="sm_37"
 
     # # MVAPICH
-    export MVAPICH_MODULE="mvapich2gdr_gnu/2.1"
+    export MVAPICH_MODULE="mvapich2_gnu/2.2rc1.0.2"
     # # BOOST
-    export BOOST_PATH="/apps/escha/UES/RH6.7/easybuild/software/Boost/1.49.0-gmvolf-15.11-Python-2.7.10"
+    export BOOST_PATH="/users/jenkins/Code/boost-1.49.0/"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -127,21 +127,17 @@ setCppEnvironment()
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         # Generated with the build script
         # implicit module purge
-        module load craype-haswell
+        module purge
         module load craype-network-infiniband
-        module load mvapich2gdr_gnu/2.1_cuda_7.0
-        module load GCC/4.9.3-binutils-2.25
-        module load cray-libsci_acc/3.3.0
+        module load craype-haswell
+        module load craype-accel-nvidia35
+        module load cray-libsci
+        module load cudatoolkit/8.0.61
+        module load mvapich2gdr_gnu/2.2_cuda_8.0
+        module load gcc/5.4.0-2.26
+        module load cmake/3.9.1
 EOF
-
-    if [ "${SCOREP_ENABLED}" == "ON" ]; then
-        cat >> $ENVIRONMENT_TEMPFILE <<- EOF
-            module use /apps/common/UES/RHAT6/easybuild/modules/all
-            module use /apps/escha/UES/RH6.7/sandbox-scorep/modules/all
-            module load Score-P/3.1-gmvapich2-15.11_cuda_7.0_gdr
-EOF
-    fi
-
+   
     module purge
     source $ENVIRONMENT_TEMPFILE
     dycore_gpp='g++'
@@ -151,13 +147,13 @@ EOF
     #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
 
-    # set global variables
+        # set global variables
     if [ "${compiler}" == "gnu" ] ; then
         dycore_openmp=ON   # OpenMP only works if GNU is also used for Fortran parts
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
-
+    
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
@@ -174,7 +170,7 @@ EOF
 unsetCppEnvironment()
 {
     restoreModuleCheckPoint
-
+    
     rm $ENVIRONMENT_TEMPFILE
     unset ENVIRONMENT_TEMPFILE
 
@@ -209,7 +205,7 @@ setFortranEnvironment()
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
-
+    
     case "${compiler}" in
     cray )
         # Provided by CSCS
@@ -218,42 +214,42 @@ setFortranEnvironment()
             # implicit module purge
             module load craype-haswell
             module load craype-accel-nvidia35
-            module load PrgEnv-cray/15.10_cuda_7.0
-            module load cmake/3.1.3
-            module swap cce/8.4.4
-            module unload mvapich2_cce
-            module load cray-libsci_acc/3.3.0
-            module load mvapich2gdr_gnu/2.1_cuda_7.0
-            module load cray-netcdf/4.3.2
-            module load cray-hdf5/1.8.13
-            module load GCC/4.9.3-binutils-2.25
+            module load craype-network-infiniband
+            module load netCDF-Fortran/4.4.4-CrayCCE-17.06
+            module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2gdr_gnu/2.2_cuda_8.0
+            module load gcc/5.4.0-2.26
+            module load cmake/3.9.1
 EOF
 
-        if [ "${SCOREP_ENABLED}" == "ON" ]; then
-            cat >> $ENVIRONMENT_TEMPFILE <<- EOF
-            module use /apps/common/UES/RHAT6/easybuild/modules/all
-            module use /apps/escha/UES/RH6.7/sandbox-scorep/modules/all
-            module load Score-P/3.1-gmvapich2-15.11_cuda_7.0_gdr
+        if [ "${target}" == "cpu" ]; then
+            cat > $ENVIRONMENT_TEMPFILE <<-EOF
+                # Generated with the build script
+                # implicit module purge
+                module load craype-haswell
+                module load craype-accel-nvidia35
+                module load craype-network-infiniband
+                module load netCDF-Fortran/4.4.4-CrayCCE-17.06
+                module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2_cce/2.2rc1.0.3
+                module load gcc/5.4.0-2.26
+                module load cmake/3.9.1
 EOF
         fi
-
-        export FC=ftn
+        export FC="ftn -D__CRAY_FORTRAN__"
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
             # implicit module purge
             module load craype-haswell
-            module load PrgEnv-gnu/15.11_cuda_7.0_gdr
-            module load cmake/3.1.3
-            module unload MVAPICH2
-            module unload gmvapich2
-            module load netCDF-Fortran
-            module load HDF5
+            module load craype-network-infiniband
+            module load PrgEnv-gnu/17.02
+            module load cmake/3.7.2
+            module load netcdf-fortran/4.4.4-gmvolf-17.02
+            module load hdf5/1.8.18-gmvolf-17.02
 EOF
         export FC=gfortran
         ;;
-    pgi )
+    pgi ) 
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
             # implicit module purge
@@ -262,16 +258,15 @@ EOF
             module load PrgEnv-pgi/16.7
 EOF
         export FC=mpif90
-        ;;
+        ;;	
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
-
+    
     module purge
     source $ENVIRONMENT_TEMPFILE
-    export LINKER_X86_64=$(which ld)
-
+    
     # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
     export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
 
@@ -284,16 +279,16 @@ EOF
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
     if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
-        echo "Info : No Cray CCE licence available, setting CRAYLMD_LICENSE_FILE to escha"
-        export CRAYLMD_LICENSE_FILE=27010@escha-mgmt1,27010@escha-mgmt2,27010@escha-login3
-        # Test if the licence is now available otherwise print info message
-        if `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
-            echo "!! Warning !! No Cray CCE licence available"
-            echo "Licence usage on kesch:"
-            klicstat
-            echo "Licence usage on escha:"
-            elistat
-        fi
+	echo "Info : No Cray CCE licence available, setting CRAYLMD_LICENSE_FILE to escha"
+	export CRAYLMD_LICENSE_FILE=27010@escha-mgmt1,27010@escha-mgmt2,27010@escha-login3
+	# Test if the licence is now available otherwise print info message
+	if `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
+	    echo "!! Warning !! No Cray CCE licence available"
+	    echo "Licence usage on kesch:"
+	    klicstat
+	    echo "Licence usage on escha:"
+	    elistat
+	fi
     fi
 
 }

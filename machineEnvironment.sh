@@ -68,8 +68,6 @@ elif [ "`hostname | grep dora`" != "" ] ; then
 #    testdata="/scratch/jenkins/data"
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
-    . /usr/Modules/3.2.10/init/bash
-    . /etc/profile.d/cray_pe.sh
     if [ "${NODE_NAME}" == kesch-pgi ] ; then
 	export host="kesch-pgi"
     else

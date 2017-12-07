@@ -201,7 +201,11 @@ printConfig()
 	echo "  TARGET:                   ${target}"
 	echo "  SINGLE PRECISION:         ${singleprec}"
 	echo "  BIT-REPRODUCIBLE:         ${doRepro}"
-	echo "  CONFIG FILE (JSON):       ${configFile}"
+	if [ -z ${configFile+x} ]; then
+		echo "  CONFIG FILE (JSON):       ${configFile}"
+	else
+		echo "  CONFIG FILE (JSON):       N/A"
+	fi	
 	echo "  VERBOSE:                  ${verbosity}"
 	echo "  CLEAN:                    ${cleanup}"
 	echo "  DEBUG:                    ${debugBuild}"
@@ -381,6 +385,7 @@ doCosmoCompilation()
 {
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"	
 	if [ ${jenkinsPath} == "OFF" ] ; then
+		export REPROJSON=${configFile}
 		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
 	else
 		# export INSTALL_DIR=$instPrefix

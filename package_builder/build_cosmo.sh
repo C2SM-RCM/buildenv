@@ -273,7 +273,7 @@ cloneTheRepos()
 	if [ ${doDycore} == "ON" ] || [ ${doPompa} == "ON" ] ; then
 		#echo "WARNING: cleaning previous cosmo-pompa source directories in 5 [s]"
 		#echo "WARNING: ${cwd}/cosmo-pompa"
-		pWarning "cleaning previous stella cosmo-pompa directories in 5 [s]"
+		pWarning "cleaning previous cosmo-pompa source directories in 5 [s]"
 		pWarning "${cwd}/cosmo-pompa"		
 		sleep 5
 		if [ -d cosmo-pompa ]; then

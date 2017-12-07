@@ -55,7 +55,7 @@ showUsage()
 	echo "-d        Do CPP Dycore GNU build, default: OFF"
 	echo "-p        Do Cosmo-Pompa build, default: OFF"
 	echo "-i        Install prefix, default: current working directory"
-	echo "-x        Do bit-reproducible build, default: OFF"
+	echo "-x        Do bit-reproducible build and provide config file, default: OFF"
 	echo "-j        Use the default install path instead of the constructed installation path"
 	echo "-e        Debug build, default: OFF"
 }

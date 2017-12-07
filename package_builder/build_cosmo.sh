@@ -29,7 +29,7 @@ showUsage()
 	echo ""
 	echo "USAGE:"
 	usage="$(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"
-	usage="${usage} [-g] [-d] [-p] [-h] [-n name] [-s slave] [-b branch] [-f flat] [-l level] [-a branch] [-4] [-v] [-z] [-i prefix] [-x]"
+	usage="${usage} [-g] [-d] [-p] [-h] [-n name] [-s slave] [-b branch] [-f flat] [-l level] [-a branch] [-4] [-v] [-z] [-i prefix] [-x config]"
 
 	echo "${usage}"
 	echo ""
@@ -87,10 +87,11 @@ parseOptions()
 	doPompa=OFF
 	# make reproducible executable
 	doRepro=OFF
+	configFile=""
 	# the CRCLIM branch
 	jenkinsPath=OFF
 
-	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:xje" opt; do
+	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:x:je" opt; do
 		case "${opt}" in
 		h) 
 		    showUsage
@@ -149,6 +150,7 @@ parseOptions()
 		    ;;
 		x)
 		    doRepro=ON
+		    configFile=$OPTARG
 		    ;;
 		j)
 			jenkinsPath=ON
@@ -237,12 +239,14 @@ printConfig()
 
 # clone the repositories
 cloneTheRepos()
-{		
+{
+	cwd=$(pwd)
 	echo "INFO: Cloning needed repositories"
 	# note that we clean the previous clone and they're supposed to be installed   
 	# on another directory (simpler solution)	
 	if [ ${doStella} == "ON" ] ; then
-		echo "WARNING: Cleaning previous stella directories in 5 [s]"
+		echo "WARNING: Cleaning previous stella source directories in 5 [s]"
+		echo "WARNING: ${cwd}/stella"
 		sleep 5
 		if [ -d stella ]; then
 			\rm -rf stella
@@ -252,7 +256,8 @@ cloneTheRepos()
 	fi
 
 	if [ ${doDycore} == "ON" ] || [ ${doPompa} == "ON" ] ; then
-		echo "WARNING: cleaning previous cosmo-pompa directories in 5 [s]"
+		echo "WARNING: cleaning previous cosmo-pompa source directories in 5 [s]"
+		echo "WARNING: ${cwd}/cosmo-pompa"
 		sleep 5
 		if [ -d cosmo-pompa ]; then
 			\rm -rf cosmo-pompa
@@ -305,14 +310,23 @@ cleanPreviousInstall()
 {
 	# clean previous install path if needed
 	if [ ${doStella} == "ON" ] && [ -d "${stellapath}" ] ; then
+		echo "WARNING: cleaning previous stella install directories in 5 [s]"
+		echo "WARNING: ${stellapath}"
+		sleep 5
 		\rm -rf "${stellapath:?}/"*
 	fi
 	
 	if [ ${doDycore} == "ON" ] && [ -d "${dycorepath}" ] ; then
+		echo "WARNING: cleaning previous dycore install directories in 5 [s]"
+		echo "WARNING: ${dycorepath}"
+		sleep 5
 		\rm -rf "${dycorepath:?}/"*
 	fi
 	
 	if [ ${doPompa} == "ON" ] && [ -d "${cosmopath}" ] ; then
+		echo "WARNING: cleaning previous cosmo install directories in 5 [s]"
+		echo "WARNING: ${cosmopath}"
+		sleep 5
 		\rm -rf "${cosmopath:?}/"*
 	fi
 }
@@ -392,7 +406,7 @@ setupBuilds
 printConfig
 
 # clone
-#cloneTheRepos
+cloneTheRepos
 
 # clean
 #cleanPreviousInstall

@@ -201,6 +201,7 @@ printConfig()
 	echo "  TARGET:                   ${target}"
 	echo "  SINGLE PRECISION:         ${singleprec}"
 	echo "  BIT-REPRODUCIBLE:         ${doRepro}"
+	echo "  CONFIG FILE (JSON):       ${configFile}"
 	echo "  VERBOSE:                  ${verbosity}"
 	echo "  CLEAN:                    ${cleanup}"
 	echo "  DEBUG:                    ${debugBuild}"

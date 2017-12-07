@@ -57,6 +57,7 @@ showUsage()
 	echo "-i        Install prefix, default: current working directory"
 	echo "-x        Do bit-reproducible build, default: OFF"
 	echo "-j        Use the default install path instead of the constructed installation path"
+	echo "-e        Debug build, default: OFF"
 }
 
 # set defaults and process command line options
@@ -76,6 +77,7 @@ parseOptions()
 	cosmoOrg=""
 	instPrefix=$(pwd)
 	verbosity=OFF
+	debugBuild=OFF
 	cleanup=OFF
 	# compile stella
 	doStella=OFF
@@ -88,7 +90,7 @@ parseOptions()
 	# the CRCLIM branch
 	jenkinsPath=OFF
 
-	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:xj" opt; do
+	while getopts "h4n:c:b:o:a:q:t:s:f:l:vzgdpi:xje" opt; do
 		case "${opt}" in
 		h) 
 		    showUsage
@@ -151,6 +153,9 @@ parseOptions()
 		j)
 			jenkinsPath=ON
 			;;
+		e)
+			debugBuild=ON
+			;;			
 		\?) 
 		    showUsage
 		    exitError 601 ${LINENO} "invalid command line option (-${OPTARG})"
@@ -196,6 +201,7 @@ printConfig()
 	echo "  BIT-REPRODUCIBLE:         ${doRepro}"
 	echo "  VERBOSE:                  ${verbosity}"
 	echo "  CLEAN:                    ${cleanup}"
+	echo "  DEBUG:                    ${debugBuild}"
 	echo "REPOSITORIES"
 	echo "  STELLA ORGANIZATION:      ${stellaOrg}"
 	echo "  STELLA BRANCH:            ${stellaBranch}"
@@ -272,6 +278,10 @@ setupBuilds()
 		moreFlag="${moreFlag} -z"
 	fi
 
+	if [ ${debugBuild} == "ON" ] ; then
+		moreFlag="${moreFlag} -d"
+	fi
+
 	# compiler (for Stella and the Dycore)
 	gnuCompiler="gnu"
 
@@ -341,10 +351,11 @@ doDycoreCompilation()
 {
 	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"
 	if [ ${jenkinsPath} == "OFF" ] ; then
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}" -s "${stellapath}"
-	else
 		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}"
+	else
+		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -i "${dycorepath}"
 	fi
+	exit 1
 	retCode=$?
 	tryExit $retCode "DYCORE BUILD"
 	cd ../.. || exitError 611 ${LINENO} "Unable to go back"
@@ -381,10 +392,10 @@ setupBuilds
 printConfig
 
 # clone
-cloneTheRepos
+#cloneTheRepos
 
 # clean
-cleanPreviousInstall
+#cleanPreviousInstall
 
 # compile and install
 if [ ${doStella} == "ON" ] ; then

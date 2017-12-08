@@ -11,7 +11,7 @@ pWarning()
 pInfo()
 {
   msg=$1
-  BLUE='\033[0;34m'
+  BLUE='\033[1;34m'
   NC='\033[0m'
   echo -e "${BLUE}[INFO]${NC} ${msg}"
 }
@@ -25,6 +25,16 @@ exitError()
 	echo "ERROR     LOCATION=$0" 1>&2
 	echo "ERROR     LINE=$2" 1>&2
 	exit "$1"
+}
+
+countDown()
+{	
+	secs=$1
+	while [ $secs -gt 0 ]; do
+   		echo -ne "in [$secs]\033[0K\r"
+		sleep 1
+		: $((secs--))
+	done
 }
 
 tryExit()
@@ -273,7 +283,8 @@ cloneTheRepos()
 		#echo "WARNING: ${cwd}/stella"
 		pWarning "cleaning previous stella source directories in 5 [s]"
 		pWarning "${cwd}/stella"
-		sleep 5
+		countDown 5
+#		sleep 5
 		if [ -d stella ]; then
 			\rm -rf stella
 		fi
@@ -284,9 +295,10 @@ cloneTheRepos()
 	if [ ${doDycore} == "ON" ] || [ ${doPompa} == "ON" ] ; then
 		#echo "WARNING: cleaning previous cosmo-pompa source directories in 5 [s]"
 		#echo "WARNING: ${cwd}/cosmo-pompa"
-		pWarning "cleaning previous cosmo-pompa source directories in 5 [s]"
+		pWarning "cleaning previous cosmo-pompa source directories"
 		pWarning "${cwd}/cosmo-pompa"		
-		sleep 5
+		countDown 5
+#		sleep 5
 		if [ -d cosmo-pompa ]; then
 			\rm -rf cosmo-pompa
 		fi
@@ -297,24 +309,25 @@ cloneTheRepos()
 
 setupBuilds()
 {
+	cwd=$1
+	
 	# single precision flag
 	moreFlag=""
 	if [ ${singleprec} == "ON" ] ; then
 		moreFlag="${moreFlag} -4"
 	fi
-
+	# verbosity flag
 	if [ ${verbosity} == "ON" ] ; then
 		moreFlag="${moreFlag} -v"
 	fi
-
+	# cleanup flag
 	if [ ${cleanup} == "ON" ] ; then
 		moreFlag="${moreFlag} -z"
 	fi
-
+	# debug flag
 	if [ ${debugBuild} == "ON" ] ; then
 		moreFlag="${moreFlag} -d"
 	fi
-
 	# compiler (for Stella and the Dycore)
 	gnuCompiler="gnu"
 
@@ -327,6 +340,17 @@ setupBuilds()
 		stellaDirName="${stellaDirName}_klevel${klevel}"
 	fi
 	
+	
+
+	if [[ "${instPrefix}" = /* ]] ; then
+	   pInfo "Absolute install prefix path"
+	else
+	   pInfo "Relative install prefix path. Appending current working directory"
+	   pInfo ${instPrefix}
+	   instPrefix="${cwd}/${instPrefix}"
+	   pInfo ${instPrefix}
+	fi
+	
 	# path and directory structures
 	installDir="${instPrefix}/${slave}/${projName}"
 	stellapath="${installDir}/${stellaDirName}/${target}/${gnuCompiler}"
@@ -337,35 +361,41 @@ setupBuilds()
 cleanPreviousInstall() 
 {
 	cwd=$(pwd)
-	pInfo "${doStella}, ${doDycore}, ${doPompa}"
 	# clean previous install path if needed
-	if [ ${doStella} == "ON" ] && [ -d "${stellapath}" ] ; then
-		#echo "WARNING: cleaning previous stella install directories in 5 [s]"
-		#echo "WARNING: ${stellapath}"
-		pWarning "cleaning previous stella install directories in 5 [s] at:"
-		pWarning "${stellapath}"
-		sleep 5
+	if [ ${doStella} == "ON" ] ; then
+		if [ -d "${stellapath}" ] ; then
+			pWarning "cleaning previous stella install directories in 5 [s] at:"
+			pWarning "${stellapath}"
+			countDown 5
+#			sleep 5
 		\rm -rf "${stellapath:?}/"*
+		fi
 		pInfo "creating directory: ${stellapath}"
 		pInfo "at the current location: ${cwd}"
 		mkdir -p ${stellapath}
 	fi
 	
-	if [ ${doDycore} == "ON" ] && [ -d "${dycorepath}" ] ; then
-		pWarning "cleaning previous dycore install directories in 5 [s] at:"
-		pWarning "${dycorepath}"
-		sleep 5
-		\rm -rf "${dycorepath:?}/"*
+	if [ ${doDycore} == "ON" ] ; then
+		if [ -d "${dycorepath}" ] ; then
+			pWarning "cleaning previous dycore install directories in 5 [s] at:"
+			pWarning "${dycorepath}"
+			countDown 5			
+#			sleep 5
+			\rm -rf "${dycorepath:?}/"*
+		fi
 		pInfo "creating directory: ${dycorepath}"
 		pInfo "at the current location: ${cwd}"
 		mkdir -p ${dycorepath}
 	fi
 	
-	if [ ${doPompa} == "ON" ] && [ -d "${cosmopath}" ] ; then
-		pWarning "cleaning previous cosmo install directories in 5 [s] at:"
-		pWarning "${cosmopath}"
-		sleep 5
-		\rm -rf "${cosmopath:?}/"*
+	if [ ${doPompa} == "ON" ] ; then
+		if [ -d "${cosmopath}" ] ; then
+			pWarning "cleaning previous cosmo install directories in 5 [s] at:"
+			pWarning "${cosmopath}"
+			countDown 5
+#			sleep 5		
+			\rm -rf "${cosmopath:?}/"*
+		fi
 		pInfo "creating directory: ${cosmopath}"
 		pInfo "at the current location: ${cwd}"
 		mkdir -p ${cosmopath}
@@ -443,7 +473,8 @@ parseOptions "$@"
 checkOptions
 
 # setup
-setupBuilds
+rootWd=$(pwd)
+setupBuilds rootWd
 
 printConfig
 

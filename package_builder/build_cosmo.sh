@@ -319,6 +319,7 @@ cleanPreviousInstall()
 		echo "WARNING: ${stellapath}"
 		sleep 5
 		\rm -rf "${stellapath:?}/"*
+		mkdir -p ${stellapath}
 	fi
 	
 	if [ ${doDycore} == "ON" ] && [ -d "${dycorepath}" ] ; then
@@ -326,6 +327,7 @@ cleanPreviousInstall()
 		echo "WARNING: ${dycorepath}"
 		sleep 5
 		\rm -rf "${dycorepath:?}/"*
+		mkdir -p ${dycorepath}
 	fi
 	
 	if [ ${doPompa} == "ON" ] && [ -d "${cosmopath}" ] ; then
@@ -333,6 +335,7 @@ cleanPreviousInstall()
 		echo "WARNING: ${cosmopath}"
 		sleep 5
 		\rm -rf "${cosmopath:?}/"*
+		mkdir -p ${dycorepath}
 	fi
 }
 

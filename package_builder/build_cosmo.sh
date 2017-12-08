@@ -265,7 +265,7 @@ printConfig()
 cloneTheRepos()
 {
 	cwd=$(pwd)
-	echo "INFO: Cloning needed repositories"
+	pInfo "cloning needed repositories"
 	# note that we clean the previous clone and they're supposed to be installed   
 	# on another directory (simpler solution)	
 	if [ ${doStella} == "ON" ] ; then
@@ -277,7 +277,7 @@ cloneTheRepos()
 		if [ -d stella ]; then
 			\rm -rf stella
 		fi
-		echo "Clone stella"
+		pInfo "cloning stella"
 		git clone git@github.com:"${stellaOrg}"/stella.git --branch "${stellaBranch}"
 	fi
 
@@ -290,7 +290,7 @@ cloneTheRepos()
 		if [ -d cosmo-pompa ]; then
 			\rm -rf cosmo-pompa
 		fi
-		echo "Clone cosmo-pompa (with dycore)"
+		pInfo "cloning cosmo-pompa (with dycore)"
 		git clone git@github.com:"${cosmoOrg}"/cosmo-pompa.git --branch "${cosmoBranch}"
 	fi
 }

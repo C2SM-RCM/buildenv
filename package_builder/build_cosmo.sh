@@ -8,8 +8,19 @@ pWarning()
   echo -e "${YELLOW}[WARNING]${NC} ${msg}"
 }
 
+pInfo()
+{
+  msg=$1
+  BLUE='\033[0;34m'
+  NC='\033[0m'
+  echo -e "${BLUE}[INFO]${NC} ${msg}"
+}
+
 exitError()
 {
+    RED='\033[0;31m'
+    NC='\033[0m'
+	echo -e "${RED}EXIT WITH ERROR${NC}"
 	echo "ERROR $1: $3" 1>&2
 	echo "ERROR     LOCATION=$0" 1>&2
 	echo "ERROR     LINE=$2" 1>&2
@@ -179,19 +190,19 @@ parseOptions()
 checkOptions()
 {	
 	echo "INFO: checking mandatory options"
-	test -n "${compiler}"     || exitError 603 ${LINENO} "Option <compiler> is not set"
-	test -n "${target}"       || exitError 604 ${LINENO} "Option <target> is not set"
+	test -n "${compiler}" || exitError 603 ${LINENO} "Option <compiler> is not set"
+	test -n "${target}" || exitError 604 ${LINENO} "Option <target> is not set"
 
 	if [ ${doStella} == "ON" ] ; then
-		test -n "${stellaOrg}"    || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
+		test -n "${stellaOrg}" || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
 	fi
 
 	if [ ${doDycore} == "ON" ] ; then
-		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
+		test -n "${cosmoOrg}" || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 	fi
 	
 	if [ ${doPompa} == "ON" ] ; then
-		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
+		test -n "${cosmoOrg}" || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 	fi
 }
 
@@ -254,7 +265,7 @@ printConfig()
 cloneTheRepos()
 {
 	cwd=$(pwd)
-	echo "INFO: Cloning needed repositories"
+	pInfo "cloning needed repositories"
 	# note that we clean the previous clone and they're supposed to be installed   
 	# on another directory (simpler solution)	
 	if [ ${doStella} == "ON" ] ; then
@@ -266,7 +277,7 @@ cloneTheRepos()
 		if [ -d stella ]; then
 			\rm -rf stella
 		fi
-		echo "Clone stella"
+		pInfo "cloning stella"
 		git clone git@github.com:"${stellaOrg}"/stella.git --branch "${stellaBranch}"
 	fi
 
@@ -279,7 +290,7 @@ cloneTheRepos()
 		if [ -d cosmo-pompa ]; then
 			\rm -rf cosmo-pompa
 		fi
-		echo "Clone cosmo-pompa (with dycore)"
+		pInfo "cloning cosmo-pompa (with dycore)"
 		git clone git@github.com:"${cosmoOrg}"/cosmo-pompa.git --branch "${cosmoBranch}"
 	fi
 }
@@ -325,28 +336,39 @@ setupBuilds()
 
 cleanPreviousInstall() 
 {
+	cwd=$(pwd)
+	pInfo "${doStella}, ${doDycore}, ${doPompa}"
 	# clean previous install path if needed
 	if [ ${doStella} == "ON" ] && [ -d "${stellapath}" ] ; then
 		#echo "WARNING: cleaning previous stella install directories in 5 [s]"
 		#echo "WARNING: ${stellapath}"
-		pWarning "cleaning previous stella install directories in 5 [s]"
+		pWarning "cleaning previous stella install directories in 5 [s] at:"
 		pWarning "${stellapath}"
 		sleep 5
 		\rm -rf "${stellapath:?}/"*
+		pInfo "creating directory: ${stellapath}"
+		pInfo "at the current location: ${cwd}"
+		mkdir -p ${stellapath}
 	fi
 	
 	if [ ${doDycore} == "ON" ] && [ -d "${dycorepath}" ] ; then
-		pWarning "cleaning previous dycore install directories in 5 [s]"
+		pWarning "cleaning previous dycore install directories in 5 [s] at:"
 		pWarning "${dycorepath}"
 		sleep 5
 		\rm -rf "${dycorepath:?}/"*
+		pInfo "creating directory: ${dycorepath}"
+		pInfo "at the current location: ${cwd}"
+		mkdir -p ${dycorepath}
 	fi
 	
 	if [ ${doPompa} == "ON" ] && [ -d "${cosmopath}" ] ; then
-		pWarning "cleaning previous cosmo install directories in 5 [s]"
+		pWarning "cleaning previous cosmo install directories in 5 [s] at:"
 		pWarning "${cosmopath}"
 		sleep 5
 		\rm -rf "${cosmopath:?}/"*
+		pInfo "creating directory: ${cosmopath}"
+		pInfo "at the current location: ${cwd}"
+		mkdir -p ${cosmopath}
 	fi
 }
 
@@ -357,13 +379,13 @@ doStellaCompilation()
 	if [ "${kflat}x" != "x" ]; then
 		kFlatLevels="${kFlatLevels} -f ${kflat}"		
 	else
-		echo "K-FLAT is unset using default"
+		pInfo "K-FLAT is unset using default"
 	fi
 
 	if [ "${klevel}x" != "x" ]; then
 		kFlatLevels="${kFlatLevels} -k ${klevel}"
 	else
-		echo "K-LEVELS is unset using default"
+		pInfo "K-LEVELS is unset using default"
 	fi
 
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
@@ -428,8 +450,8 @@ printConfig
 # clone
 cloneTheRepos
 
-# clean
-#cleanPreviousInstall
+# clean and create install structure
+cleanPreviousInstall
 
 # compile and install
 if [ ${doStella} == "ON" ] ; then

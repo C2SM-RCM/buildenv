@@ -29,12 +29,21 @@ exitError()
 
 countDown()
 {	
+	YELLOW='\033[1;33m'
+	NC='\033[0m'
 	secs=$1
-	while [ $secs -gt 0 ]; do
-   		echo -ne "in [$secs]\033[0K\r"
+	msg=$2
+	while [ $secs -ge 0 ]; do
+   		echo -ne "${YELLOW}[WARNING]${NC} ${msg} $secs \033[0K\r"
 		sleep 1
 		: $((secs--))
 	done
+}
+
+clean5Down()
+{
+	countDown 5 "cleaning in"
+	pInfo "directory removed"
 }
 
 tryExit()
@@ -283,7 +292,7 @@ cloneTheRepos()
 		#echo "WARNING: ${cwd}/stella"
 		pWarning "cleaning previous stella source directories in 5 [s]"
 		pWarning "${cwd}/stella"
-		countDown 5
+		clean5Down
 #		sleep 5
 		if [ -d stella ]; then
 			\rm -rf stella
@@ -295,9 +304,9 @@ cloneTheRepos()
 	if [ ${doDycore} == "ON" ] || [ ${doPompa} == "ON" ] ; then
 		#echo "WARNING: cleaning previous cosmo-pompa source directories in 5 [s]"
 		#echo "WARNING: ${cwd}/cosmo-pompa"
-		pWarning "cleaning previous cosmo-pompa source directories"
+		pWarning "cleaning previous cosmo-pompa source directories in 5 [s]"
 		pWarning "${cwd}/cosmo-pompa"		
-		countDown 5
+		clean5Down
 #		sleep 5
 		if [ -d cosmo-pompa ]; then
 			\rm -rf cosmo-pompa
@@ -366,7 +375,7 @@ cleanPreviousInstall()
 		if [ -d "${stellapath}" ] ; then
 			pWarning "cleaning previous stella install directories in 5 [s] at:"
 			pWarning "${stellapath}"
-			countDown 5
+			clean5Down
 #			sleep 5
 		\rm -rf "${stellapath:?}/"*
 		fi
@@ -379,7 +388,7 @@ cleanPreviousInstall()
 		if [ -d "${dycorepath}" ] ; then
 			pWarning "cleaning previous dycore install directories in 5 [s] at:"
 			pWarning "${dycorepath}"
-			countDown 5			
+			clean5Down
 #			sleep 5
 			\rm -rf "${dycorepath:?}/"*
 		fi
@@ -392,7 +401,7 @@ cleanPreviousInstall()
 		if [ -d "${cosmopath}" ] ; then
 			pWarning "cleaning previous cosmo install directories in 5 [s] at:"
 			pWarning "${cosmopath}"
-			countDown 5
+			clean5Down
 #			sleep 5		
 			\rm -rf "${cosmopath:?}/"*
 		fi
@@ -440,7 +449,6 @@ doDycoreCompilation()
 	else
 		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -i "${dycorepath}"
 	fi
-	exit 1
 	retCode=$?
 	tryExit $retCode "DYCORE BUILD"
 	cd ../.. || exitError 611 ${LINENO} "Unable to go back"
@@ -474,7 +482,7 @@ checkOptions
 
 # setup
 rootWd=$(pwd)
-setupBuilds rootWd
+setupBuilds $rootWd
 
 printConfig
 

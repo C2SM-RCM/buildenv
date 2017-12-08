@@ -18,6 +18,9 @@ pInfo()
 
 exitError()
 {
+    RED='\033[0;31m'
+    NC='\033[0m'
+	echo -e "${RED}EXIT WITH ERROR${NC}"
 	echo "ERROR $1: $3" 1>&2
 	echo "ERROR     LOCATION=$0" 1>&2
 	echo "ERROR     LINE=$2" 1>&2
@@ -338,7 +341,7 @@ cleanPreviousInstall()
 	if [ ${doStella} == "ON" ] && [ -d "${stellapath}" ] ; then
 		#echo "WARNING: cleaning previous stella install directories in 5 [s]"
 		#echo "WARNING: ${stellapath}"
-		pWarning "cleaning previous stella install directories in 5 [s]"
+		pWarning "cleaning previous stella install directories in 5 [s] at:"
 		pWarning "${stellapath}"
 		sleep 5
 		\rm -rf "${stellapath:?}/"*
@@ -348,7 +351,7 @@ cleanPreviousInstall()
 	fi
 	
 	if [ ${doDycore} == "ON" ] && [ -d "${dycorepath}" ] ; then
-		pWarning "cleaning previous dycore install directories in 5 [s]"
+		pWarning "cleaning previous dycore install directories in 5 [s] at:"
 		pWarning "${dycorepath}"
 		sleep 5
 		\rm -rf "${dycorepath:?}/"*
@@ -358,7 +361,7 @@ cleanPreviousInstall()
 	fi
 	
 	if [ ${doPompa} == "ON" ] && [ -d "${cosmopath}" ] ; then
-		pWarning "cleaning previous cosmo install directories in 5 [s]"
+		pWarning "cleaning previous cosmo install directories in 5 [s] at:"
 		pWarning "${cosmopath}"
 		sleep 5
 		\rm -rf "${cosmopath:?}/"*
@@ -375,13 +378,13 @@ doStellaCompilation()
 	if [ "${kflat}x" != "x" ]; then
 		kFlatLevels="${kFlatLevels} -f ${kflat}"		
 	else
-		echo "K-FLAT is unset using default"
+		pInfo "K-FLAT is unset using default"
 	fi
 
 	if [ "${klevel}x" != "x" ]; then
 		kFlatLevels="${kFlatLevels} -k ${klevel}"
 	else
-		echo "K-LEVELS is unset using default"
+		pInfo "K-LEVELS is unset using default"
 	fi
 
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"

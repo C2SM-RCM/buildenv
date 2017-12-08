@@ -348,7 +348,7 @@ cleanPreviousInstall()
 		\rm -rf "${stellapath:?}/"*
 		pInfo "creating directory: ${stellapath}"
 		pInfo "at the current location: ${cwd}"
-		mkdir -p ${stellapath}
+		mkdir -p "${stellapath}"
 	fi
 	
 	if [ ${doDycore} == "ON" ] && [ -d "${dycorepath}" ] ; then
@@ -358,7 +358,7 @@ cleanPreviousInstall()
 		\rm -rf "${dycorepath:?}/"*
 		pInfo "creating directory: ${dycorepath}"
 		pInfo "at the current location: ${cwd}"
-		mkdir -p ${dycorepath}
+		mkdir -p "${dycorepath}"
 	fi
 	
 	if [ ${doPompa} == "ON" ] && [ -d "${cosmopath}" ] ; then
@@ -368,7 +368,7 @@ cleanPreviousInstall()
 		\rm -rf "${cosmopath:?}/"*
 		pInfo "creating directory: ${cosmopath}"
 		pInfo "at the current location: ${cwd}"
-		mkdir -p ${cosmopath}
+		mkdir -p "${cosmopath}"
 	fi
 }
 

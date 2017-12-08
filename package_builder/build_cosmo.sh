@@ -8,6 +8,14 @@ pWarning()
   echo -e "${YELLOW}[WARNING]${NC} ${msg}"
 }
 
+pInfo()
+{
+  msg=$1
+  BLUE='\033[0;34m'
+  NC='\033[0m'
+  echo -e "${BLUE}[INFO]${NC} ${msg}"
+}
+
 exitError()
 {
 	echo "ERROR $1: $3" 1>&2
@@ -179,19 +187,19 @@ parseOptions()
 checkOptions()
 {	
 	echo "INFO: checking mandatory options"
-	test -n "${compiler}"     || exitError 603 ${LINENO} "Option <compiler> is not set"
-	test -n "${target}"       || exitError 604 ${LINENO} "Option <target> is not set"
+	test -n "${compiler}" || exitError 603 ${LINENO} "Option <compiler> is not set"
+	test -n "${target}" || exitError 604 ${LINENO} "Option <target> is not set"
 
 	if [ ${doStella} == "ON" ] ; then
-		test -n "${stellaOrg}"    || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
+		test -n "${stellaOrg}" || exitError 666 ${LINENO} "Option <stellaOrg> is not set"
 	fi
 
 	if [ ${doDycore} == "ON" ] ; then
-		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
+		test -n "${cosmoOrg}" || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 	fi
 	
 	if [ ${doPompa} == "ON" ] ; then
-		test -n "${cosmoOrg}"     || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
+		test -n "${cosmoOrg}" || exitError 668 ${LINENO} "Option <cosmoOrg> is not set"
 	fi
 }
 
@@ -325,6 +333,7 @@ setupBuilds()
 
 cleanPreviousInstall() 
 {
+	cwd=$(pwd)
 	# clean previous install path if needed
 	if [ ${doStella} == "ON" ] && [ -d "${stellapath}" ] ; then
 		#echo "WARNING: cleaning previous stella install directories in 5 [s]"
@@ -333,6 +342,8 @@ cleanPreviousInstall()
 		pWarning "${stellapath}"
 		sleep 5
 		\rm -rf "${stellapath:?}/"*
+		pInfo "creating directory: ${stellapath}"
+		pInfo "at the current location: ${cwd}"
 		mkdir -p ${stellapath}
 	fi
 	
@@ -341,6 +352,8 @@ cleanPreviousInstall()
 		pWarning "${dycorepath}"
 		sleep 5
 		\rm -rf "${dycorepath:?}/"*
+		pInfo "creating directory: ${dycorepath}"
+		pInfo "at the current location: ${cwd}"
 		mkdir -p ${dycorepath}
 	fi
 	
@@ -349,7 +362,9 @@ cleanPreviousInstall()
 		pWarning "${cosmopath}"
 		sleep 5
 		\rm -rf "${cosmopath:?}/"*
-		mkdir -p ${dycorepath}
+		pInfo "creating directory: ${cosmopath}"
+		pInfo "at the current location: ${cwd}"
+		mkdir -p ${cosmopath}
 	fi
 }
 
@@ -431,8 +446,8 @@ printConfig
 # clone
 cloneTheRepos
 
-# clean
-#cleanPreviousInstall
+# clean and create install structure
+cleanPreviousInstall
 
 # compile and install
 if [ ${doStella} == "ON" ] ; then

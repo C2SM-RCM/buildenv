@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+pWarning()
+{
+  msg=$1
+  YELLOW='\033[1;33m'
+  NC='\033[0m'
+  echo -e "${YELLOW}[WARNING]${NC} ${msg}"
+}
+
 exitError()
 {
 	echo "ERROR $1: $3" 1>&2
@@ -23,9 +31,9 @@ showUsage()
 	echo "Clone, compile and install COSMO-POMPA. "
 	echo ""
 	echo "WARNING:"
-	echo "- the script clones the repositories in the working directory"
-	echo "- the script clones only what is built (see -g, -d or -p)"
-	echo "- the script deletes the stella and cosmo-pompa in the working directory before doing a clone (if needed)"
+	echo " - the script clones the repositories in the working directory"
+	echo " - the script clones only what is built (see -g, -d or -p)"
+	echo " - the script deletes the stella and cosmo-pompa in the working directory before doing a clone (if needed)"
 	echo ""
 	echo "USAGE:"
 	usage="$(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"
@@ -201,7 +209,7 @@ printConfig()
 	echo "  TARGET:                   ${target}"
 	echo "  SINGLE PRECISION:         ${singleprec}"
 	echo "  BIT-REPRODUCIBLE:         ${doRepro}"
-	if [ -z ${configFile+x} ]; then
+	if [ "${configFile}x" != "x" ]; then
 		echo "  CONFIG FILE (JSON):       ${configFile}"
 	else
 		echo "  CONFIG FILE (JSON):       N/A"
@@ -225,12 +233,12 @@ printConfig()
 	echo "  COSMO ORGANIZATION:       ${cosmoOrg}"
 	echo "  COSMO BRANCH:             ${cosmoBranch}"
 	echo "INSTALL PATHS"
-	if [ -z ${slave+x} ]; then
+	if [ "${slave}x" != "x" ]; then	
 		echo "  SLAVE:                    ${slave}"
 	else
 		echo "  SLAVE:                    N/A"
 	fi
-	if [ -z ${projName+x} ]; then
+	if [ "${projName}x" != "x" ]; then
 		echo "  PROJECT NAME:             ${projName}"
 	else
 		echo "  PROJECT NAME:             N/A"
@@ -250,8 +258,10 @@ cloneTheRepos()
 	# note that we clean the previous clone and they're supposed to be installed   
 	# on another directory (simpler solution)	
 	if [ ${doStella} == "ON" ] ; then
-		echo "WARNING: Cleaning previous stella source directories in 5 [s]"
-		echo "WARNING: ${cwd}/stella"
+		#echo "WARNING: Cleaning previous stella source directories in 5 [s]"
+		#echo "WARNING: ${cwd}/stella"
+		pWarning "cleaning previous stella source directories in 5 [s]"
+		pWarning "${cwd}/stella"
 		sleep 5
 		if [ -d stella ]; then
 			\rm -rf stella
@@ -261,8 +271,10 @@ cloneTheRepos()
 	fi
 
 	if [ ${doDycore} == "ON" ] || [ ${doPompa} == "ON" ] ; then
-		echo "WARNING: cleaning previous cosmo-pompa source directories in 5 [s]"
-		echo "WARNING: ${cwd}/cosmo-pompa"
+		#echo "WARNING: cleaning previous cosmo-pompa source directories in 5 [s]"
+		#echo "WARNING: ${cwd}/cosmo-pompa"
+		pWarning "cleaning previous cosmo-pompa source directories in 5 [s]"
+		pWarning "${cwd}/cosmo-pompa"		
 		sleep 5
 		if [ -d cosmo-pompa ]; then
 			\rm -rf cosmo-pompa
@@ -315,24 +327,26 @@ cleanPreviousInstall()
 {
 	# clean previous install path if needed
 	if [ ${doStella} == "ON" ] && [ -d "${stellapath}" ] ; then
-		echo "WARNING: cleaning previous stella install directories in 5 [s]"
-		echo "WARNING: ${stellapath}"
+		#echo "WARNING: cleaning previous stella install directories in 5 [s]"
+		#echo "WARNING: ${stellapath}"
+		pWarning "cleaning previous stella install directories in 5 [s]"
+		pWarning "${stellapath}"
 		sleep 5
 		\rm -rf "${stellapath:?}/"*
 		mkdir -p ${stellapath}
 	fi
 	
 	if [ ${doDycore} == "ON" ] && [ -d "${dycorepath}" ] ; then
-		echo "WARNING: cleaning previous dycore install directories in 5 [s]"
-		echo "WARNING: ${dycorepath}"
+		pWarning "cleaning previous dycore install directories in 5 [s]"
+		pWarning "${dycorepath}"
 		sleep 5
 		\rm -rf "${dycorepath:?}/"*
 		mkdir -p ${dycorepath}
 	fi
 	
 	if [ ${doPompa} == "ON" ] && [ -d "${cosmopath}" ] ; then
-		echo "WARNING: cleaning previous cosmo install directories in 5 [s]"
-		echo "WARNING: ${cosmopath}"
+		pWarning "cleaning previous cosmo install directories in 5 [s]"
+		pWarning "${cosmopath}"
 		sleep 5
 		\rm -rf "${cosmopath:?}/"*
 		mkdir -p ${dycorepath}

@@ -337,6 +337,7 @@ setupBuilds()
 cleanPreviousInstall() 
 {
 	cwd=$(pwd)
+	pInfo "${doStella}, ${doDycore}, ${doPompa}"
 	# clean previous install path if needed
 	if [ ${doStella} == "ON" ] && [ -d "${stellapath}" ] ; then
 		#echo "WARNING: cleaning previous stella install directories in 5 [s]"

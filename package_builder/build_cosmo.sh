@@ -28,12 +28,12 @@ tryExit()
 
 showUsage()
 {	
-	echo "Clone, compile and install COSMO-POMPA. "
+	echo "Clone, compile and install COSMO-POMPA."
 	echo ""
 	echo "WARNING:"
-	echo "- the script clones the repositories in the working directory"
-	echo "- the script clones only what is built (see -g, -d or -p)"
-	echo "- the script deletes the stella and cosmo-pompa in the working directory before doing a clone (if needed)"
+	echo " - the script clones the repositories in the working directory"
+	echo " - the script clones only what is built (see -g, -d or -p)"
+	echo " - the script deletes the stella and cosmo-pompa in the working directory before doing a clone (if needed)"
 	echo ""
 	echo "USAGE:"
 	usage="$(basename "$0") -c compiler -t target -o stella_org -q cosmo_org"

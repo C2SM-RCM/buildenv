@@ -134,6 +134,8 @@ setCppEnvironment()
         module load cray-libsci
         module load cudatoolkit/8.0.61
         module load mvapich2gdr_gnu/2.2_cuda_8.0
+	#XL: HACK needed with this mvapich2 for the dycore test, removed once fixed
+	export LD_PRELOAD=/opt/mvapich2/gdr/no-mcast/2.2/cuda8.0/mpirun/gnu4.8.5/lib64/libmpi.so
         module load gcc/5.4.0-2.26
         module load cmake/3.9.1
 EOF

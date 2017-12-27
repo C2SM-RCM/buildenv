@@ -16,6 +16,14 @@ pInfo()
   echo -e "${BLUE}[INFO]${NC} ${msg}"
 }
 
+pOk()
+{
+  msg=$1
+  GREEN='\033[1;32m'
+  NC='\033[0m'
+  echo -e "${GREEN}[OK]${NC} ${msg}"
+}
+
 exitError()
 {
     RED='\033[0;31m'
@@ -53,7 +61,9 @@ tryExit()
 	if [ "${status}" -ne 0 ]; then
 		echo "ERROR in ${action} with ${status}" >&2
 		exit "${status}"
-  fi
+	else
+		pOk "${action}"
+	fi
 }
 
 showUsage()
@@ -293,7 +303,6 @@ cloneTheRepos()
 		pWarning "cleaning previous stella source directories in 5 [s]"
 		pWarning "${cwd}/stella"
 		clean5Down
-#		sleep 5
 		if [ -d stella ]; then
 			\rm -rf stella
 		fi
@@ -307,7 +316,6 @@ cloneTheRepos()
 		pWarning "cleaning previous cosmo-pompa source directories in 5 [s]"
 		pWarning "${cwd}/cosmo-pompa"		
 		clean5Down
-#		sleep 5
 		if [ -d cosmo-pompa ]; then
 			\rm -rf cosmo-pompa
 		fi
@@ -376,7 +384,6 @@ cleanPreviousInstall()
 			pWarning "cleaning previous stella install directories in 5 [s] at:"
 			pWarning "${stellapath}"
 			clean5Down
-#			sleep 5
 		\rm -rf "${stellapath:?}/"*
 		fi
 		pInfo "creating directory: ${stellapath}"
@@ -389,7 +396,6 @@ cleanPreviousInstall()
 			pWarning "cleaning previous dycore install directories in 5 [s] at:"
 			pWarning "${dycorepath}"
 			clean5Down
-#			sleep 5
 			\rm -rf "${dycorepath:?}/"*
 		fi
 		pInfo "creating directory: ${dycorepath}"
@@ -401,8 +407,7 @@ cleanPreviousInstall()
 		if [ -d "${cosmopath}" ] ; then
 			pWarning "cleaning previous cosmo install directories in 5 [s] at:"
 			pWarning "${cosmopath}"
-			clean5Down
-#			sleep 5		
+			clean5Down	
 			\rm -rf "${cosmopath:?}/"*
 		fi
 		pInfo "creating directory: ${cosmopath}"

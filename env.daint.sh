@@ -29,7 +29,7 @@ setupDefaults()
     fcompiler_cmds=(ftn)
 
     # Module display boost
-    export BOOST_PATH="/project/c14/install/daint/boost"
+    export BOOST_PATH="/project/c14/install/daint/boost/boost_1_49_0"
 
     # Check if ncurses was loaded before
     export BUILDENV_NCURSES_LOADED=`module list -t 2>&1 | grep "ncurses"`
@@ -221,7 +221,7 @@ setFortranEnvironment()
     case "${compiler}" in
     cray )
         module unload cce
-        module load cce/8.5.5
+        module load cce/8.6.1
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
         # Override C++ and C compiler

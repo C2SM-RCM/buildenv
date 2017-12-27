@@ -40,12 +40,13 @@ testdata=""     # directory where unittestdata is stored
 if [ "`hostname | grep daint`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
+    . /etc/bash.bashrc.local
     export host="daint"
     queue="normal"
     nthreads=8
     mpilaunch="srun"
     installdir=/project/c14/install/${host}
-    testdata=/scratch/snx1600/jenkins/data
+    testdata=/scratch/snx3000/jenkins/data
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -55,19 +56,18 @@ elif [ "`hostname | grep dora`" != "" ] ; then
     mpilaunch="aprun"
     installdir=/project/c14/install/daint
     testdata=/scratch/dora/jenkins/data
-elif [ "$(hostname)" = "keschcn-0001" ]; then
-    . /etc/bashrc && true # In some conditions the omitted true triggered an error.
-    export host="kesch-test"
-    echo "The host is ${host}"
-    queue="debug"
-    nthreads=1
-    mpilaunch="srun"
-    installdir="/project/c14/install/${host}"
-    testdata="/scratch/jenkins/data"
+## Disabled block for testing a particular kesch node with special environment
+#elif [[ "$(hostname)" == "keschcn-"* ]]; then
+#    . /etc/bashrc && true # In some conditions the omitted true triggered an error.
+#    export host="kesch-test"
+#    echo "The host is ${host}"
+#    queue="debug"
+#    nthreads=1
+#    mpilaunch="srun"
+#    installdir="/project/c14/install/${host}"
+#    testdata="/scratch/jenkins/data"
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
-    . /usr/Modules/3.2.10/init/bash
-    . /etc/profile.d/cray_pe.sh
     if [ "${NODE_NAME}" == kesch-pgi ] ; then
 	export host="kesch-pgi"
     else

@@ -23,6 +23,7 @@ export MALLOC_TRIM_THRESHOLD_=536870912
 export G2G=1
 export MV2_USE_GPUDIRECT=0 #with this perf are ok
 
+
 <CMD>
 
 ########################################################

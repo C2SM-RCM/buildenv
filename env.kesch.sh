@@ -149,13 +149,13 @@ EOF
     #cudatk_include_path="${cudatk_path}"
     use_mpi_compiler=OFF
 
-    # set global variables
+        # set global variables
     if [ "${compiler}" == "gnu" ] ; then
         dycore_openmp=ON   # OpenMP only works if GNU is also used for Fortran parts
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
-
+    
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
@@ -174,7 +174,7 @@ unsetCppEnvironment()
     #XL: HACK, unset LD_PRELOAD
     unset LD_PRELOAD
     restoreModuleCheckPoint
-
+    
     rm $ENVIRONMENT_TEMPFILE
     unset ENVIRONMENT_TEMPFILE
 

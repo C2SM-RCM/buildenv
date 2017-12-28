@@ -469,7 +469,11 @@ doCosmoCompilation()
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"	
 	if [ ${jenkinsPath} == "OFF" ] ; then
 		export REPROJSON=${configFile}
-		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
+		if [ ${doRepro} == "ON" ] ; then
+			test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
+		else
+			test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}"
+		fi
 	else
 		# export INSTALL_DIR=$instPrefix
 		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}"

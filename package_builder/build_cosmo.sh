@@ -321,6 +321,10 @@ cloneTheRepos()
 		fi
 		pInfo "cloning cosmo-pompa (with dycore)"
 		git clone git@github.com:"${cosmoOrg}"/cosmo-pompa.git --branch "${cosmoBranch}"
+		pInfo "updating submodules"
+		cd cosmo-pompa
+		git submodule update --init
+		cd ..
 	fi
 }
 

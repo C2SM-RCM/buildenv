@@ -467,17 +467,14 @@ doDycoreCompilation()
 doCosmoCompilation()
 {
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"	
-	if [ ${jenkinsPath} == "OFF" ] ; then
-		export REPROJSON=${configFile}
-		if [ ${doRepro} == "ON" ] ; then
-			test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}" -x "${dycorepath}"
-		else
-			test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}"
-		fi
-	else
-		# export INSTALL_DIR=$instPrefix
-		test/jenkins/build.sh "${moreFlag}" -c "${compiler}" -t "${target}" -i "${cosmopath}"
-	fi
+
+	extraFlags="-c ${compiler} -t ${target} -i ${cosmopath}"
+	if [ ${doRepro} == "ON" ] ; then
+		export CRCLIMJSON=${configFile}
+		extraFlags="${extraFlags} -x ${dycorepath}"
+	fi	
+	
+	test/jenkins/build.sh "${moreFlag}" "${extraFlags}"
 	retCode=$?
 	tryExit $retCode "COSMO BUILD"
 	cd ../.. || exitError 612 ${LINENO} "Unable to go back"

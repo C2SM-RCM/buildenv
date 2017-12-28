@@ -437,14 +437,14 @@ doStellaCompilation()
 	fi
 
 	cd stella || exitError 608 ${LINENO} "Unable to change directory into stella"
+	
+	extraFlags="-c ${gnuCompiler} -i ${stellapath} ${kFlatLevels}"
 	if [ ${doRepro} == "ON" ] ; then
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" "${kFlatLevels}" -x
-		retCode=$?
-	else
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -i "${stellapath}" "${kFlatLevels}"
-		retCode=$?
+		extraFlags="${extraFlags} -x"
 	fi
 	
+	test/jenkins/build.sh "${moreFlag}" "${extraFlags}"
+	retCode=$?
 	tryExit $retCode "STELLA BUILD"
 	cd .. || exitError 609 ${LINENO} "Unable to go back"
 }
@@ -453,11 +453,12 @@ doStellaCompilation()
 doDycoreCompilation()
 {
 	cd cosmo-pompa/dycore || exitError 610 ${LINENO} "Unable to change directory into cosmo-pompa/dycore"
+
+	extraFlags="-c ${gnuCompiler} -t ${target} -i ${dycorepath}"
 	if [ ${jenkinsPath} == "OFF" ] ; then
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -s "${stellapath}" -i "${dycorepath}"
-	else
-		test/jenkins/build.sh "${moreFlag}" -c "${gnuCompiler}" -t "${target}" -i "${dycorepath}"
+		extraFlags="${extraFlags} -s ${stellapath}"
 	fi
+	test/jenkins/build.sh "${moreFlag}" "${extraFlags}"
 	retCode=$?
 	tryExit $retCode "DYCORE BUILD"
 	cd ../.. || exitError 611 ${LINENO} "Unable to go back"
@@ -469,11 +470,11 @@ doCosmoCompilation()
 	cd cosmo-pompa/cosmo || exitError 612 ${LINENO} "Unable to change directory into cosmo-pompa/cosmo"	
 
 	extraFlags="-c ${compiler} -t ${target} -i ${cosmopath}"
-	if [ ${doRepro} == "ON" ] ; then
+	if [ ${doRepro} == "ON" ] || [ ${jenkinsPath} == "OFF" ] ; then
 		export CRCLIMJSON=${configFile}
 		extraFlags="${extraFlags} -x ${dycorepath}"
 	fi	
-	
+
 	test/jenkins/build.sh "${moreFlag}" "${extraFlags}"
 	retCode=$?
 	tryExit $retCode "COSMO BUILD"

@@ -13,7 +13,7 @@ eval set -- "$TEMP --"
 fwd_args=""
 
 # COSMO Resources repository default
-resources_repo="git@github.com:MeteoSwiss-APN/libgrib-api-cosmo-resources.git"
+resources_repo="git@github.com:C2SM-RCM/libgrib-api-cosmo-resources.git"
 # COSMO Resources version default
 resources_version="master"
 # Compiler target default

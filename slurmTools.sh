@@ -81,6 +81,14 @@ function launch_job {
 
   # check for normal completion of batch job
   sacct --jobs ${jobid} --user jenkins -p -n -b -D 2>/dev/null | grep -v '|COMPLETED|0:0|' >/dev/null
+  # in case status is not completed wait first 60 s in case the data base is not up to date                                                                          
+  if [ $? -eq 0 ] ; then
+    echo "Status not COMPLETED, waiting 60s for data base update"
+    sleep 60
+  fi
+
+ #check again                                                                                                                                                
+  sacct --jobs ${jobid} --user jenkins -p -n -b -D 2>/dev/null | grep -v '|COMPLETED|0:0|' >/dev/null
   if [ $? -eq 0 ] ; then
       if [ -n "${out}" ] ; then
           echo "=== ${out} BEGIN ==="

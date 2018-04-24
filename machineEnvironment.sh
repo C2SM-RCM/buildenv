@@ -51,16 +51,12 @@ elif [ "`hostname | grep dom`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
     . /etc/bash.bashrc.local
-    realHost="dom"
-    # we trick the machine as it is Daint
-    export host="daint"
+    export host="dom"
     queue="normal"
     nthreads=8
     mpilaunch="srun"
-    # we trick the machine as it is Daint
-    # installdir=/project/c14/install/${host}
-    installdir=/project/c14/install/${realHost}
-    testdata=/scratch/snx1600tds/jenkins/data    
+    installdir=/project/c14/install/${host}
+    testdata=/scratch/snx1600tds/jenkins/data
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash

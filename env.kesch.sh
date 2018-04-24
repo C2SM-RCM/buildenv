@@ -258,8 +258,11 @@ EOF
             # Generated with the build script
             # implicit module purge
             module load craype-haswell
-            module load GCC/4.9.3-binutils-2.25
-            module load PrgEnv-pgi/16.7
+            module load PrgEnv-pgi/17.10
+            module unload openmpi/2.1.2/2017
+            module load mvapich2gdr_gnu/2.3a_cuda_8.0_pgi17.10
+            module load gcc/5.4.0-2.26
+            module load cmake/3.9.1
 EOF
         export FC=mpif90
         ;;	

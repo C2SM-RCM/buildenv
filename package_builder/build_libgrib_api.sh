@@ -13,7 +13,7 @@ eval set -- "$TEMP --"
 fwd_args=""
 
 # COSMO Resources repository default
-resources_repo="git@github.com:MeteoSwiss-APN/libgrib-api-cosmo-resources.git"
+resources_repo="git@github.com:C2SM-RCM/libgrib-api-cosmo-resources.git"
 # COSMO Resources version default
 resources_version="master"
 # Compiler target default
@@ -116,7 +116,7 @@ build_compiler_target()
 
     echo "Compiling and installing for $compiler (install path: $install_path)"
     
-    if [ "${host}" == "daint" ]; then
+    if [ "${host}" == "daint" ] || [ "${host}" == "dom" ] ; then
         # Remove accelerator target to avoid issue with CUDA
         export CRAY_ACCEL_TARGET=
     fi

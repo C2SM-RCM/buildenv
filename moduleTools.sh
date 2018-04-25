@@ -162,7 +162,7 @@ writeModuleList()
                 exitError 654 ${LINENO} "host is not defined"
             fi
             # workaround for Todi, Daint, and Lema
-            if [ "${host}" == "lema" -o "${host}" == "daint" ] ; then
+            if [ "${host}" == "lema" -o "${host}" == "daint" -o "${host}" == "dom" ] ; then
                 # Replace some module loads with a swap
                 swap=( "gcc" "pgi" "cce" "cray-mpich" "cudatoolkit" )
                 for i in "${swap[@]}"

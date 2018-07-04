@@ -9,6 +9,7 @@ cd ..
 rm -rf cosmo-pompa/cosmo/testsuite/src/*
 cp -rf testsuite/* cosmo-pompa/cosmo/test/testsuite/src
 cd cosmo-pompa/cosmo/test
+export compiler="cray"
 test -f ./jenkins/jenkins.sh || exit 1
 ./jenkins/jenkins.sh test
 

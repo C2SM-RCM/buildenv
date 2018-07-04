@@ -5,8 +5,10 @@ git clone git@github.com:MeteoSwiss-APN/cosmo-pompa
 git clone git@github.com:C2SM-RCM/testsuite
 cd testsuite
 git checkout ${BRANCH}
-cp -rf * ../cosmo-pompa/cosmo/test/testsuite/src/*
-cd ../cosmo-pompa/cosmo/test
+cd ..
+rm -rf cosmo-pompa/cosmo/testsuite/src/*
+cp -rf testsuite/* cosmo-pompa/cosmo/test/testsuite/src
+cd cosmo-pompa/cosmo/test
 test -f ./jenkins/jenkins.sh || exit 1
 ./jenkins/jenkins.sh test
 

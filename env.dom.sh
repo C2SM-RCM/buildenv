@@ -222,7 +222,9 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     cray )
-        module load cce/8.7.1
+        module load PrgEnv-cray
+        module load cdt/18.07
+        #module load cce/8.7.1
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
         # Override C++ and C compiler
@@ -239,8 +241,11 @@ setFortranEnvironment()
         export FC=ftn
         ;;
     pgi )
-        module unload pgi
-        module load pgi/18.3.0
+        #module unload pgi
+        module unload PrgEnv-cray/6.0.4
+        module load PrgEnv-pgi
+        module load cdt/18.06      
+        #module load pgi/18.3.0
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
         export CXX=$GCC_PATH/snos/bin/g++

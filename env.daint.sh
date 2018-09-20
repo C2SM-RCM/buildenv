@@ -93,6 +93,11 @@ setCppEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-gnu
     fi
+    module unload perftools-base
+    module swap cray-mpich/7.6.0 cray-mpich/7.6.2
+    export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+    echo "Set C++: LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+    echo "Set C++: CRAY_LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH"
     
     # standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
@@ -175,6 +180,11 @@ unsetCppEnvironment()
     else
         module swap PrgEnv-gnu ${old_prgenv}
     fi
+    module unload perftools-base
+    module swap cray-mpich/7.6.2 cray-mpich/7.6.0
+    export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+    echo "Unset C++: LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+    echo "Unset C++: CRAY_LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH"
     unset old_prgenv
 
     # unset global variables
@@ -208,7 +218,9 @@ setFortranEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-${compiler}
     fi
-    
+    module unload perftools-base
+    module swap cray-mpich/7.6.0 cray-mpich/7.6.2
+
     old_ldflags="${LDFLAGS}"
     
     # standard modules (part 1)
@@ -252,7 +264,13 @@ setFortranEnvironment()
     esac
 
     # standard modules (part 2)
-    module load cray-netcdf
+    # module load cray-netcdf
+    module load cray-hdf5/1.10.1.1 
+    module load cray-netcdf/4.4.1.1.6
+    export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+    echo "Set Fortran: LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+    echo "Set Fortran: CRAY_LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH"
+
 }
 
 # This function unloads modules and removes variables for compiling the Fortran parts
@@ -264,7 +282,9 @@ setFortranEnvironment()
 unsetFortranEnvironment()
 {
     # remove standard modules (part 2)
-    module unload cray-netcdf
+    #module unload cray-netcdf
+    module unload cray-netcdf/4.4.1.1.6
+    module unload cray-hdf5/1.10.1.1
 
     # remove compiler specific modules
     case "${compiler}" in
@@ -301,6 +321,11 @@ unsetFortranEnvironment()
     else
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
+    module unload perftools-base
+    module swap cray-mpich/7.6.2 cray-mpich/7.6.0
+    export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
+    echo "Unset Fortran: LD_LIBRARY_PATH=$LD_LIBRARY_PATH"
+    echo "Unset Fortran: CRAY_LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH"
     unset old_prgenv
     
     export LDFLAGS="${old_ldflags}"

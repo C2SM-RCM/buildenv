@@ -238,7 +238,7 @@ setFortranEnvironment()
         ;;
     pgi )
         module unload pgi
-        module load pgi/17.5.0
+        module load pgi/18.5.0
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
         export CXX=$GCC_PATH/snos/bin/g++

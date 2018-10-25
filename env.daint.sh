@@ -220,7 +220,7 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     cray )
-        module load cce/8.6.1
+        module swap cce/8.6.1
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
         module load gcc/5.3.0
         # Override C++ and C compiler

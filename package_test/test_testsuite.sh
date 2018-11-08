@@ -1,11 +1,26 @@
 #!/bin/bash -e
+# Script to test a branch "BRANCH" of the testsuite
 
-# First, test cosmo-pompa
-git clone git@github.com:MeteoSwiss-APN/cosmo-pompa
+if [ -z "${BRANCH}" ] ; then
+     echo "Error : BRANCH env variable not defined"
+     exit 1
+fi
+
+
+wd=`pwd`
+echo Working dir $wd
+
+
+# Get testsuite
 git clone git@github.com:C2SM-RCM/testsuite
 cd testsuite
 git checkout ${BRANCH}
-cd ..
+echo "Last commit in testsuite repo:"
+git --no-pager log -1
+cd $wd
+
+# First, test cosmo-pompa
+git clone git@github.com:MeteoSwiss-APN/cosmo-pompa
 rm -rf cosmo-pompa/cosmo/testsuite/src/*
 cp -rf testsuite/* cosmo-pompa/cosmo/test/testsuite/src
 cd cosmo-pompa/cosmo/test
@@ -14,7 +29,7 @@ test -f ./jenkins/jenkins.sh || exit 1
 ./jenkins/jenkins.sh test
 
 # Next, test int2lm
-cd ../../..
+cd $wd
 git clone git@github.com:MeteoSwiss-APN/int2lm
 cp -rf testsuite/* int2lm/test/testsuite/src
 cd int2lm/test

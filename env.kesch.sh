@@ -209,7 +209,6 @@ setFortranEnvironment()
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
- 
     
     case "${compiler}" in
     cray )

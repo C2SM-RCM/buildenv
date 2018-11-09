@@ -30,6 +30,7 @@ showWarning()
 function launch_job {
   local script=$1
   local timeout=$2
+  local sacct_maxwait=90
 
   # check sanity of arguments
   test -f "${script}" || exitError 7201 ${LINENO} "cannot find script ${script}"
@@ -80,16 +81,27 @@ function launch_job {
   fi
 
   # check for normal completion of batch job
-  sacct --jobs ${jobid} --user jenkins -p -n -b -D 2>/dev/null | grep -v '|COMPLETED|0:0|' >/dev/null
-  # in case status is not completed wait first 60 s in case the data base is not up to date                                                                          
-  if [ $? -eq 0 ] ; then
-    echo "Status not COMPLETED, waiting 60s for data base update"
-    sleep 60
-  fi
+  # Since the slurm data base may take time to update, wait until sacct_maxwait
+  local sacct_wait=0
+  local sacct_inc=30
+  local sacct_log=sacct.log
+  local sacct_status=1
 
- #check again                                                                                                                                                
-  sacct --jobs ${jobid} --user jenkins -p -n -b -D 2>/dev/null | grep -v '|COMPLETED|0:0|' >/dev/null
-  if [ $? -eq 0 ] ; then
+  while [ $sacct_wait -lt $sacct_maxwait ] ; do
+      sacct --jobs ${jobid} -p -n -b -D 2>/dev/null > ${sacct_log}
+      # Check that sacct returns COMPLETED
+      grep -v '|COMPLETED|0:0|' ${sacct_log} >/dev/null
+      if [ $? -eq 0 ]; then
+	  echo "Status not COMPLETED, waiting 30s for data base update"
+	  sleep 30
+      else
+	  sacct_status=0
+	  break
+      fi
+      sacct_wait=$[$sacct_wait+${sacct_inc}]
+  done
+
+  if [ $sacct_status -ne 0 ] ; then
       if [ -n "${out}" ] ; then
           echo "=== ${out} BEGIN ==="
           cat ${out} | /bin/sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
@@ -100,9 +112,12 @@ function launch_job {
           cat ${err} | /bin/sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g"
           echo "=== ${err} END ==="
       fi
+      echo "=== ${sacct_log} BEGIN ==="
+      cat ${sacct_log}
+      echo "=== ${sacct_log} END ==="
       exitError 7209 ${LINENO} "batch job ${script} with ID ${jobid} on host ${slave} did not complete successfully"
   fi
-
+  rm ${sacct_log}
 }
 
 

@@ -84,7 +84,7 @@ function launch_job {
   # Since the slurm data base may take time to update, wait until sacct_maxwait
   local sacct_wait=0
   local sacct_inc=30
-  local sacct_log=sacct.log
+  local sacct_log=sacct.${jobid}.log
   local sacct_status=1
 
   while [ $sacct_wait -lt $sacct_maxwait ] ; do

@@ -88,13 +88,7 @@ function launch_job {
   local sacct_status=1
 
   while [ $sacct_wait -lt $sacct_maxwait ] ; do
-      # HACK>: XL, 12.11.2018 On Kesch an "extern" process is marked CANCELLED
-      # although all jobs are ok. CSCS is aware but no fix yet
-      # The "extern" process is ignored until further notice
-      #sacct --jobs ${jobid} -p -n -b -D 2>/dev/null > ${sacct_log}
-      sacct --jobs ${jobid} -p -n -b -D 2>/dev/null |grep -v extern > ${sacct_log}
-      #<HACK
-
+      sacct --jobs ${jobid} -p -n -b -D 2>/dev/null > ${sacct_log}
       # Check that sacct returns COMPLETED
       grep -v '|COMPLETED|0:0|' ${sacct_log} >/dev/null
       if [ $? -eq 0 ]; then

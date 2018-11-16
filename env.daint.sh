@@ -254,7 +254,7 @@ setFortranEnvironment()
     esac
 
     # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw_v1.2.0/${compiler}/bin/clawfc"
+    export CLAWFC="${installdir}/claw_v1.2.1/${compiler}/bin/clawfc"
 
     # standard modules (part 2)
     module load cray-netcdf

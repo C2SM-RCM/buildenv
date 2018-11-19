@@ -25,7 +25,7 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray pgi)
+    compilers=(gnu cray pgi claw-cray claw-pgi claw-gnu)
     fcompiler_cmds=(ftn)
 
     # Module display boost

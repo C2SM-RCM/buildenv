@@ -128,12 +128,20 @@ setCppEnvironment()
         # Generated with the build script
         # implicit module purge
         module purge
+
+module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
+
         module load craype-network-infiniband
         module load craype-haswell
         module load craype-accel-nvidia35
         module load cray-libsci
         module load cudatoolkit/8.0.61
         module load mvapich2gdr_gnu/2.2_cuda_8.0
+        #XL: HACK needed with this mvapich2 for the dycore test, removed once fixed
+        export LD_PRELOAD=/opt/mvapich2/gdr/no-mcast/2.2/cuda8.0/mpirun/gnu4.8.5/lib64/libmpi.so
         module load gcc/5.4.0-2.26
         module load cmake/3.9.1
 EOF
@@ -169,6 +177,8 @@ EOF
 #
 unsetCppEnvironment()
 {
+    #XL: HACK, unset LD_PRELOAD
+    unset LD_PRELOAD
     restoreModuleCheckPoint
     
     rm $ENVIRONMENT_TEMPFILE
@@ -210,6 +220,11 @@ setFortranEnvironment()
     cray )
         # Provided by CSCS
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
+module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
+
             # Generated with the build script
             # implicit module purge
             module load craype-haswell
@@ -223,6 +238,11 @@ EOF
 
         if [ "${target}" == "cpu" ]; then
             cat > $ENVIRONMENT_TEMPFILE <<-EOF
+module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
+
                 # Generated with the build script
                 # implicit module purge
                 module load craype-haswell
@@ -238,12 +258,17 @@ EOF
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
+module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
+
             # Generated with the build script
             # implicit module purge
             module load craype-haswell
             module load craype-network-infiniband
             module load PrgEnv-gnu/17.02
-            module load cmake/3.7.2
+            module load cmake/3.9.1
             module load netcdf-fortran/4.4.4-gmvolf-17.02
             module load hdf5/1.8.18-gmvolf-17.02
 EOF
@@ -251,11 +276,19 @@ EOF
         ;;
     pgi ) 
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
+module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
+module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
+
             # Generated with the build script
             # implicit module purge
             module load craype-haswell
-            module load GCC/4.9.3-binutils-2.25
-            module load PrgEnv-pgi/16.7
+            module load PrgEnv-pgi/17.10
+            module unload openmpi/2.1.2/2017
+            module load mvapich2gdr_gnu/2.3a_cuda_8.0_pgi17.10
+            module load gcc/5.4.0-2.26
+            module load cmake/3.9.1
 EOF
         export FC=mpif90
         ;;	
@@ -276,6 +309,9 @@ EOF
     # We have gcc for gnu, cray and pgi environments
     export CXX=g++
     export CC=gcc
+
+    # CLAW Compiler using the correct preprocessor
+    export CLAWFC="${installdir}/claw_v1.2.1/${compiler}/bin/clawfc"
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
     if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then

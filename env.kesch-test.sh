@@ -232,7 +232,7 @@ module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
             module load craype-network-infiniband
             module load netCDF-Fortran/4.4.4-CrayCCE-17.06
             module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2gdr_gnu/2.2_cuda_8.0
-            module load gcc/5.4.0-2.26
+          # module load gcc/5.4.0-2.26
             module load cmake/3.9.1
 EOF
 
@@ -250,7 +250,7 @@ module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
                 module load craype-network-infiniband
                 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
                 module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2_cce/2.2rc1.0.3
-                module load gcc/5.4.0-2.26
+             #  module load gcc/5.4.0-2.26
                 module load cmake/3.9.1
 EOF
         fi
@@ -287,7 +287,7 @@ module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
             module load PrgEnv-pgi/17.10
             module unload openmpi/2.1.2/2017
             module load mvapich2gdr_gnu/2.3a_cuda_8.0_pgi17.10
-            module load gcc/5.4.0-2.26
+          # module load gcc/5.4.0-2.26
             module load cmake/3.9.1
 EOF
         export FC=mpif90
@@ -307,8 +307,8 @@ EOF
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
     # We have gcc for gnu, cray and pgi environments
-    export CXX=g++
-    export CC=gcc
+#    export CXX=g++
+#    export CC=gcc
 
     # CLAW Compiler using the correct preprocessor
     export CLAWFC="${installdir}/claw_v1.2.1/${compiler}/bin/clawfc"

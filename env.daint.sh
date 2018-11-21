@@ -55,7 +55,7 @@ get_fcompiler_cmd()
 {
     local __resultvar=$1
     local __compiler=$2
-    if [ "${compiler}" == "gnu" ] ; then
+    if [ "${compiler}" == "gnu" ] || [ "${compiler}" == "claw-gnu" ]; then
         myresult="gfortran"
     else
         myresult="ftn"
@@ -219,7 +219,7 @@ setFortranEnvironment()
 
     # compiler specific modules
     case "${compiler}" in
-    cray )
+    *cray )
         module load cdt/17.08
         module swap cce/8.6.1
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
@@ -231,14 +231,14 @@ setFortranEnvironment()
         export FC=ftn
         export LDFLAGS="-L$GCC_PATH/snos/lib64 ${LDFLAGS}"
         ;;
-    gnu )
+    *gnu )
         module unload gcc
         module load gcc/5.3.0
         export CXX=CC
         export CC=cc
         export FC=ftn
         ;;
-    pgi )
+    *pgi )
         module unload pgi
         module load pgi/18.5.0
         # Load gcc/5.3.0 to link with the C++ Dynamical Core
@@ -273,7 +273,7 @@ unsetFortranEnvironment()
 
     # remove compiler specific modules
     case "${compiler}" in
-    cray )
+    *cray )
         module unload gcc/5.3.0
 	#XL: try to restore system default manually since
 	#    this gives an error : source /opt/cray/pe/cdt/17.08/restore_system_defaults.sh
@@ -281,11 +281,11 @@ unsetFortranEnvironment()
 	module unload cray-libsci_acc/17.03.1
 	module swap cray-mpich/7.7.2
         ;;
-    gnu )
+    *gnu )
         module unload gcc/5.3.0
         module load gcc
         ;;
-    pgi )
+    *pgi )
         module unload gcc/5.3.0
         ;;
     * )

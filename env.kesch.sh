@@ -45,7 +45,7 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray pgi)
+    compilers=(gnu cray pgi claw-cray claw-pgi claw-gnu)
     fcompiler_cmds=(ftn)
 
 
@@ -82,7 +82,7 @@ get_fcompiler_cmd()
 {
     local __resultvar=$1
     local __compiler=$2
-    if [ "${compiler}" == "gnu" ] ; then
+    if [ "${compiler}" == "gnu" ] || [ "${compiler}" == "claw-gnu" ]; then
         myresult="gfortran"
     else
         myresult="ftn"
@@ -211,7 +211,7 @@ setFortranEnvironment()
     export ENVIRONMENT_TEMPFILE=$(mktemp)
     
     case "${compiler}" in
-    cray )
+    *cray )
         # Provided by CSCS
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
@@ -240,7 +240,7 @@ EOF
         fi
         export FC="ftn -D__CRAY_FORTRAN__"
         ;;
-    gnu )
+    *gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
             # implicit module purge
@@ -253,7 +253,7 @@ EOF
 EOF
         export FC=gfortran
         ;;
-    pgi ) 
+    *pgi ) 
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
             # implicit module purge

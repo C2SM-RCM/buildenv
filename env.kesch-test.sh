@@ -24,6 +24,8 @@ createModuleCheckPoint()
 restoreModuleCheckPoint()
 {
     module purge
+    ## a single module purge is not cleaning up the environment, we just need to persist ;)
+    module purge
     source ${previous_module_tmp}
     rm ${previous_module_tmp}
     unset previous_module_tmp

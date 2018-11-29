@@ -57,7 +57,13 @@ setupDefaults()
     # # MVAPICH
     export MVAPICH_MODULE="mvapich2_gnu/2.2rc1.0.2"
     # # BOOST
-    export BOOST_PATH="/users/jenkins/Code/boost-1.49.0/"
+    export Boost_NO_SYSTEM_PATHS=true
+    export Boost_NO_BOOST_CMAKE=true
+
+    export BOOST_ROOT=/project/c14/install/kesch/boost/boost_1_67_0/
+    export BOOST_PATH=${BOOST_ROOT}
+    export BOOST_INCLUDE=${BOOST_ROOT}/include/
+
 
     # default options
     if [ -z "${target}" ] ; then

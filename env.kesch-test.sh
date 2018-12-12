@@ -285,18 +285,18 @@ EOF
     pgi ) 
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
 module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+module use /apps/escha/UES/RH7.4_experimental/sandbox-aj/modules/
+module use /apps/escha/UES/jenkins/RH7.4/pgi_PE18.10/easybuild/modules/all
+module use /opt/cray/craype/default/modulefiles
+module use /opt/cray/modulefiles
+module use /opt/modulefiles
 module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
 module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
 
             # Generated with the build script
             # implicit module purge
             module load craype-haswell
-            module load PrgEnv-pgi/17.10
-            module unload openmpi/2.1.2/2017
-            module load mvapich2gdr_gnu/2.3a_cuda_8.0_pgi17.10
-          # module load gcc/5.4.0-2.26
-            module load cmake/3.9.1
+            module load PrgEnv-pgi/18.10_gdr
 EOF
         export FC=mpif90
         ;;	

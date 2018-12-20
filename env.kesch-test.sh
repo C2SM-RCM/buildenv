@@ -238,10 +238,8 @@ module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
             module load craype-haswell
             module load craype-accel-nvidia35
             module load craype-network-infiniband
+            module load PrgEnv-cray/1.0.2_gdr
             module load netCDF-Fortran/4.4.4-CrayCCE-17.06
-            module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2gdr_gnu/2.2_cuda_8.0
-          # module load gcc/5.4.0-2.26
-            module load cmake/3.9.1
 EOF
 
         if [ "${target}" == "cpu" ]; then
@@ -256,10 +254,8 @@ module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
                 module load craype-haswell
                 module load craype-accel-nvidia35
                 module load craype-network-infiniband
+                module load PrgEnv-cray/1.0.2
                 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
-                module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2_cce/2.2rc1.0.3
-             #  module load gcc/5.4.0-2.26
-                module load cmake/3.9.1
 EOF
         fi
         export FC="ftn -D__CRAY_FORTRAN__"

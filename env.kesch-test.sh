@@ -54,8 +54,6 @@ setupDefaults()
     export BASE_MODULES="craype-haswell"
     export NVIDIA_CUDA_ARCH="sm_37"
 
-    # # MVAPICH
-    export MVAPICH_MODULE="mvapich2_gnu/2.2rc1.0.2"
     # # BOOST
     export Boost_NO_SYSTEM_PATHS=true
     export Boost_NO_BOOST_CMAKE=true
@@ -137,21 +135,18 @@ setCppEnvironment()
         # implicit module purge
         module purge
 
-module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
+        module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+        module use /apps/escha/UES/jenkins/RH7.5/gnu_PE17.02/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/generic/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/cray_PE18.12/easybuild/modules/all
 
         module load craype-network-infiniband
         module load craype-haswell
         module load craype-accel-nvidia35
-        module load cray-libsci
-        module load cudatoolkit/8.0.61
-        module load mvapich2gdr_gnu/2.2_cuda_8.0
-        #XL: HACK needed with this mvapich2 for the dycore test, removed once fixed
-        export LD_PRELOAD=/opt/mvapich2/gdr/no-mcast/2.2/cuda8.0/mpirun/gnu4.8.5/lib64/libmpi.so
+        module load cudatoolkit/9.2.148
+        module load mvapich2gdr_gnu/2.3_cuda_9.2_gcc54
         module load gcc/5.4.0-2.26
-        module load cmake/3.9.1
+        module load cmake
 EOF
    
     module purge
@@ -228,73 +223,60 @@ setFortranEnvironment()
     cray )
         # Provided by CSCS
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
+        module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+        module use /apps/escha/UES/jenkins/RH7.5/gnu_PE17.02/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/generic/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/cray_PE18.12/easybuild/modules/all
 
-            # Generated with the build script
-            # implicit module purge
-            module load craype-haswell
-            module load craype-accel-nvidia35
-            module load craype-network-infiniband
-            module load PrgEnv-cray/1.0.2_gdr
-            module load netCDF-Fortran/4.4.4-CrayCCE-17.06
+        module load craype-network-infiniband
+        module load craype-haswell
+        module load craype-accel-nvidia35
+        module load PrgEnv-CrayCCE/18.12
+        module load netCDF/4.4.1.1-CrayCCE-18.12
+        module load cmake
+
 EOF
 
-        if [ "${target}" == "cpu" ]; then
-            cat > $ENVIRONMENT_TEMPFILE <<-EOF
-module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
-
-                # Generated with the build script
-                # implicit module purge
-                module load craype-haswell
-                module load craype-accel-nvidia35
-                module load craype-network-infiniband
-                module load PrgEnv-cray/1.0.2
-                module load netCDF-Fortran/4.4.4-CrayCCE-17.06
-EOF
-        fi
+# XL: RH 7.5 test no special setting for cpu
+#        if [ "${target}" == "cpu" ]; then
+#            cat > $ENVIRONMENT_TEMPFILE <<-EOF
+#EOF
+#        fi
         export FC="ftn -D__CRAY_FORTRAN__"
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/cray_PE17.06/easybuild/modules/all
+        module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+        module use /apps/escha/UES/jenkins/RH7.5/gnu_PE17.02/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/generic/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/cray_PE18.12/easybuild/modules/all
 
-            # Generated with the build script
-            # implicit module purge
-            module load craype-haswell
-            module load craype-network-infiniband
-            module load PrgEnv-gnu/17.02
-            module load cmake/3.9.1
-            module load netcdf-fortran/4.4.4-gmvolf-17.02
-            module load hdf5/1.8.18-gmvolf-17.02
+        # Generated with the build script
+        # implicit module purge
+        module load craype-haswell
+        module load craype-network-infiniband
+        module load PrgEnv-gnu/17.02
+        module load netcdf-fortran/4.4.4-gmvolf-17.02
+        module load cmake
 EOF
         export FC=gfortran
         ;;
     pgi ) 
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-module use /apps/escha/UES/RH7.4_experimental/sandbox-aj/modules/
-module use /apps/escha/UES/jenkins/RH7.4/pgi_PE18.10/easybuild/modules/all
-module use /opt/cray/craype/default/modulefiles
-module use /opt/cray/modulefiles
-module use /opt/modulefiles
-module use /apps/escha/UES/jenkins/RH7.4/gnu_PE17.02/easybuild/modules/all
-module use /apps/escha/UES/jenkins/RH7.4/generic/easybuild/modules/all
-
-            # Generated with the build script
-            # implicit module purge
-            module load craype-haswell
-            module load PrgEnv-pgi/18.10_gdr
+        module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
+        module use /apps/escha/UES/jenkins/RH7.5/gnu_PE17.02/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/generic/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/cray_PE18.12/easybuild/modules/all
+        module use /apps/escha/UES/jenkins/RH7.5/pgi_PE18.10/easybuild/modules/all
+        # Generated with the build script
+        # implicit module purge
+        module load craype-haswell
+        module load craype-network-infiniband
+        module load PrgEnv-pgi/18.10
+        module load netcdf-fortran/4.4.4-pgi-18.10-gcc-5.4.0-2.26
+        module load cmake
 EOF
-        export FC=mpif90
+        export FC=$MPIF90
         ;;	
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -309,10 +291,6 @@ EOF
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-
-    # We have gcc for gnu, cray and pgi environments
-#    export CXX=g++
-#    export CC=gcc
 
     # CLAW Compiler using the correct preprocessor
     export CLAWFC="${installdir}/claw_v1.2.1/${compiler}/bin/clawfc"

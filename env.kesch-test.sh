@@ -232,7 +232,7 @@ setFortranEnvironment()
         module load craype-haswell
         module load craype-accel-nvidia35
         module load PrgEnv-CrayCCE/18.12
-        module load netCDF/4.4.1.1-CrayCCE-18.12
+        module load netCDF-Fortran/4.4.4-CrayCCE-18.12
         module load cmake
 
 EOF

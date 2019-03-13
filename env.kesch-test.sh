@@ -131,22 +131,13 @@ setCppEnvironment()
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
-        # Generated with the build script
-        # implicit module purge
-        module purge
-
-        module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-        module use /apps/escha/UES/jenkins/RH7.5/gnu_PE17.02/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/generic/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/cray_PE18.12/easybuild/modules/all
-
-        module load craype-network-infiniband
-        module load craype-haswell
-        module load craype-accel-nvidia35
-        module load cudatoolkit/9.2.148
-        module load mvapich2gdr_gnu/2.3_cuda_9.2_gcc54
-        module load gcc/5.4.0-2.26
-        module load cmake
+module load PE/18.12
+module load craype-network-infiniband
+module load craype-haswell
+module load cudatoolkit/9.2.148
+module load mvapich2gdr_gnu/2.3_cuda_9.2_gcc54
+module load gcc/5.4.0-2.26
+module load cmake
 EOF
    
     module purge
@@ -221,60 +212,48 @@ setFortranEnvironment()
     
     case "${compiler}" in
     cray )
-        # Provided by CSCS
-        cat > $ENVIRONMENT_TEMPFILE <<-EOF
-        module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-        module use /apps/escha/UES/jenkins/RH7.5/gnu_PE17.02/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/generic/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/cray_PE18.12/easybuild/modules/all
-
-        module load craype-network-infiniband
-        module load craype-haswell
-        module load craype-accel-nvidia35
-        module load PrgEnv-CrayCCE/18.12
-        module load netCDF-Fortran/4.4.4-CrayCCE-18.12
-        module load cmake
-
+        if [ "${target}" == "cpu" ]; then
+          # not loading mvapich gdr
+          cat > $ENVIRONMENT_TEMPFILE <<-EOF
+module load PE/18.12
+module load craype-network-infiniband
+module load craype-haswell
+module load CrayCCE/.18.12
+module load netCDF-Fortran/4.4.4-CrayCCE-18.12
+module load cmake
 EOF
-
-# XL: RH 7.5 test no special setting for cpu
-#        if [ "${target}" == "cpu" ]; then
-#            cat > $ENVIRONMENT_TEMPFILE <<-EOF
-#EOF
-#        fi
+	else
+          cat > $ENVIRONMENT_TEMPFILE <<-EOF
+module load PE/18.12
+module load craype-network-infiniband
+module load craype-haswell
+module load craype-accel-nvidia35
+module load PrgEnv-CrayCCE/18.12
+module load netCDF-Fortran/4.4.4-CrayCCE-18.12
+module load cmake
+EOF
+	fi
         export FC="ftn -D__CRAY_FORTRAN__"
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-        module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-        module use /apps/escha/UES/jenkins/RH7.5/gnu_PE17.02/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/generic/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/cray_PE18.12/easybuild/modules/all
-
-        # Generated with the build script
-        # implicit module purge
-        module load craype-haswell
-        module load craype-network-infiniband
-        module load PrgEnv-gnu/17.02
-        module load netcdf-fortran/4.4.4-gmvolf-17.02
-        module load cmake
+module load PE/18.12
+module load craype-haswell
+module load craype-network-infiniband
+module load PrgEnv-gnu/17.02
+module load netcdf-fortran/4.4.4-gmvolf-17.02
+module load cmake
 EOF
         export FC=gfortran
         ;;
     pgi ) 
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-        module unuse /apps/escha/UES/generic/modulefiles:/apps/escha/UES/PrgEnv-gnu-17.02/modulefiles:/apps/escha/UES/PrgEnv-cray-17.06/modulefiles:/apps/escha/UES/experimental/modulefiles
-        module use /apps/escha/UES/jenkins/RH7.5/gnu_PE17.02/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/generic/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/cray_PE18.12/easybuild/modules/all
-        module use /apps/escha/UES/jenkins/RH7.5/pgi_PE18.10/easybuild/modules/all
-        # Generated with the build script
-        # implicit module purge
-        module load craype-haswell
-        module load craype-network-infiniband
-        module load PrgEnv-pgi/18.10
-        module load netcdf-fortran/4.4.4-pgi-18.10-gcc-5.4.0-2.26
-        module load cmake
+module load PE/18.12
+module load craype-haswell
+module load craype-network-infiniband
+module load PrgEnv-pgi/18.10
+module load netcdf-fortran/4.4.4-pgi-18.10-gcc-5.4.0-2.26
+module load cmake
 EOF
         export FC=$MPIF90
         ;;	
@@ -286,8 +265,8 @@ EOF
     module purge
     source $ENVIRONMENT_TEMPFILE
     
-    # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
-    export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
+#    # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
+#    export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}

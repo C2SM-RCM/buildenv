@@ -233,6 +233,9 @@ module load netCDF-Fortran/4.4.4-CrayCCE-18.12
 module load cmake
 EOF
 	fi
+
+	module purge
+	source $ENVIRONMENT_TEMPFILE
         export FC="ftn -D__CRAY_FORTRAN__"
         ;;
     gnu )
@@ -244,6 +247,9 @@ module load PrgEnv-gnu/17.02
 module load netcdf-fortran/4.4.4-gmvolf-17.02
 module load cmake
 EOF
+	module purge
+	source $ENVIRONMENT_TEMPFILE
+
         export FC=gfortran
         ;;
     pgi ) 
@@ -255,16 +261,15 @@ module load PrgEnv-pgi/18.10
 module load netcdf-fortran/4.4.4-pgi-18.10-gcc-5.4.0-2.26
 module load cmake
 EOF
+	module purge
+	source $ENVIRONMENT_TEMPFILE
         export FC=$MPIF90
         ;;	
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
-    
-    module purge
-    source $ENVIRONMENT_TEMPFILE
-    
+        
 #    # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
 #    export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
 

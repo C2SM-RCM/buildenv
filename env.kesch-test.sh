@@ -131,11 +131,11 @@ setCppEnvironment()
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
-module load PE/18.12
+module load PE/17.06
 module load craype-network-infiniband
 module load craype-haswell
-module load cudatoolkit/9.2.148
-module load mvapich2gdr_gnu/2.3_cuda_9.2_gcc54
+module load cudatoolkit/8.0.61
+module load mvapich2gdr_gnu/2.2_cuda_8.0
 module load gcc/5.4.0-2.26
 module load cmake
 EOF
@@ -215,21 +215,22 @@ setFortranEnvironment()
         if [ "${target}" == "cpu" ]; then
           # not loading mvapich gdr
           cat > $ENVIRONMENT_TEMPFILE <<-EOF
-module load PE/18.12
+module load PE/17.06
 module load craype-network-infiniband
 module load craype-haswell
-module load CrayCCE/.18.12
-module load netCDF-Fortran/4.4.4-CrayCCE-18.12
+module load CrayCCE/.17.06
+module load netCDF-Fortran/4.4.4-CrayCCE-17.06
 module load cmake
 EOF
 	else
           cat > $ENVIRONMENT_TEMPFILE <<-EOF
-module load PE/18.12
+module load PE/17.06
 module load craype-network-infiniband
 module load craype-haswell
 module load craype-accel-nvidia35
-module load PrgEnv-CrayCCE/18.12
-module load netCDF-Fortran/4.4.4-CrayCCE-18.12
+module swap cudatoolkit/8.0.61
+module load PrgEnv-CrayCCE/17.06
+module load netCDF-Fortran/4.4.4-CrayCCE-17.06
 module load cmake
 EOF
 	fi
@@ -240,7 +241,7 @@ EOF
         ;;
     gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-module load PE/18.12
+module load PE/17.06
 module load craype-haswell
 module load craype-network-infiniband
 module load PrgEnv-gnu/17.02
@@ -254,11 +255,11 @@ EOF
         ;;
     pgi ) 
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-module load PE/18.12
+module load PE/17.06
 module load craype-haswell
 module load craype-network-infiniband
-module load PrgEnv-pgi/18.10
-module load netcdf-fortran/4.4.4-pgi-18.10-gcc-5.4.0-2.26
+module load PrgEnv-pgi/18.5
+module load netcdf-fortran/4.4.4-pgi-18.5-gcc-5.4.0-2.26
 module load cmake
 EOF
 	module purge

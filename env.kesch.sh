@@ -35,7 +35,7 @@ restoreModuleCheckPoint()
 #   targets           list of possible targets (e.g. gpu, cpu)
 #   compilers         list of possible compilers for Fortran parts
 #   target            default target
-#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)        
+#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)
 #   compiler          default compiler to use for Fortran parts
 #   debug             build in debugging mode (yes/no)
 #   cleanup           clean before build (yes/no)
@@ -139,7 +139,7 @@ setCppEnvironment()
         module load gcc/5.4.0-2.26
         module load cmake/3.9.1
 EOF
-   
+
     module purge
     source $ENVIRONMENT_TEMPFILE
     dycore_gpp='g++'
@@ -155,7 +155,7 @@ EOF
     else
         dycore_openmp=OFF  # Otherwise, switch off
     fi
-    
+
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
@@ -174,7 +174,7 @@ unsetCppEnvironment()
     #XL: HACK, unset LD_PRELOAD
     unset LD_PRELOAD
     restoreModuleCheckPoint
-    
+
     rm $ENVIRONMENT_TEMPFILE
     unset ENVIRONMENT_TEMPFILE
 
@@ -209,7 +209,7 @@ setFortranEnvironment()
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
-    
+
     case "${compiler}" in
     *cray )
         # Provided by CSCS
@@ -253,7 +253,7 @@ EOF
 EOF
         export FC=gfortran
         ;;
-    *pgi ) 
+    *pgi )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
             # implicit module purge
@@ -265,15 +265,15 @@ EOF
             module load cmake/3.9.1
 EOF
         export FC=mpif90
-        ;;	
+        ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
-    
+
     module purge
     source $ENVIRONMENT_TEMPFILE
-    
+
     # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
     export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
 
@@ -285,7 +285,7 @@ EOF
     export CC=gcc
 
     # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw_v1.2.1/${compiler}/bin/clawfc"
+    export CLAWFC="${installdir}/claw_v1.2.2/${compiler}/bin/clawfc"
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
     if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
@@ -331,7 +331,6 @@ export -f setFortranEnvironment
 export -f createModuleCheckPoint
 export -f writeModuleEnv
 export -f setupDefaults
-export -f get_fcompiler_cmd 
+export -f get_fcompiler_cmd
 export -f unsetFortranEnvironment
 export -f restoreModuleCheckPoint
-

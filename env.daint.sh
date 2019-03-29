@@ -16,7 +16,7 @@
 #   targets           list of possible targets (e.g. gpu, cpu)
 #   compilers         list of possible compilers for Fortran parts
 #   target            default target
-#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)        
+#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)
 #   compiler          default compiler to use for Fortran parts
 #   debug             build in debugging mode (yes/no)
 #   cleanup           clean before build (yes/no)
@@ -33,7 +33,7 @@ setupDefaults()
 
     # Check if ncurses was loaded before
     export BUILDENV_NCURSES_LOADED=`module list -t 2>&1 | grep "ncurses"`
-    
+
     # default options
     if [ -z "${target}" ] ; then
         target="gpu"
@@ -93,12 +93,12 @@ setCppEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-gnu
     fi
-    
+
     # standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
     fi
-    
+
     module load CMake
 
     # Fortran compiler specific modules and setup
@@ -157,12 +157,12 @@ unsetCppEnvironment()
     esac
 
     module unload CMake
-    
+
     # unload curses in case it was already loaded
     if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
         module unload ncurses
     fi
-    
+
     # remove standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia60
@@ -208,9 +208,9 @@ setFortranEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-${compiler}
     fi
-    
+
     old_ldflags="${LDFLAGS}"
-    
+
     # standard modules (part 1)
     module load CMake
     if [ "${target}" == "gpu" ] ; then
@@ -254,7 +254,7 @@ setFortranEnvironment()
     esac
 
     # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw_v1.2.1/${compiler}/bin/clawfc"
+    export CLAWFC="${installdir}/claw_v1.2.2/${compiler}/bin/clawfc"
 
     # standard modules (part 2)
     module load cray-netcdf
@@ -299,7 +299,7 @@ unsetFortranEnvironment()
     if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
         module unload ncurses
     fi
-    
+
     # GPU specific unload
     if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia60
@@ -312,10 +312,10 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
-    
+
     export LDFLAGS="${old_ldflags}"
     unset old_ldflags
-    
+
     unset CXX
     unset CC
     unset FC

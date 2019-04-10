@@ -285,7 +285,7 @@ EOF
     export CC=gcc
 
     # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw_v1.2.2/${compiler}/bin/clawfc"
+    export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
     if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then

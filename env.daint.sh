@@ -99,8 +99,6 @@ setCppEnvironment()
         module load craype-accel-nvidia60
     fi
 
-    module load CMake
-
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     cray )
@@ -156,8 +154,6 @@ unsetCppEnvironment()
         exit 1
     esac
 
-    module unload CMake
-
     # unload curses in case it was already loaded
     if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
         module unload ncurses
@@ -212,7 +208,7 @@ setFortranEnvironment()
     old_ldflags="${LDFLAGS}"
 
     # standard modules (part 1)
-    module load CMake
+
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
     fi
@@ -293,7 +289,7 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module unload CMake
+
     # unload curses in case it was already loaded
     if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
         module unload ncurses

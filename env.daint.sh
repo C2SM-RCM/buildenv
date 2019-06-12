@@ -250,6 +250,7 @@ setFortranEnvironment()
 
     # CLAW Compiler using the correct preprocessor
     export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
     # standard modules (part 2)
     module load cray-netcdf

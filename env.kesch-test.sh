@@ -279,6 +279,7 @@ EOF
 
     # CLAW Compiler using the correct preprocessor
     export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
     if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then

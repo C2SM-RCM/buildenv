@@ -88,6 +88,14 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     mpilaunch="srun"
     installdir="/project/c14/install/${host}"
     testdata="/scratch/jenkins/data"
+elif [ "`hostname | grep arolla`" != "" -o "`hostname | grep tsa`" != "" ] ; then
+    . /etc/bashrc
+    export host="arolla"
+    queue="debug"
+    nthreads=1
+    mpilaunch="srun"
+    installdir="/project/c14/install/${host}"
+    testdata="/scratch/jenkins/data"
 elif [ "`hostname | grep greina`" != "" ] ; then
     . /etc/bashrc
     . /cm/local/apps/environment-modules/3.2.10/init/bash

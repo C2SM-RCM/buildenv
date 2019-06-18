@@ -129,8 +129,8 @@ setCppEnvironment()
         module load craype-network-infiniband
         module load slurm
         # Require to see the mvapich2.2rc1
-        module load PrgEnv-cce/18.12
-        module switch cray-mvapich2/2.3 cray-mvapich2_cuda92/2.2rc1
+        module load PrgEnv-cray/1.0.4
+        #module switch cray-mvapich2/2.3 cray-mvapich2_cuda92/2.2rc1
         module load craype-accel-nvidia70
         module load gcc/6.1.0
         module load cmake/3.14.3

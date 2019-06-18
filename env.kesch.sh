@@ -288,6 +288,11 @@ EOF
     export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
+    # Set grib-api version and cosmo ressources
+    export GRIB-API_VERSION="libgrib_api_1.20.0p4"
+    export GRIB-API-COSMO-RESOURCES_VERSION="v1.20.0.2"
+
+
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
     if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then
 	echo "Info : No Cray CCE licence available, setting CRAYLMD_LICENSE_FILE to escha"

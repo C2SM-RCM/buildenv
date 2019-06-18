@@ -252,6 +252,10 @@ setFortranEnvironment()
     export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
+    # Set grib-api version and cosmo ressources
+    export GRIB-API_VERSION="libgrib_api_1.20.0p4"
+    export GRIB-API-COSMO-RESOURCES_VERSION="v1.20.0.2"
+
     # standard modules (part 2)
     module load cray-netcdf
 }

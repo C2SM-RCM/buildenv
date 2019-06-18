@@ -269,8 +269,8 @@ EOF
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
     # Set grib-api version and cosmo ressources
-    export GRIB-API_VERSION="libgrib_api_1.20.0p4"
-    export GRIB-API-COSMO-RESOURCES_VERSION="v1.20.0.2"
+    export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
+    export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
 
 }
 

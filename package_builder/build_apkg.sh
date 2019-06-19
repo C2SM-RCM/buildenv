@@ -15,6 +15,7 @@ eval set -- "$TEMP --"
 while true; do
     case "$1" in
         --package|-p) package=$2; shift 2;;
+        --idir|-i) install_dir=$2; shift 2;;
         --dir|-d) package_basedir=$2; shift 2;;
         --help|-h) help_enabled=yes; fwd_args="$fwd_args $1"; shift;;
         -- ) shift; break ;;
@@ -26,7 +27,8 @@ if [[ "${help_enabled}" == "yes" ]]; then
     echo "Available Options:"
     echo "* --help.  |-h {print help}"
     echo "* --package|-p {package name}     Required"
-    echo "* --dir.   |-d {package dir}      The package basedir. Default: \$(pwd)"
+    echo "* --dir.   |-i {install dir}      Default: from env"
+    echo "* --idir.  |-d {package dir}      The package basedir. Default: \$(pwd)"
 fi
 
 if [[ -z ${package} ]]; then
@@ -36,6 +38,7 @@ fi
 if [[ -z ${package_basedir} ]]; then
     exitError 2221 ${LINENO} "package basedir has to be specified"
 fi
+
 
 BASEPATH_SCRIPT=$(dirname "${0}")
 envloc="${BASEPATH_SCRIPT}/.."
@@ -57,7 +60,13 @@ if [ ! -f ${envloc}/moduleTools.sh ] ; then
 fi
 source ${envloc}/moduleTools.sh
 
-fwd_args="${fwd_args} -d ${package_basedir} -i ${installdir}"
+# if install not from option, get from machineEnvironment
+if [[ -z ${install_dir} ]]; then
+    install_dir=$installdir
+fi
+
+
+fwd_args="${fwd_args} -d ${package_basedir} -i ${install_dir}"
 
 package_buildscript="${BASEPATH_SCRIPT}/build_${package}.sh"
 if [ -f $package_buildscript ] ; then

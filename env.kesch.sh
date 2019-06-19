@@ -24,6 +24,8 @@ createModuleCheckPoint()
 restoreModuleCheckPoint()
 {
     module purge
+    ## a single module purge is not cleaning up the environment, we just need to persist ;)
+    module purge
     source ${previous_module_tmp}
     rm ${previous_module_tmp}
     unset previous_module_tmp
@@ -45,17 +47,21 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray pgi claw-cray claw-pgi claw-gnu)
+    compilers=(gnu cray pgi)
     fcompiler_cmds=(ftn)
 
 
     export BASE_MODULES="craype-haswell"
     export NVIDIA_CUDA_ARCH="sm_37"
 
-    # # MVAPICH
-    export MVAPICH_MODULE="mvapich2_gnu/2.2rc1.0.2"
     # # BOOST
-    export BOOST_PATH="/users/jenkins/Code/boost-1.49.0/"
+    export Boost_NO_SYSTEM_PATHS=true
+    export Boost_NO_BOOST_CMAKE=true
+
+    export BOOST_ROOT=/project/c14/install/kesch/boost/boost_1_67_0/
+    export BOOST_PATH=${BOOST_ROOT}
+    export BOOST_INCLUDE=${BOOST_ROOT}/include/
+
 
     # default options
     if [ -z "${target}" ] ; then
@@ -82,7 +88,7 @@ get_fcompiler_cmd()
 {
     local __resultvar=$1
     local __compiler=$2
-    if [ "${compiler}" == "gnu" ] || [ "${compiler}" == "claw-gnu" ]; then
+    if [ "${compiler}" == "gnu" ] ; then
         myresult="gfortran"
     else
         myresult="ftn"
@@ -125,19 +131,13 @@ setCppEnvironment()
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
-        # Generated with the build script
-        # implicit module purge
-        module purge
-        module load craype-network-infiniband
-        module load craype-haswell
-        module load craype-accel-nvidia35
-        module load cray-libsci
-        module load cudatoolkit/8.0.61
-        module load mvapich2gdr_gnu/2.2_cuda_8.0
-        #XL: HACK needed with this mvapich2 for the dycore test, removed once fixed
-        export LD_PRELOAD=/opt/mvapich2/gdr/no-mcast/2.2/cuda8.0/mpirun/gnu4.8.5/lib64/libmpi.so
-        module load gcc/5.4.0-2.26
-        module load cmake/3.9.1
+module load PE/17.06
+module load craype-network-infiniband
+module load craype-haswell
+module load cudatoolkit/8.0.61
+module load mvapich2gdr_gnu/2.2_cuda_8.0
+module load gcc/5.4.0-2.26
+module load cmake
 EOF
 
     module purge
@@ -211,78 +211,71 @@ setFortranEnvironment()
     export ENVIRONMENT_TEMPFILE=$(mktemp)
 
     case "${compiler}" in
-    *cray )
-        # Provided by CSCS
-        cat > $ENVIRONMENT_TEMPFILE <<-EOF
-            # Generated with the build script
-            # implicit module purge
-            module load craype-haswell
-            module load craype-accel-nvidia35
-            module load craype-network-infiniband
-            module load netCDF-Fortran/4.4.4-CrayCCE-17.06
-            module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2gdr_gnu/2.2_cuda_8.0
-            module load gcc/5.4.0-2.26
-            module load cmake/3.9.1
-EOF
-
+    cray )
         if [ "${target}" == "cpu" ]; then
-            cat > $ENVIRONMENT_TEMPFILE <<-EOF
-                # Generated with the build script
-                # implicit module purge
-                module load craype-haswell
-                module load craype-accel-nvidia35
-                module load craype-network-infiniband
-                module load netCDF-Fortran/4.4.4-CrayCCE-17.06
-                module switch mvapich2_cce/2.2rc1.0.3_cuda80 mvapich2_cce/2.2rc1.0.3
-                module load gcc/5.4.0-2.26
-                module load cmake/3.9.1
+          # not loading mvapich gdr
+          cat > $ENVIRONMENT_TEMPFILE <<-EOF
+module load PE/17.06
+module load craype-network-infiniband
+module load craype-haswell
+module load CrayCCE/.17.06
+module load netCDF-Fortran/4.4.4-CrayCCE-17.06
+module load cmake
 EOF
-        fi
+	else
+          cat > $ENVIRONMENT_TEMPFILE <<-EOF
+module load PE/17.06
+module load craype-network-infiniband
+module load craype-haswell
+module load craype-accel-nvidia35
+module swap cudatoolkit/8.0.61
+module load PrgEnv-CrayCCE/17.06
+module load netCDF-Fortran/4.4.4-CrayCCE-17.06
+module load cmake
+EOF
+	fi
+
+	module purge
+	source $ENVIRONMENT_TEMPFILE
         export FC="ftn -D__CRAY_FORTRAN__"
         ;;
-    *gnu )
+    gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-            # Generated with the build script
-            # implicit module purge
-            module load craype-haswell
-            module load craype-network-infiniband
-            module load PrgEnv-gnu/17.02
-            module load cmake/3.9.1
-            module load netcdf-fortran/4.4.4-gmvolf-17.02
-            module load hdf5/1.8.18-gmvolf-17.02
+module load PE/17.06
+module load craype-haswell
+module load craype-network-infiniband
+module load PrgEnv-gnu/17.02
+module load netcdf-fortran/4.4.4-gmvolf-17.02
+module load cmake
 EOF
+	module purge
+	source $ENVIRONMENT_TEMPFILE
+
         export FC=gfortran
         ;;
-    *pgi )
+    pgi )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
-            # Generated with the build script
-            # implicit module purge
-            module load craype-haswell
-            module load PrgEnv-pgi/17.10
-            module unload openmpi/2.1.2/2017
-            module load mvapich2gdr_gnu/2.3a_cuda_8.0_pgi17.10
-            module load gcc/5.4.0-2.26
-            module load cmake/3.9.1
+module load PE/17.06
+module load craype-haswell
+module load craype-network-infiniband
+module load PrgEnv-pgi/18.5
+module load netcdf-fortran/4.4.4-pgi-18.5-gcc-5.4.0-2.26
+module load cmake
 EOF
-        export FC=mpif90
+	module purge
+	source $ENVIRONMENT_TEMPFILE
+        export FC=$MPIF90
         ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
 
-    module purge
-    source $ENVIRONMENT_TEMPFILE
-
-    # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
-    export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
+#    # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support
+#    export LDFLAGS="-L$EBROOTGCC/lib64 ${LDFLAGS}"
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-
-    # We have gcc for gnu, cray and pgi environments
-    export CXX=g++
-    export CC=gcc
 
     # CLAW Compiler using the correct preprocessor
     export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"

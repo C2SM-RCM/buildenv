@@ -204,6 +204,10 @@ setFortranEnvironment()
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
 
+    # Set grib-api version and cosmo ressources
+    export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
+    export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
+
     case "${compiler}" in
     *cray )
         # Provided by CSCS
@@ -218,6 +222,7 @@ setFortranEnvironment()
         module switch cray-mvapich2/2.3 cray-mvapich2_cuda92/2.2rc1
         module load craype-accel-nvidia70
         module load netCDF-Fortran/4.4.4-CrayCCE-18.12
+        export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC="ftn -D__CRAY_FORTRAN__"
         ;;
@@ -230,6 +235,7 @@ EOF
             module load slurm
             # Require to see the mvapich2.2rc1
             module load PrgEnv-gnu/18.12
+            export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=gfortran
         ;;
@@ -242,6 +248,7 @@ EOF
             module load slurm
             # Require to see the mvapich2.2rc1
             module load PrgEnv-gnu/18.12
+            export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
         ;;
@@ -266,10 +273,6 @@ EOF
     # CLAW Compiler using the correct preprocessor
     export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
-
-    # Set grib-api version and cosmo ressources
-    export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
-    export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
 
 }
 

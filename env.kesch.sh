@@ -210,6 +210,11 @@ setFortranEnvironment()
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
 
+    # Set grib-api version and cosmo ressources
+    export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
+    export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
+
+
     case "${compiler}" in
     cray )
         if [ "${target}" == "cpu" ]; then
@@ -221,6 +226,7 @@ module load craype-haswell
 module load CrayCCE/.17.06
 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
 module load cmake
+export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	else
           cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -232,6 +238,7 @@ module swap cudatoolkit/8.0.61
 module load PrgEnv-CrayCCE/17.06
 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
 module load cmake
+export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	fi
 
@@ -247,6 +254,7 @@ module load craype-network-infiniband
 module load PrgEnv-gnu/17.02
 module load netcdf-fortran/4.4.4-gmvolf-17.02
 module load cmake
+export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	module purge
 	source $ENVIRONMENT_TEMPFILE
@@ -261,6 +269,7 @@ module load craype-network-infiniband
 module load PrgEnv-pgi/18.5
 module load netcdf-fortran/4.4.4-pgi-18.5-gcc-5.4.0-2.26
 module load cmake
+export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	module purge
 	source $ENVIRONMENT_TEMPFILE
@@ -280,11 +289,6 @@ EOF
     # CLAW Compiler using the correct preprocessor
     export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
-
-    # Set grib-api version and cosmo ressources
-    export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
-    export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
-
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file
     if [ ${compiler} == "cray" ] && `${FC} -V 2>&1 | grep -q "Unable to obtain a Cray Compiling Environment License"` ; then

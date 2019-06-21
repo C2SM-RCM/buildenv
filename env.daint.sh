@@ -207,6 +207,10 @@ setFortranEnvironment()
 
     old_ldflags="${LDFLAGS}"
 
+    # Set grib-api version and cosmo ressources
+    export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
+    export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
+
     # standard modules (part 1)
 
     if [ "${target}" == "gpu" ] ; then

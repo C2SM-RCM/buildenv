@@ -119,7 +119,6 @@ setCppEnvironment()
     createModuleCheckPoint
 
     old_prgenv=`module list -t 2>&1 | grep 'PrgEnv-'`
-
     case "${compiler}" in
     gnu )
         # Do nothing
@@ -138,6 +137,8 @@ module load cudatoolkit/8.0.61
 module load mvapich2gdr_gnu/2.2_cuda_8.0
 module load gcc/5.4.0-2.26
 module load cmake
+module load hdf5/1.8.18-gmvolf-17.02
+module load git
 EOF
 
     module purge

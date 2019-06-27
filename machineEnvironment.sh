@@ -47,16 +47,7 @@ if [ "`hostname | grep daint`" != "" ] ; then
     mpilaunch="srun"
     installdir=/project/c14/install/${host}
     testdata=/scratch/snx3000/jenkins/data
-elif [ "`hostname | grep dom`" != "" ] ; then
-    . /etc/bash.bashrc
-    . /opt/modules/default/init/bash
-    . /etc/bash.bashrc.local
-    export host="dom"
-    queue="normal"
-    nthreads=8
-    mpilaunch="srun"
-    installdir=/project/c14/install/${host}
-    testdata=/scratch/snx1600tds/jenkins/data
+    export CUDA_ARCH=sm_60
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -76,6 +67,7 @@ elif [[ "$(hostname)" == "keschcn-0012"* ]]; then
     mpilaunch="srun"
     installdir="/project/c14/install/${host}"
     testdata="/scratch/jenkins/data"
+    export CUDA_ARCH=sm_37
 elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; then
     . /etc/bashrc && true # In some conditions the omitted true triggered an error.
     if [ "${NODE_NAME}" == kesch-pgi ] ; then
@@ -88,6 +80,7 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     mpilaunch="srun"
     installdir="/project/c14/install/${host}"
     testdata="/scratch/jenkins/data"
+    export CUDA_ARCH=sm_37
 elif [ "`hostname | grep arolla`" != "" -o "`hostname | grep tsa`" != "" ] ; then
     . /etc/bashrc
     export host="arolla"
@@ -96,15 +89,7 @@ elif [ "`hostname | grep arolla`" != "" -o "`hostname | grep tsa`" != "" ] ; the
     mpilaunch="srun"
     installdir="/project/c14/install/${host}"
     testdata="/scratch/jenkins/data"
-elif [ "`hostname | grep greina`" != "" ] ; then
-    . /etc/bashrc
-    . /cm/local/apps/environment-modules/3.2.10/init/bash
-    export host="greina"
-    queue="none"
-    nthreads=4
-    mpilaunch="none"
-    installdir="/users/jenkins/install/${host}/"
-    testdata=???
+    export CUDA_ARCH=sm_70
 fi
 
 # make sure everything is set

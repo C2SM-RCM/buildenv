@@ -3,6 +3,7 @@
 # This script contains functions for setting up machine specific compile
 # environments for the dycore and the Fortran parts. Namely, the following
 # functions must be defined in this file:
+# If the variable COSMO_TESTENV is set, a test set of modules is used
 #
 # setupDefaults            setup global default options for this platform
 # setCppEnvironment        setup environment for dycore compilation
@@ -45,7 +46,7 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(cray claw-cray)
+    compilers=(cray claw-cray pgi claw-pgi gnu)
     fcompiler_cmds=(ftn)
 
 
@@ -127,6 +128,8 @@ setCppEnvironment()
     esac
 
     export ENVIRONMENT_TEMPFILE=$(mktemp)
+
+    if [ -z "${COSMO_TESTENV}" ] ; then
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         # Generated with the build script
         # implicit module purge
@@ -139,8 +142,25 @@ setCppEnvironment()
         module load cuda92/toolkit/9.2.88 craype-accel-nvidia70
         module load cmake
 EOF
+else
+    #Use this modules in case COSMO_TESTENV is set
+    cat > $ENVIRONMENT_TEMPFILE <<- EOF
+        module unuse /apps/arolla/UES/modulefiles
+        module use /apps/arolla/UES/jenkins/RH7.6/generic/easybuild/modules/all
+        # Generated with the build script
+        # implicit module purge
+        module load craype-x86-skylake
+        module load craype-network-infiniband
+        module load slurm
+        # Gnu env
+        module load PrgEnv-gnu
+        module load cuda10.0/toolkit/10.0.130
+        module load cmake
+EOF
+fi
 
-    module purge
+#issue with module purge
+#   module purge
     source $ENVIRONMENT_TEMPFILE
     dycore_gpp='g++'
     dycore_gcc='gcc'
@@ -213,6 +233,7 @@ setFortranEnvironment()
     export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
     export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
 
+    if [ -z "${COSMO_TESTENV}" ] ; then
     case "${compiler}" in
     *cray )
         # Provided by CSCS
@@ -261,8 +282,49 @@ EOF
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
+    else
+    # modules used if COSMO_TESTENV environment variable is set
+    case "${compiler}" in
+    *gnu )
+        cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # Generated with the build script
+            # implicit module purge
+            module unuse /apps/arolla/UES/modulefiles
+            module use /apps/arolla/UES/jenkins/RH7.6/generic/easybuild/modules/all
+            module load craype-x86-skylake
+            module load craype-network-infiniband
+            module load slurm
+            module load PrgEnv-gnu/18.1
+            module load netcdf-fortran/4.4.5-foss-2018b
+            export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
+EOF
+        export FC=mpif90
+        ;;
+    *pgi )
+        cat > $ENVIRONMENT_TEMPFILE <<-EOF
+            # Generated with the build script
+            # implicit module purge
+            module unuse /apps/arolla/UES/modulefiles
+            module use /apps/arolla/UES/jenkins/RH7.6/generic/easybuild/modules/all
+            module load craype-x86-skylake
+            module load craype-network-infiniband
+            module load slurm
+            module load PrgEnv-pgi/19.5
+            module load cuda10.0/toolkit/10.0.130
+            module load netcdf-fortran/4.4.5-pgi-19.5-gcc-7.3.0-2.30
+            export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
+EOF
+        export FC=mpif90
+        ;;
+    * )
+        echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
+        exit 1
+    esac
+    fi
 
-    module purge
+
+#issue with module purge
+#   module purge
     source $ENVIRONMENT_TEMPFILE
 
     # Add an explicit linker line for GCC 4.9.3 library to provide C++11 support

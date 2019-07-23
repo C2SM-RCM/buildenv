@@ -153,9 +153,9 @@ else
         module load craype-network-infiniband
         module load slurm
         # Gnu env
-        module load PrgEnv-gnu
+        module load PrgEnv-gnu/18.1
         module load cuda10.0/toolkit/10.0.130
-        module load cmake
+        module load cmake/3.14.5
 EOF
 fi
 
@@ -283,6 +283,7 @@ EOF
         exit 1
     esac
     else
+    ############################################################
     # modules used if COSMO_TESTENV environment variable is set
     case "${compiler}" in
     *gnu )

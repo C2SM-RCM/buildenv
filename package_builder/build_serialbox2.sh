@@ -109,7 +109,9 @@ install_to_target()
   fi
 }
 
-git clone "${resources_repo}"
+
+
+git clone "${resources_repo}" -b "${resources_version}"
 
 if [[ ${install_local} == "yes" ]]; then
   install_path_prefix_="${base_path}/install"

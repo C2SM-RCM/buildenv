@@ -8,6 +8,9 @@ resources_repo="https://github.com/eth-cscs/serialbox2.git"
 resources_version="master"
 package_name="serialbox2" # name of repository
 
+# shellcheck disable=SC2124
+TEMP=$@
+eval set -- "$TEMP --"
 while true; do
   case "$1" in
     --dir|-d) package_basedir=$2; shift 2;;

@@ -150,7 +150,7 @@ else
         module use /apps/arolla/UES/jenkins/RH7.6/generic/easybuild/modules/all
         # Generated with the build script
         # implicit module purge
-        module load cmake/3.14.3
+        module load cmake/3.14.5
         module load craype-x86-skylake
         module load craype-network-infiniband
         module load slurm
@@ -297,6 +297,7 @@ EOF
             # implicit module purge
             module unuse /apps/arolla/UES/modulefiles
             module use /apps/arolla/UES/jenkins/RH7.6/generic/easybuild/modules/all
+            module load cmake/3.14.5
             module load craype-x86-skylake
             module load craype-network-infiniband
             module load slurm
@@ -310,7 +311,7 @@ EOF
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
             # Generated with the build script
             # implicit module purge
-            module load cmake/3.14.3
+            module load cmake/3.14.5
             module unuse /apps/arolla/UES/modulefiles
             module use /apps/arolla/UES/jenkins/RH7.6/generic/easybuild/modules/all
             module load craype-x86-skylake

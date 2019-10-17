@@ -133,7 +133,6 @@ setCppEnvironment()
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         # Generated with the build script
         # implicit module purge
-        module load cmake/3.14.3
         module load craype-x86-skylake
         module load craype-network-infiniband
         module load slurm
@@ -141,7 +140,8 @@ setCppEnvironment()
         module load PrgEnv-gnu
         module switch mvapich2/2.3.1-gcc-7.4.0-2.31.1 mvapich2/2.2-gcc-7.4.0-2.31.1-cuda-9.2
         module load cuda92/toolkit/9.2.88 craype-accel-nvidia70
-        module load cmake
+        export PATH=/project/c14/software/cmake-3.16.0-rc1/bin:\$PATH
+        module load boost/1.70.0-gmvolf-18.12-python2
 EOF
 else
     #Use this modules in case COSMO_TESTENV is set

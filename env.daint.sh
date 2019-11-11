@@ -220,10 +220,10 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     *cray )
-        module load cdt/17.08
-        module swap cce/8.6.1
-        # Load gcc/5.3.0 to link with the C++ Dynamical Core
-        module load gcc/5.3.0
+        module load cdt/19.10
+        module swap cce/9.0.2
+        # Load gcc/8.3.0 to link with the C++ Dynamical Core
+        module load gcc/8.3.0
         export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
         # Override C++ and C compiler
         export CXX=$GCC_PATH/snos/bin/g++
@@ -278,12 +278,12 @@ unsetFortranEnvironment()
     # remove compiler specific modules
     case "${compiler}" in
     *cray )
-        module unload gcc/5.3.0
+        module unload gcc/8.3.0
 	#XL: try to restore system default manually since
 	#    this gives an error : source /opt/cray/pe/cdt/17.08/restore_system_defaults.sh
-	module unload cdt/17.08
-	module unload cray-libsci_acc/17.03.1
-	module swap cray-mpich/7.7.2
+	module unload cdt/19.10
+	module unload cray-libsci_acc/19.06.1
+	module swap cray-mpich/7.7.10
         ;;
     *gnu )
         module unload gcc/5.3.0

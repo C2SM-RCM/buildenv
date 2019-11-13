@@ -233,19 +233,19 @@ setFortranEnvironment()
         ;;
     *gnu )
         module unload gcc
-        module load gcc/5.3.0
+        module load gcc/8.3.0
         export CXX=CC
         export CC=cc
         export FC=ftn
         ;;
     *pgi )
         module swap pgi/18.10.0
-        # Load gcc/5.3.0 to link with the C++ Dynamical Core
-        module load gcc/5.3.0
+        # Load gcc/8.3.0 to link with the C++ Dynamical Core
+        module load gcc/8.3.0
         export CXX=$GCC_PATH/snos/bin/g++
         export CC=$GCC_PATH/snos/bin/gcc
         export FC=ftn
-        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64 ${LDFLAGS}"
+        export LDFLAGS="-L/opt/gcc/8.3.0/snos/lib64 ${LDFLAGS}"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -286,11 +286,11 @@ unsetFortranEnvironment()
 	module swap cray-mpich/7.7.10
         ;;
     *gnu )
-        module unload gcc/5.3.0
+        module unload gcc/8.3.0
         module load gcc
         ;;
     *pgi )
-        module unload gcc/5.3.0
+        module unload gcc/8.3.0
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2

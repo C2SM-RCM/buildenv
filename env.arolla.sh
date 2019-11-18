@@ -155,9 +155,7 @@ else
         module load craype-network-infiniband
         module load slurm
         # Gnu env
-        module load PrgEnv-gnu/18.1
-        module load cuda10.0/toolkit/10.0.130
-        module load cmake/3.14.5
+        module load PrgEnv-gnu/19.2
 EOF
 fi
 
@@ -317,9 +315,8 @@ EOF
             module load craype-x86-skylake
             module load craype-network-infiniband
             module load slurm
-            module load PrgEnv-pgi/19.5
-            module load cuda10.0/toolkit/10.0.130
-            module load netcdf-fortran/4.4.5-pgi-19.5-gcc-7.3.0-2.30
+            module load PrgEnv-pgi/19.9
+            module load netcdf-fortran/4.4.5-pgi-19.9-gcc-8.3.0
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90

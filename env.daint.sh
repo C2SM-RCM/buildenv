@@ -220,8 +220,12 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     *cray )
-        module load cdt/19.10
-        module swap cce/9.0.2
+        module load cdt/19.08
+        module swap cudatoolkit/10.0.130_3.22-7.0.1.0_5.2__gdfb4ce5 
+        module swap cray-libsci_acc/19.03.1
+        module swap cray-libsci/19.02.1
+        module swap cray-mpich/7.7.6  
+        module swap cce/8.7.9
         # Load gcc/8.3.0 to link with the C++ Dynamical Core
         module load gcc/8.3.0
         export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH

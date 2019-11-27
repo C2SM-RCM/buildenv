@@ -217,6 +217,9 @@ setFortranEnvironment()
         module load craype-accel-nvidia60
     fi
 
+    module load daint-gpu
+    module load CMake/3.14.5
+
     # compiler specific modules
     case "${compiler}" in
     *cray )

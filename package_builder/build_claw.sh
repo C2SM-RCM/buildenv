@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-slave=arolla
-
 exitError()
 {
     echo "ERROR $1: $3" 1>&2

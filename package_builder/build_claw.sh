@@ -40,112 +40,28 @@ else
     install_path_prefix_="${install_dir}/claw"
 fi
 
-set_apache_ant_env()
-{
-  # Check the ${slave} machine, add modules and export variables accordingly
-  if [[ "${slave}" == "arolla" ]]; then
-    module load cmake
-    export YACC="bison -y"
-    export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
-  elif [[ "${slave}" == "kesch" ]]; then
-    export YACC="bison -y"
-    module load PE/18.12
-    module load cmake
-    module load java
-  elif [[ "${slave}" == "daint" ]]; then
-    export JAVA_HOME=/usr/lib64/jvm/java-1.8.0-openjdk
-  elif [[ "${slave}" == "tave" ]]; then
-    module load java
-  fi
-}
-
-set_claw_env()
-{
- if [[ "${compiler}" == "gnu" ]]; then
-    module rm PrgEnv-pgi && module rm PrgEnv-cray
-    module load PrgEnv-gnu
-    if [[ "${slave}" == "kesch" ]] || [[ "${slave}" == "tave" ]] || [[ "${slave}" == "arolla" ]]; then
-      export FC=gfortran
-      export CC=gcc
-      export CXX=g++
-    elif [[ "${slave}" == "daint" ]]; then
-      module load cudatoolkit
-      # On Daint the cray wrapper must be used regardless the compiling env.
-      export FC=ftn
-      export CC=cc
-      export CXX=CC
-    fi
-  elif [[ "${compiler}" == "pgi" ]]; then
-    module rm PrgEnv-gnu && module rm PrgEnv-cray
-    if [[ "${slave}" == "kesch" ]] || [[ "${slave}" == "arolla" ]]; then
-      if [[ "${slave}" == "kesch" ]]; then
-        module load PrgEnv-pgi
-      else
-        module load PrgEnv-pgi/19.4
-      fi
-      module load gcc
-      export FC=pgfortran
-      export CC=gcc
-      export CXX=g++
-    elif [[ "${slave}" == "daint" ]]; then
-      module load PrgEnv-pgi
-      module load pgi-icon/19.9
-      module load cudatoolkit
-      module load gcc/7.1.0
-      # On Daint the cray wrapper must be used regardless the compiling env.
-      # Use GNU gcc for the C/C++ part as PGI is broken.
-      export FC=ftn
-      export CC=gcc
-      export CXX=g++
-    elif [[ "${slave}" == "tave" ]]; then
-      module load PrgEnv-pgi
-      export FC=ftn
-      export CC=gcc
-      export CXX=g++
-    fi
-  elif [[ "${compiler}" == "cray" ]]; then
-    module load PrgEnv-cray
-    if [[ "${slave}" == "kesch" ]]; then
-      module load gcc
-      export CC=cc
-      export CXX=CC
-    elif [[ "${slave}" == "arolla" ]]; then
-      module load cce/8.7.7
-      module load gcc/7.2.0
-      export CC=gcc
-      export CXX=g++
-    elif [[ "${slave}" == "daint" ]]; then
-      module load daint-gpu
-      export CRAYPE_LINK_TYPE=dynamic
-      export CC=cc
-      export CXX=CC
-    elif [[ "${slave}" == "tave" ]]; then
-      module load gcc
-      export CC=gcc
-      export CXX=g++
-    fi
-    export FC=ftn
-  elif [[ "${compiler}" == "intel" ]]; then
-    # Only for Piz Daint and Grande Tave
-    module rm PrgEnv-gnu
-    module rm PrgEnv-cray
-    module rm PrgEnv-pgi
-    module load PrgEnv-intel
-    module load gcc
-    export FC=ftn
-    export CC=gcc
-    export CXX=g++
-  fi
-  # Workaround to avoid buggy Perl installation
-  if [[ "${slave}" == "tave" ]]; then
-    module rm Perl
-  fi
-}
-
 build_compiler_target()
 {
-set_apache_ant_env
 
+if [[ "${slave}" == "kesch"  ||  "${slave}" == "arolla" ]]; then
+  export YACC="bison -y"
+fi
+
+export compiler=$1
+local install_path=$2
+echo "Compiling and installing for $compiler (install path: $install_path)"
+
+install_args="-i ${install_path}/"
+
+setFortranEnvironment
+
+if [ $? -ne 0 ]; then
+    exitError 3331 ${LINENO} "Invalid fortran environment"
+fi
+
+writeModuleList ${base_path}/modules.log loaded "FORTRAN MODULES" ${base_path}/modules_fortran.env
+
+echo "Building for ${compiler} compiler"
 
 # Build claw-compiler dependency apache-ant
 echo "=============================="
@@ -167,8 +83,6 @@ cd ../../ant/apache-ant-1.10.2
 export ANT_HOME=`pwd`
 
 cd $base_path
-
-set_claw_env
 
 # Build claw-compiler 
 echo "=============================="
@@ -199,18 +113,31 @@ if [[ ! -f $claw_compiler_install/bin/clawfc || $REBUILD == YES ]]; then
     mkdir build
   fi
   cd build
- 
+
   if [[ "${slave}" == "kesch" ]] || [[ "${slave}" == "arolla" ]]; then
-    cmake -DCMAKE_INSTALL_PREFIX="$base_path/$claw_compiler_install" ..
+    cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" ..
   elif [[ "${slave}" == "daint" ]] || [[ "${slave}" == "tave" ]]; then
-    cmake -DCMAKE_INSTALL_PREFIX="$base_path/$claw_compiler_install" -DOMNI_MPI_CC="MPI_CC=cc" -DOMNI_MPI_FC="MPI_FC=ftn" ..
+    cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" -DOMNI_MPI_CC="MPI_CC=cc" -DOMNI_MPI_FC="MPI_FC=ftn" ..
   fi
 
   # Compile and run unit tests
   # make all transformation test && make install
   make 
   make install
+
+  #remove build directories
+  cd $base_path
+  rm -rf ant/ claw-compiler/ hpc-scripts/
 fi
+
+if [ $? -ne 0 ]; then
+    exitError 3333 "Unable to compile claw with ${compiler}"
+fi
+
+# Copy module files
+cp modules_fortran.env ${install_path}/modules.env
+unsetFortranEnvironment
+
 }
 
 # Build

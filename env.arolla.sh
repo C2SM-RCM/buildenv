@@ -61,6 +61,9 @@ setupDefaults()
     export BOOST_PATH=${BOOST_ROOT}
     export BOOST_INCLUDE=${BOOST_ROOT}/include/
 
+    export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64
+    export YACC="bison -y"
+
     # default options
     if [ -z "${target}" ] ; then
         target="gpu"

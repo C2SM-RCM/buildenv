@@ -62,7 +62,6 @@ setupDefaults()
     export BOOST_PATH=${BOOST_ROOT}
     export BOOST_INCLUDE=${BOOST_ROOT}/include/
 
-
     # default options
     if [ -z "${target}" ] ; then
         target="gpu"

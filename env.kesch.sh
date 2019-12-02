@@ -62,6 +62,7 @@ setupDefaults()
     export BOOST_PATH=${BOOST_ROOT}
     export BOOST_INCLUDE=${BOOST_ROOT}/include/
 
+    export YACC="bison -y"
 
     # default options
     if [ -z "${target}" ] ; then
@@ -139,6 +140,7 @@ module load gcc/5.4.0-2.26
 module load cmake
 module load hdf5/1.8.18-gmvolf-17.02
 module load git
+module load java
 EOF
 
     module purge
@@ -227,6 +229,7 @@ module load craype-haswell
 module load CrayCCE/.17.06
 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
 module load cmake
+module load java
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	else
@@ -239,6 +242,7 @@ module swap cudatoolkit/8.0.61
 module load PrgEnv-CrayCCE/17.06
 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
 module load cmake
+module load java
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	fi
@@ -255,6 +259,7 @@ module load craype-network-infiniband
 module load PrgEnv-gnu/17.02
 module load netcdf-fortran/4.4.4-gmvolf-17.02
 module load cmake
+module load java
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	module purge
@@ -270,6 +275,7 @@ module load craype-network-infiniband
 module load PrgEnv-pgi/18.5
 module load netcdf-fortran/4.4.4-pgi-18.5-gcc-5.4.0-2.26
 module load cmake
+module load java
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	module purge

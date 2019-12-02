@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# set default variables
+
+test -n "${REBUILD}"  || REBUILD=YES
+test -n "${slave}" || exitError "Error : slave must be defined"
+
 exitError()
 {
     echo "ERROR $1: $3" 1>&2
@@ -33,6 +38,7 @@ fi
 # Setup
 echo $@
 base_path=$PWD
+setupDefaults
 
 if [[ ${install_local} == "yes" ]]; then
     install_path_prefix_="${base_path}/install"
@@ -43,15 +49,15 @@ fi
 build_compiler_target()
 {
 
-if [[ "${slave}" == "kesch"  ||  "${slave}" == "arolla" ]]; then
-  export YACC="bison -y"
-fi
-
 export compiler=$1
 local install_path=$2
 echo "Compiling and installing for $compiler (install path: $install_path)"
 
 install_args="-i ${install_path}/"
+
+if [ ! -d ${install_path} ] ; then
+  mkdir -p ${install_path}
+fi
 
 setFortranEnvironment
 
@@ -74,8 +80,8 @@ if [[ ! -f ../../ant/apache-ant-1.10.2/bin/ant || $REBUILD == YES ]] ; then
   if [ $REBUILD == YES ] ; then
     echo `pwd`
     echo "Rebuilding apache-ant"
-    echo "rm -r ../../ant"
-    rm -r ../../ant
+    echo "rm -rf ../../ant"
+    rm -rf ../../ant
   fi
   ./install.ant -i ../../ant || error_exit "Error : apach-ant build failed"
 fi 
@@ -99,8 +105,8 @@ if [[ ! -f $claw_compiler_install/bin/clawfc || $REBUILD == YES ]]; then
   if [ $REBUILD == YES ] ; then
    echo `pwd`
    echo "Rebuilding claw-compiler"
-   echo "rm -r build"
-   rm -r build
+   echo "rm -rf build"
+   rm -rf build
   fi
  
   export PATH=$ANT_HOME/bin:$PATH
@@ -114,7 +120,7 @@ if [[ ! -f $claw_compiler_install/bin/clawfc || $REBUILD == YES ]]; then
   fi
   cd build
 
-  if [[ "${slave}" == "kesch" ]] || [[ "${slave}" == "arolla" ]]; then
+  if [[ "${slave}" == "kesch" ]] || [[ "${slave}" == "arolla" ]] ; then
     cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" ..
   elif [[ "${slave}" == "daint" ]] || [[ "${slave}" == "tave" ]]; then
     cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" -DOMNI_MPI_CC="MPI_CC=cc" -DOMNI_MPI_FC="MPI_FC=ftn" ..

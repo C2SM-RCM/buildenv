@@ -60,8 +60,7 @@ setupDefaults()
     export BOOST_ROOT=/project/c14/install/kesch/boost/boost_1_67_0/
     export BOOST_PATH=${BOOST_ROOT}
     export BOOST_INCLUDE=${BOOST_ROOT}/include/
-
-    export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64
+ 
     export YACC="bison -y"
 
     # default options
@@ -145,6 +144,7 @@ setCppEnvironment()
         module load cuda92/toolkit/9.2.88 craype-accel-nvidia70
         module load boost/1.70.0-gmvolf-18.12-python2
         module load /users/jenkins/easybuild/arolla-ln/modules/all/cmake/3.14.5
+        export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
 EOF
 else
     #Use this modules in case COSMO_TESTENV is set
@@ -161,6 +161,7 @@ else
         module load PrgEnv-gnu/18.1
         module load cuda10.0/toolkit/10.0.130
         module load cmake/3.14.5
+        export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
 EOF
 fi
 

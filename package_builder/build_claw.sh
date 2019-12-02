@@ -5,6 +5,12 @@
 test -n "${REBUILD}"  || REBUILD=YES
 test -n "${slave}" || exitError "Error : slave must be defined"
 
+# hack for tsa
+if [ "$slave" == "tsa" ] ; then
+  export COSMO_TESTENV=ON
+  slave=arolla
+fi
+
 exitError()
 {
     echo "ERROR $1: $3" 1>&2

@@ -62,12 +62,6 @@ echo $@
 base_path=$PWD
 setupDefaults
 
-if [ ! -f ./buildenv/machineEnvironment.sh ] ; then
-    exitError 1201 ${LINENO} "could not find buildenv/machineEnvironment.sh"
-fi
-
-. buildenv/machineEnvironment.sh
-
 # Obtain 
 source ${package_basedir}/version.sh
 grib_api_version="${GRIB_API_MAJOR_VERSION}.${GRIB_API_MINOR_VERSION}.${GRIB_API_REVISION_VERSION}${GRIB_API_MCH_PATCH}"
@@ -117,30 +111,25 @@ build_compiler_target()
     export compiler=$1
     setFortranEnvironment
 
+    if [ $? -ne 0 ]; then
+        exitError 4331 ${LINENO} "Invalid fortran environment"
+    fi
+
     # Set F77 compiler to F90
     export F77=$FC
 
     echo "Compiling and installing for $compiler (install path: $install_path)"
     
-    if [ "${host}" == "daint" ] || [ "${host}" == "dom" ] ; then
-        # Remove accelerator target to avoid issue with CUDA
-        export CRAY_ACCEL_TARGET=
-    fi
-    if [ $? -ne 0 ]; then
-        exitError 4331 ${LINENO} "Invalid fortran environment"
-    fi
-
     # Build config command
     config_command="./configure --build=x86_64 --host=x86_64 --prefix=${install_path} --with-jasper=${jasper_dir} --enable-static enable_shared=no --disable-jpeg"
     if [[ "${thread_safe}" == "yes" ]]; then
         config_command="${config_command} --enable-pthread --enable-omp-packing"
     fi
 
-    if [ "${host}" == "daint" ] || [ "${host}" == "dom" ] ; then
-        echo ">>> Running automake"
-        automake --add-missing
-    fi
-
+    # need this for daint from Nov. 2019 onwards
+    echo ">>> Running automake --add-missing"
+    automake --add-missing
+    
     writeModuleList ${base_path}/modules.log loaded "FORTRAN MODULES" ${base_path}/modules_fortran.env
     
     echo "Building for ${compiler} compiler"

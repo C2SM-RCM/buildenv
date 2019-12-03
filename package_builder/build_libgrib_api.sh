@@ -130,6 +130,10 @@ build_compiler_target()
         config_command="${config_command} --enable-pthread --enable-omp-packing"
     fi
 
+    if [ "${host}" == "daint" ] || [ "${host}" == "dom" ] ; then
+        automake --add-missing
+    fi
+
     writeModuleList ${base_path}/modules.log loaded "FORTRAN MODULES" ${base_path}/modules_fortran.env
     
     echo "Building for ${compiler} compiler"

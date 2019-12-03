@@ -282,8 +282,7 @@ unsetFortranEnvironment()
     case "${compiler}" in
     *cray )
         module unload gcc/8.3.0
-	#XL: try to restore system default manually since
-	#    this gives an error : source /opt/cray/pe/cdt/17.08/restore_system_defaults.sh
+	source /opt/cray/pe/cdt/19.10/restore_system_defaults.sh
 	module unload cdt/19.10
 	module unload cray-libsci_acc/19.06.1
 	module swap cray-mpich/7.7.10

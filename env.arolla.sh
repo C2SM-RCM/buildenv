@@ -146,7 +146,7 @@ setCppEnvironment()
         module load /users/jenkins/easybuild/arolla-ln/modules/all/cmake/3.14.5
         export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
 EOF
-else
+    else
     #Use this modules in case COSMO_TESTENV is set
     cat > $ENVIRONMENT_TEMPFILE <<- EOF
         module unuse /apps/arolla/UES/modulefiles
@@ -158,12 +158,12 @@ else
         module load craype-network-infiniband
         module load slurm
         # Gnu env
-        module load PrgEnv-gnu/18.1
+        module load PrgEnv-gnu/19.2
         module load cuda10.0/toolkit/10.0.130
-        module load cmake/3.14.5
         export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
+
 EOF
-fi
+     fi
 
 #issue with module purge
 #   module purge
@@ -321,9 +321,8 @@ EOF
             module load craype-x86-skylake
             module load craype-network-infiniband
             module load slurm
-            module load PrgEnv-pgi/19.5
-            module load cuda10.0/toolkit/10.0.130
-            module load netcdf-fortran/4.4.5-pgi-19.5-gcc-7.3.0-2.30
+            module load PrgEnv-pgi/19.9
+            module load netcdf-fortran/4.4.5-pgi-19.9-gcc-8.3.0
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90

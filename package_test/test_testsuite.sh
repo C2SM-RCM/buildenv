@@ -6,13 +6,16 @@ if [ -z "${BRANCH}" ] ; then
      exit 1
 fi
 
+if [ -z "${ORGANIZATION}" ] ; then
+     export ORGANIZATION="C2SM-RCM"
+fi
 
 wd=`pwd`
 echo Working dir $wd
 
 
 # Get testsuite
-git clone git@github.com:C2SM-RCM/testsuite
+git clone git@github.com:${ORGANIZATION}/testsuite
 cd testsuite
 git checkout ${BRANCH}
 echo "Last commit in testsuite repo:"

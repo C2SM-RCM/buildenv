@@ -111,19 +111,15 @@ build_compiler_target()
     export compiler=$1
     setFortranEnvironment
 
+    if [ $? -ne 0 ]; then
+        exitError 4331 ${LINENO} "Invalid fortran environment"
+    fi
+
     # Set F77 compiler to F90
     export F77=$FC
 
     echo "Compiling and installing for $compiler (install path: $install_path)"
     
-    if [ "${host}" == "daint" ] || [ "${host}" == "dom" ] ; then
-        # Remove accelerator target to avoid issue with CUDA
-        export CRAY_ACCEL_TARGET=
-    fi
-    if [ $? -ne 0 ]; then
-        exitError 4331 ${LINENO} "Invalid fortran environment"
-    fi
-
     # Build config command
     config_command="./configure --build=x86_64 --host=x86_64 --prefix=${install_path} --with-jasper=${jasper_dir} --enable-static enable_shared=no --disable-jpeg"
     if [[ "${thread_safe}" == "yes" ]]; then
@@ -146,6 +142,9 @@ build_compiler_target()
             cat build.log
             exitError 4333 "Unable to configure libgrib_api with ${config_command}. See config.log for details."
         fi
+        # need this for daint from Nov. 2019 onwards
+        echo ">>> Running automake --add-missing"
+        automake --add-missing
         echo ">>>Compiling $packageName (make)"
         make &>> build.log
         if [ $? -ne 0 ]; then

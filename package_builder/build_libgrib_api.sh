@@ -62,6 +62,12 @@ echo $@
 base_path=$PWD
 setupDefaults
 
+if [ ! -f ./buildenv/machineEnvironment.sh ] ; then
+    exitError 1201 ${LINENO} "could not find buildenv/machineEnvironment.sh"
+fi
+
+. buildenv/machineEnvironment.sh
+
 # Obtain 
 source ${package_basedir}/version.sh
 grib_api_version="${GRIB_API_MAJOR_VERSION}.${GRIB_API_MINOR_VERSION}.${GRIB_API_REVISION_VERSION}${GRIB_API_MCH_PATCH}"

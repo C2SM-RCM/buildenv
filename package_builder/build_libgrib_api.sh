@@ -131,6 +131,7 @@ build_compiler_target()
     fi
 
     if [ "${host}" == "daint" ] || [ "${host}" == "dom" ] ; then
+        echo ">>> Running automake"
         automake --add-missing
     fi
 

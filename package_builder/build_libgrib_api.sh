@@ -126,10 +126,6 @@ build_compiler_target()
         config_command="${config_command} --enable-pthread --enable-omp-packing"
     fi
 
-    # need this for daint from Nov. 2019 onwards
-    echo ">>> Running automake --add-missing"
-    automake --add-missing
-    
     writeModuleList ${base_path}/modules.log loaded "FORTRAN MODULES" ${base_path}/modules_fortran.env
     
     echo "Building for ${compiler} compiler"
@@ -146,6 +142,9 @@ build_compiler_target()
             cat build.log
             exitError 4333 "Unable to configure libgrib_api with ${config_command}. See config.log for details."
         fi
+        # need this for daint from Nov. 2019 onwards
+        echo ">>> Running automake --add-missing"
+        automake --add-missing
         echo ">>>Compiling $packageName (make)"
         make &>> build.log
         if [ $? -ne 0 ]; then

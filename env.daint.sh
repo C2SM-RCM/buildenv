@@ -217,6 +217,9 @@ setFortranEnvironment()
         module load craype-accel-nvidia60
     fi
 
+    module load daint-gpu
+    module load CMake/3.14.5
+
     # compiler specific modules
     case "${compiler}" in
     *cray )
@@ -239,7 +242,7 @@ setFortranEnvironment()
         export FC=ftn
         ;;
     *pgi )
-        module swap pgi/18.10.0
+        module swap pgi/19.7.0
         # Load gcc/8.3.0 to link with the C++ Dynamical Core
         module load gcc/8.3.0
         export CXX=$GCC_PATH/snos/bin/g++

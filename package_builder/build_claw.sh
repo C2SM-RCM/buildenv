@@ -47,7 +47,7 @@ base_path=$PWD
 setupDefaults
 
 if [[ ${install_local} == "yes" ]]; then
-    install_path_prefix_="${base_path}/install"
+    install_path_prefix_="${base_path}/claw"
 else
     install_path_prefix_="${install_dir}/claw"
 fi
@@ -77,7 +77,11 @@ echo "Building for ${compiler} compiler"
 
 cd $base_path
 
-export claw_compiler_install=$base_path/$install_path_prefix_
+if [ "${install_path_prefix_:0:1}" != "/" ]; then
+  install_path_prefix_=$base_path/$install_path_prefix_
+fi   
+
+export claw_compiler_install=$install_path_prefix_
 
 if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; then
 
@@ -122,7 +126,7 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
     mkdir build
   fi
   cd build
-
+  
   if [[ "${slave}" == "kesch" ]] || [[ "${slave}" == "arolla" ]] ; then
     cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" ..
   elif [[ "${slave}" == "daint" ]] || [[ "${slave}" == "tave" ]]; then
@@ -149,7 +153,7 @@ fi
 cd $base_path
 
 # Copy module files
-cp modules_fortran.env $base_path/${install_path}/modules.env
+cp modules_fortran.env ${install_path}/modules.env
 unsetFortranEnvironment
 
 }

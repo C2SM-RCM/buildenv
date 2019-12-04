@@ -276,7 +276,7 @@ EOF
             module load craype-network-infiniband
             module load slurm
             # Require to see the mvapich2.2rc1
-            module load PrgEnv-gnu/18.12
+            module load PrgEnv-pgi/19.4
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90

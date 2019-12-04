@@ -61,8 +61,8 @@ echo "Compiling and installing for $compiler (install path: $install_path)"
 
 install_args="-i ${install_path}/"
 
-if [ ! -d ${install_path} ] ; then
-  mkdir -p ${install_path}
+if [ ! -d ${install_dir} ] ; then
+  mkdir -p ${install_dir}
 fi
 
 setFortranEnvironment
@@ -75,46 +75,43 @@ writeModuleList ${base_path}/modules.log loaded "FORTRAN MODULES" ${base_path}/m
 
 echo "Building for ${compiler} compiler"
 
-# Build claw-compiler dependency apache-ant
-echo "=============================="
-echo "Build claw-compiler dependency: apache-ant"
-if [ ! -d ${package_basedir}/hpc-scripts ] ; then
-  git clone git@github.com:clementval/hpc-scripts.git ${package_basedir}/hpc-scripts
-fi
-cd ${package_basedir}/hpc-scripts/cscs
-if [[ ! -f ../../ant/apache-ant-1.10.2/bin/ant || $REBUILD == YES ]] ; then
-  if [ $REBUILD == YES ] ; then
-    echo `pwd`
-    echo "Rebuilding apache-ant"
-    echo "rm -rf ../../ant"
-    rm -rf ../../ant
-  fi
-  ./install.ant -i ../../ant || error_exit "Error : apach-ant build failed"
-fi 
-cd ../../ant/apache-ant-1.10.2
-export ANT_HOME=`pwd`
-
 cd $base_path
 
-# Build claw-compiler 
-echo "=============================="
-echo "Build claw-compiler"
-if [ ! -d ${package_basedir}/claw-compiler ] ; then
-  git clone git@github.com:claw-project/claw-compiler.git ${package_basedir}/claw-compiler
-fi
+export claw_compiler_install=$base_path/$install_path_prefix_
 
-cd ${package_basedir}/claw-compiler
+if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; then
 
-export claw_compiler_install=$install_path_prefix_
-
-if [[ ! -f $claw_compiler_install/bin/clawfc || $REBUILD == YES ]]; then
   if [ $REBUILD == YES ] ; then
-   echo `pwd`
-   echo "Rebuilding claw-compiler"
-   echo "rm -rf build"
-   rm -rf build
+    echo `pwd`
+    echo "Rebuilding claw-compiler"
+    echo "rm -rf $claw_compiler_install"
+    rm -rf $claw_compiler_install
+  fi  
+  
+  # Build claw-compiler dependency apache-ant
+  echo "=============================="
+  echo "Build claw-compiler dependency: apache-ant"
+  if [ ! -d ${package_basedir}/hpc-scripts ] ; then
+    git clone git@github.com:clementval/hpc-scripts.git ${package_basedir}/hpc-scripts
   fi
- 
+
+  cd ${package_basedir}/hpc-scripts/cscs
+  ./install.ant -i ../../ant || error_exit "Error : apach-ant build failed"
+   
+  cd ../../ant/apache-ant-1.10.2
+  export ANT_HOME=`pwd`
+
+  cd $base_path
+
+  # Build claw-compiler 
+  echo "=============================="
+  echo "Build claw-compiler"
+  if [ ! -d ${package_basedir}/claw-compiler ] ; then
+    git clone git@github.com:claw-project/claw-compiler.git ${package_basedir}/claw-compiler
+  fi
+
+  cd ${package_basedir}/claw-compiler
+
   export PATH=$ANT_HOME/bin:$PATH
 
   # Get OMNI Compiler as submodule
@@ -139,15 +136,20 @@ if [[ ! -f $claw_compiler_install/bin/clawfc || $REBUILD == YES ]]; then
 
   #remove build directories
   cd $base_path
+  cd $package_basedir
   rm -rf ant/ claw-compiler/ hpc-scripts/
+else
+  echo "claw-compiler already installed under $claw_compiler_install"
 fi
 
 if [ $? -ne 0 ]; then
     exitError 3333 "Unable to compile claw with ${compiler}"
 fi
 
+cd $base_path
+
 # Copy module files
-cp modules_fortran.env ${install_path}/modules.env
+cp modules_fortran.env $base_path/${install_path}/modules.env
 unsetFortranEnvironment
 
 }

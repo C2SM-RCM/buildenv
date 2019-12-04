@@ -136,7 +136,7 @@ module load craype-haswell
 module load cudatoolkit/8.0.61
 module load mvapich2gdr_gnu/2.2_cuda_8.0
 module load gcc/5.4.0-2.26
-module load cmake
+module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 module load hdf5/1.8.18-gmvolf-17.02
 module load git
 EOF
@@ -226,7 +226,7 @@ module load craype-network-infiniband
 module load craype-haswell
 module load CrayCCE/.17.06
 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
-module load cmake
+module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	else
@@ -238,7 +238,7 @@ module load craype-accel-nvidia35
 module swap cudatoolkit/8.0.61
 module load PrgEnv-CrayCCE/17.06
 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
-module load cmake
+module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	fi
@@ -254,7 +254,7 @@ module load craype-haswell
 module load craype-network-infiniband
 module load PrgEnv-gnu/17.02
 module load netcdf-fortran/4.4.4-gmvolf-17.02
-module load cmake
+module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	module purge
@@ -269,7 +269,7 @@ module load craype-haswell
 module load craype-network-infiniband
 module load PrgEnv-pgi/18.5
 module load netcdf-fortran/4.4.4-pgi-18.5-gcc-5.4.0-2.26
-module load cmake
+module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	module purge

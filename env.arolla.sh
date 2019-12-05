@@ -159,7 +159,6 @@ EOF
         module load slurm
         # Gnu env
         module load PrgEnv-gnu/19.2
-        module load cuda10.0/toolkit/10.0.130
         export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
 
 EOF

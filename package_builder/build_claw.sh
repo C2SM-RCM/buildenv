@@ -11,6 +11,11 @@ if [ "$slave" == "tsa" ] ; then
   slave=arolla
 fi
 
+# CLAW
+resources_repo="git@github.com:claw-project/claw-compiler.git"
+resources_version="master"
+package_name="claw" # name of repository
+
 exitError()
 {
     echo "ERROR $1: $3" 1>&2
@@ -29,6 +34,7 @@ while true; do
         --idir|-i) install_dir=$2; shift 2;;
         --local) install_local="yes"; shift;;
         --compiler|-c) compiler_target=$2; shift 2;;
+        --resources_version|-r) resources_version=$2; shift 2;;
         -- ) shift; break ;;
         * ) fwd_args="$fwd_args $1"; shift ;;
     esac
@@ -47,9 +53,9 @@ base_path=$PWD
 setupDefaults
 
 if [[ ${install_local} == "yes" ]]; then
-    install_path_prefix_="${base_path}/claw"
+    install_path_prefix_="${base_path}/claw/${resources_version}"
 else
-    install_path_prefix_="${install_dir}/claw"
+    install_path_prefix_="${install_dir}/claw//${resources_version}"
 fi
 
 build_compiler_target()
@@ -111,7 +117,7 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   echo "=============================="
   echo "Build claw-compiler"
   if [ ! -d ${package_basedir}/claw-compiler ] ; then
-    git clone git@github.com:claw-project/claw-compiler.git ${package_basedir}/claw-compiler
+    git clone "${resources_repo}" -b "${resources_version}"
   fi
 
   cd ${package_basedir}/claw-compiler

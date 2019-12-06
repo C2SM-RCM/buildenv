@@ -317,6 +317,7 @@ EOF
             module load slurm
             module load PrgEnv-pgi/19.9
             module load netcdf-fortran/4.4.5-pgi-19.9-gcc-8.3.0
+            export MPI_ROOT=\${EBROOTOPENMPI}
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
@@ -343,7 +344,7 @@ EOF
     export CC=gcc
 
     # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
 }

@@ -270,6 +270,7 @@ module load craype-network-infiniband
 module load PrgEnv-pgi/18.5
 module load netcdf-fortran/4.4.4-pgi-18.5-gcc-5.4.0-2.26
 module load cmake
+export MPI_ROOT="/opt/mvapich2/gdr/no-mcast/2.2/cuda8.0/mpirun/gnu4.8.5"
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
 	module purge

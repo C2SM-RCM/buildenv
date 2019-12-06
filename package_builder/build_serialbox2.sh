@@ -105,7 +105,7 @@ git clone "${resources_repo}" -b "${resources_version}"
 if [[ ${install_local} == "yes" ]]; then
   install_path_prefix_="${base_path}/install"
 else
-  install_path_prefix_="${install_dir}/serialbox2/${resources_version}"
+  install_path_prefix_="${install_dir}/serialbox2/serialbox2_${resources_version}"
 fi
 
 if [ "${compiler_target}" != "all" ]; then

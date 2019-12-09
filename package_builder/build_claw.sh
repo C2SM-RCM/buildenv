@@ -12,7 +12,7 @@ if [ "$slave" == "tsa" ] ; then
 fi
 
 # CLAW
-resources_repo="git@github.com:claw-project/claw-compiler.git"
+resources_repo="git@github.com:elsagermann/claw-compiler.git"
 resources_version="master"
 package_name="claw" # name of repository
 
@@ -117,7 +117,7 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   echo "=============================="
   echo "Build claw-compiler"
   if [ ! -d ${package_basedir}/claw-compiler ] ; then
-    git clone "${resources_repo}" -b "${resources_version}"
+    git clone "${resources_repo}" -b add_cmake_flags_option
   fi
 
   cd ${package_basedir}/claw-compiler
@@ -133,8 +133,10 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   fi
   cd build
   
-  if [[ "${slave}" == "kesch" ]] || [[ "${slave}" == "arolla" ]] ; then
-    cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" ..
+  if [[ "${slave}" == "kesch" ]] ; then
+    cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" .. 
+  elif [[ "${slave}" == "arolla" ]] ; then
+    cmake -DCMAKE_C_FLAGS="-std=c99" -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" ..
   elif [[ "${slave}" == "daint" ]] || [[ "${slave}" == "tave" ]]; then
     cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" -DOMNI_MPI_CC="MPI_CC=cc" -DOMNI_MPI_FC="MPI_FC=ftn" ..
   fi
@@ -147,7 +149,7 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   #remove build directories
   cd $base_path
   cd $package_basedir
-  rm -rf ant/ claw-compiler/ hpc-scripts/
+  rm -rf ant/ claw-compiler/ hpc-scripts/ 
 else
   echo "claw-compiler already installed under $claw_compiler_install"
 fi

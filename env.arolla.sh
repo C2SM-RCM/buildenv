@@ -349,7 +349,12 @@ EOF
     export CC=gcc
 
     # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
+    if [ "${compiler}" == "pgi" ]; then
+        export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
+    else
+        # CLAW v2.0.1 only works with PGI atm
+        export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    fi
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
 }

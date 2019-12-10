@@ -274,6 +274,7 @@ module load craype-haswell
 module load craype-network-infiniband
 module load PrgEnv-pgi/18.5
 module load netcdf-fortran/4.4.4-pgi-18.5-gcc-5.4.0-2.26
+export MPI_ROOT="/opt/mvapich2/gdr/no-mcast/2.2/cuda8.0/mpirun/gnu4.8.5"
 module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 module load java
 export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
@@ -294,7 +295,7 @@ EOF
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
     # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file

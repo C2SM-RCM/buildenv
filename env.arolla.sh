@@ -268,6 +268,7 @@ EOF
             module load slurm
             # Require to see the mvapich2.2rc1
             module load PrgEnv-gnu/18.12
+            module load netcdf-fortran/4.4.5-gmvolf-18.12
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=gfortran

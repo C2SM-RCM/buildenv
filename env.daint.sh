@@ -251,9 +251,11 @@ setFortranEnvironment()
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
-
-    # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    
+    if [[ -z "$CLAWFC" ]]; then
+      # CLAW Compiler using the correct preprocessor
+      export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    fi
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
     # Set grib-api version and cosmo ressources

@@ -12,7 +12,7 @@ if [ "$slave" == "tsa" ] ; then
 fi
 
 # CLAW
-resources_repo="git@github.com:elsagermann/claw-compiler.git"
+resources_repo="git@github.com:claw-project/claw-compiler.git"
 resources_version="master"
 package_name="claw" # name of repository
 

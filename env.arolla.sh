@@ -144,7 +144,6 @@ setCppEnvironment()
         module load cuda92/toolkit/9.2.88 craype-accel-nvidia70
         module load boost/1.70.0-gmvolf-18.12-python2
         module load /users/jenkins/easybuild/arolla-ln/modules/all/cmake/3.14.5
-        export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
 EOF
     else
     #Use this modules in case COSMO_TESTENV is set
@@ -159,8 +158,6 @@ EOF
         module load slurm
         # Gnu env
         module load PrgEnv-gnu/19.2
-        export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
-
 EOF
      fi
 
@@ -254,6 +251,7 @@ setFortranEnvironment()
         module switch cray-mvapich2/2.3 cray-mvapich2_cuda92/2.2rc1
         module load craype-accel-nvidia70
         module load netCDF-Fortran/4.4.4-CrayCCE-18.12
+        export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
         export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC="ftn -D__CRAY_FORTRAN__"
@@ -268,6 +266,7 @@ EOF
             module load slurm
             # Require to see the mvapich2.2rc1
             module load PrgEnv-gnu/18.12
+            export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
             module load netcdf-fortran/4.4.5-gmvolf-18.12
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
@@ -283,6 +282,7 @@ EOF
             module load slurm
             # Require to see the mvapich2.2rc1
             module load PrgEnv-pgi/19.4
+            export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
@@ -307,6 +307,7 @@ EOF
             module load slurm
             module load PrgEnv-gnu/18.1
             module load netcdf-fortran/4.4.5-foss-2018b
+            export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
@@ -323,6 +324,7 @@ EOF
             module load slurm
             module load PrgEnv-pgi/19.9
             module load netcdf-fortran/4.4.5-pgi-19.9-gcc-8.3.0
+            export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64" 
             export MPI_ROOT=\${EBROOTOPENMPI}
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
@@ -349,12 +351,14 @@ EOF
     export CXX=g++
     export CC=gcc
 
-    # CLAW Compiler using the correct preprocessor
-    if [ "${compiler}" == "pgi" ]; then
-        export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
-    else
-        # CLAW v2.0.1 only works with PGI atm
-        export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    if [[ -z "$CLAWFC" ]]; then
+      # CLAW Compiler using the correct preprocessor
+      if [ "${compiler}" == "pgi" ]; then
+          export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
+      else
+          # CLAW v2.0.1 only works with PGI atm
+          export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+      fi
     fi
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 

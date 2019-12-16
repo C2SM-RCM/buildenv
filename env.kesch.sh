@@ -294,8 +294,10 @@ EOF
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
-    # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
+    if [[ -z "$CLAWFC" ]]; then
+      # CLAW Compiler using the correct preprocessor
+      export CLAWFC="${installdir}/claw/v1.2.3/${compiler}/bin/clawfc"
+    fi
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
     # Workaround for Cray CCE licence on kesh: if no licence available use escha licence file

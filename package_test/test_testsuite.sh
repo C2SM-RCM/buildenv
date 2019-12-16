@@ -13,6 +13,8 @@ fi
 wd=`pwd`
 echo Working dir $wd
 
+module load PE/17.06
+module load python
 
 # Get testsuite
 git clone git@github.com:${ORGANIZATION}/testsuite

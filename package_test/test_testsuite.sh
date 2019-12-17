@@ -15,6 +15,7 @@ echo Working dir $wd
 
 module load PE/17.06
 module load python
+which python
 
 # Get testsuite
 git clone git@github.com:${ORGANIZATION}/testsuite

@@ -20,8 +20,6 @@ cd testsuite
 git checkout ${BRANCH}
 echo "Last commit in testsuite repo:"
 git --no-pager log -1
-# Launch testsuite regression tests
-make test
 cd $wd
 
 # First, test cosmo-pompa

@@ -305,8 +305,8 @@ EOF
             module load craype-x86-skylake
             module load craype-network-infiniband
             module load slurm
-            module load PrgEnv-gnu/18.12
-            module load netcdf-fortran/4.4.5-gmvolf-18.12
+            module load PrgEnv-gnu/19.2
+            module load netcdf-fortran/4.4.5-fosscuda-2019b
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF

@@ -255,8 +255,8 @@ setFortranEnvironment()
         export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC="ftn -D__CRAY_FORTRAN__"
-	export CXX=CC
-	export CC=cc
+        export CXX=CC
+        export CC=cc
         ;;
     *gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -273,8 +273,8 @@ EOF
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
-	export CXX=mpicxx
-	export CC=mpicc
+        export CXX=mpicxx
+        export CC=mpicc
 
         ;;
     *pgi )
@@ -291,8 +291,8 @@ EOF
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
-	export CXX=mpicxx
-	export CC=mpicc
+        export CXX=mpicxx
+        export CC=mpicc
         ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -318,8 +318,8 @@ EOF
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
-	export CXX=mpicxx
-	export CC=mpicc
+        export CXX=mpicxx
+        export CC=mpicc
         ;;
     *pgi )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -338,8 +338,8 @@ EOF
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
-	export CXX=mpicxx
-	export CC=mpicc
+        export CXX=mpicxx
+        export CC=mpicc
         ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2

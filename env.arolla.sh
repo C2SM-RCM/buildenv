@@ -248,6 +248,8 @@ setFortranEnvironment()
         module load slurm
         # Require to see the mvapich2.2rc1
         module load PrgEnv-cce/18.12
+        # Set GCC_PATH (used for c and c++ compilation within the Fortran env)
+        export GCC_PATH=/apps/arolla/UES/jenkins/RH7.5/generic/easybuild/software/gcccore/7.4.0
         module switch cray-mvapich2/2.3 cray-mvapich2_cuda92/2.2rc1
         module load craype-accel-nvidia70
         module load netCDF-Fortran/4.4.4-CrayCCE-18.12
@@ -266,6 +268,8 @@ EOF
             module load slurm
             # Require to see the mvapich2.2rc1
             module load PrgEnv-gnu/18.12
+            # Set GCC_PATH (used for c and c++ compilation within the Fortran env)
+            export GCC_PATH=/apps/arolla/UES/jenkins/RH7.5/generic/easybuild/software/gcccore/7.4.0
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
             module load netcdf-fortran/4.4.5-gmvolf-18.12
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
@@ -282,6 +286,8 @@ EOF
             module load slurm
             # Require to see the mvapich2.2rc1
             module load PrgEnv-pgi/19.4
+            # Set GCC_PATH (used for c and c++ compilation within the Fortran env)
+            export GCC_PATH=/apps/arolla/UES/jenkins/RH7.5/generic/easybuild/software/gcccore/7.4.0
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.191.b12-0.el7_5.x86_64"
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
@@ -306,6 +312,8 @@ EOF
             module load craype-network-infiniband
             module load slurm
             module load PrgEnv-gnu/19.2
+            # Set GCC_PATH (used for c and c++ compilation within the Fortran env) 
+            export GCC_PATH=/apps/arolla/UES/jenkins/RH7.6/generic/easybuild/software/GCCcore/8.3.0
             module load netcdf-fortran/4.4.5-fosscuda-2019b
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
@@ -324,6 +332,8 @@ EOF
             module load slurm
             module load PrgEnv-pgi/19.9
             module load netcdf-fortran/4.4.5-pgi-19.9-gcc-8.3.0
+            # Set GCC_PATH used for c and c++ compilation within the Fortran env
+            export GCC_PATH=/apps/arolla/UES/jenkins/RH7.6/generic/easybuild/software/GCCcore/8.3.0
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64" 
             export MPI_ROOT=\${EBROOTOPENMPI}
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
@@ -347,9 +357,14 @@ EOF
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
 
-    # We have gcc for gnu, cray and pgi environments
-    export CXX=g++
-    export CC=gcc
+    # Always use gcc for C and C++ compilation within Fortran environment
+    # this is required by serialbox
+    if [ -n "${GCC_PATH}" ]; then
+       echo "Error : GCC_PATH must be set"
+       exit 1
+    fi
+    export CXX=${GCC_PATH}/bin/g++
+    export CC=${GCC_PATH}/bin/gcc
 
     if [[ -z "$CLAWFC" ]]; then
       # CLAW Compiler using the correct preprocessor

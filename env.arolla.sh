@@ -255,6 +255,8 @@ setFortranEnvironment()
         export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC="ftn -D__CRAY_FORTRAN__"
+	export CXX=CC
+	export CC=cc
         ;;
     *gnu )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -270,7 +272,10 @@ EOF
             module load netcdf-fortran/4.4.5-gmvolf-18.12
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
-        export FC=gfortran
+        export FC=mpif90
+	export CXX=mpicxx
+	export CC=mpicc
+
         ;;
     *pgi )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -286,6 +291,8 @@ EOF
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
+	export CXX=mpicxx
+	export CC=mpicc
         ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -311,6 +318,8 @@ EOF
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
+	export CXX=mpicxx
+	export CC=mpicc
         ;;
     *pgi )
         cat > $ENVIRONMENT_TEMPFILE <<-EOF
@@ -329,6 +338,8 @@ EOF
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         export FC=mpif90
+	export CXX=mpicxx
+	export CC=mpicc
         ;;
     * )
         echo "ERROR: ${compiler} Unsupported compiler encountered in setFortranEnvironment" 1>&2
@@ -346,10 +357,6 @@ EOF
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
-
-    # We have gcc for gnu, cray and pgi environments
-    export CXX=g++
-    export CC=gcc
 
     if [[ -z "$CLAWFC" ]]; then
       # CLAW Compiler using the correct preprocessor

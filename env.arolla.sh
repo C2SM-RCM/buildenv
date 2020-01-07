@@ -359,7 +359,7 @@ EOF
 
     # Always use gcc for C and C++ compilation within Fortran environment
     # this is required by serialbox
-    if [ -n "${GCC_PATH}" ]; then
+    if [ -z "${GCC_PATH}" ]; then
        echo "Error : GCC_PATH must be set"
        exit 1
     fi

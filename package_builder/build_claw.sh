@@ -117,7 +117,7 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   echo "=============================="
   echo "Build claw-compiler"
   if [ ! -d ${package_basedir}/claw-compiler ] ; then
-    git clone "${resources_repo}" -b add_cmake_flags_option
+    git clone "${resources_repo}"
   fi
 
   cd ${package_basedir}/claw-compiler

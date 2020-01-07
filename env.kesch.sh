@@ -227,6 +227,8 @@ module load PE/17.06
 module load craype-network-infiniband
 module load craype-haswell
 module load CrayCCE/.17.06
+# Set GCC_PATH (used for c and c++ compilation within the Fortran env)
+export GCC_PATH=/apps/escha/UES/jenkins/RH7.5/generic/easybuild/software/gcccore/5.4.0
 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
 module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 module load java
@@ -240,6 +242,8 @@ module load craype-haswell
 module load craype-accel-nvidia35
 module swap cudatoolkit/8.0.61
 module load PrgEnv-CrayCCE/17.06
+# Set GCC_PATH (used for c and c++ compilation within the Fortran env)
+export GCC_PATH=/apps/escha/UES/jenkins/RH7.5/generic/easybuild/software/gcccore/5.4.0
 module load netCDF-Fortran/4.4.4-CrayCCE-17.06
 module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 module load java
@@ -257,6 +261,8 @@ module load PE/17.06
 module load craype-haswell
 module load craype-network-infiniband
 module load PrgEnv-gnu/17.02
+# Set GCC_PATH (used for c and c++ compilation within the Fortran env)
+export GCC_PATH=/apps/escha/UES/jenkins/RH7.5/generic/easybuild/software/gcccore/5.4.0
 module load netcdf-fortran/4.4.4-gmvolf-17.02
 module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
 module load java
@@ -273,6 +279,8 @@ module load PE/17.06
 module load craype-haswell
 module load craype-network-infiniband
 module load PrgEnv-pgi/18.5
+# Set GCC_PATH (used for c and c++ compilation within the Fortran env)
+export GCC_PATH=/apps/escha/UES/jenkins/RH7.5/generic/easybuild/software/gcccore/5.4.0
 module load netcdf-fortran/4.4.4-pgi-18.5-gcc-5.4.0-2.26
 export MPI_ROOT="/opt/mvapich2/gdr/no-mcast/2.2/cuda8.0/mpirun/gnu4.8.5"
 module load /users/jenkins/easybuild/kesch/modules/all/cmake/3.14.5
@@ -293,6 +301,15 @@ EOF
 
     export OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH=${CRAY_LD_LIBRARY_PATH}:${LD_LIBRARY_PATH}
+
+    # Always use gcc for C and C++ compilation within Fortran environment
+    # this is required by serialbox
+    if [ -z "${GCC_PATH}" ]; then
+       echo "Error : GCC_PATH must be set"
+       exit 1
+    fi
+    export CXX=${GCC_PATH}/bin/g++
+    export CC=${GCC_PATH}/bin/gcc
 
     if [[ -z "$CLAWFC" ]]; then
       # CLAW Compiler using the correct preprocessor

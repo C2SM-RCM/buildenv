@@ -87,6 +87,13 @@ function launch_job {
   local sacct_log=sacct.${jobid}.log
   local sacct_status=1
 
+  # XL_HACK: On tsa RH7.6 the job exit with non 0 also the model completed successfully
+  # For the time being we ignore the slurm status (a check is done on the output)
+  if [ -n "${COSMO_IGNORE_SLURM_STATUS}" ]; then
+      echo "!! Warning: slurm status is not checked if COSMO_IGNORE_SLURM_STATUS is set"
+      exit 0
+  fi
+
   while [ $sacct_wait -lt $sacct_maxwait ] ; do
       sacct --jobs ${jobid} -p -n -b -D 2>/dev/null > ${sacct_log}
       # Check that sacct returns COMPLETED

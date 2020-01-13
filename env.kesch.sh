@@ -313,7 +313,7 @@ EOF
 
     if [[ -z "$CLAWFC" ]]; then
       # CLAW Compiler using the correct preprocessor
-      export CLAWFC="${installdir}/claw/v1.2.3/${compiler}/bin/clawfc"
+      export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
     fi
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 

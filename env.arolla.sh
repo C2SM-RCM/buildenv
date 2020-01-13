@@ -338,6 +338,14 @@ EOF
             export MPI_ROOT=\${EBROOTOPENMPI}
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
+        # Export env variables for gpu nodes on tsa
+        if [ "${target}" == "gpu" ] ; then
+            cat >> $ENVIRONMENT_TEMPFILE <<-EOF
+            # UCX env variables
+            export UCX_MEMTYPE_CACHE=n
+            export UCX_TLS=rc_x,ud_x,mm,shm,cuda_copy,cuda_ipc,cma
+EOF
+        fi
         export FC=mpif90
         ;;
     * )

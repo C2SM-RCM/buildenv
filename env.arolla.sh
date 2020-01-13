@@ -45,7 +45,7 @@ restoreModuleCheckPoint()
 setupDefaults()
 {
     # available options
-    targets=(cpu gpu)
+    targets=(cpu gpu cpu-pp)
     compilers=(cray claw-cray pgi claw-pgi gnu)
     fcompiler_cmds=(ftn)
 
@@ -160,7 +160,7 @@ EOF
         module load PrgEnv-gnu/19.2
 EOF
         # Export env variables for gpu nodes on tsa
-        if [ "${target}" == "gpu" ] ; then
+        if [ "${target}" != "cpu-pp" ] ; then
             cat >> $ENVIRONMENT_TEMPFILE <<-EOF
         # UCX env variables
         export UCX_MEMTYPE_CACHE=n
@@ -347,7 +347,7 @@ EOF
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
         # Export env variables for gpu nodes on tsa
-        if [ "${target}" == "gpu" ] ; then
+        if [ "${target}" != "cpu-pp" ] ; then
             cat >> $ENVIRONMENT_TEMPFILE <<-EOF
             # UCX env variables
             export UCX_MEMTYPE_CACHE=n

@@ -20,7 +20,7 @@ ldd $BINNAME
 export OMP_NUM_THREADS=1
 export MALLOC_MMAP_MAX_=0
 export MALLOC_TRIM_THRESHOLD_=536870912
-unset G2G=1
+unset G2G
 export MV2_USE_GPUDIRECT=0 #with this perf are ok
 
 if [ ! -z $COSMO_TESTENV ] ; then

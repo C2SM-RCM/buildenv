@@ -98,7 +98,7 @@ setCppEnvironment()
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
     fi
-
+    module load cudatoolkit
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     cray )

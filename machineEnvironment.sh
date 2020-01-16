@@ -83,16 +83,11 @@ elif [ "`hostname | grep kesch`" != "" -o "`hostname | grep escha`" != "" ] ; th
     export CUDA_ARCH=sm_37
 elif [ "`hostname | grep arolla`" != "" -o "`hostname | grep tsa`" != "" ] ; then
     . /etc/bashrc
-    export host="arolla"
+    export host="tsa"
     queue="debug"
     nthreads=1
     mpilaunch="srun"
-# TODO: remove once there is no COSMO_TESTENV anymore
-    if [ -z "${COSMO_TESTENV}" ] ; then
-        installdir="/project/c14/install/arolla"
-    else
-        installdir="/project/c14/install/arolla_rh7.6"
-    fi
+    installdir="/project/c14/install/tsa"
     testdata="/scratch/jenkins/data"
     export CUDA_ARCH=sm_70
 fi

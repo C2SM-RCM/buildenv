@@ -124,7 +124,8 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   else
     git clone "${resources_repo}"
     cd ${package_basedir}/claw-compiler
-    git checkout $resources_version
+    echo "Checking out $resources_version"
+    git checkout $resources_version || exitError 3334 "Git $resources_version does not exist"
   fi
 
   # Get OMNI Compiler as submodule

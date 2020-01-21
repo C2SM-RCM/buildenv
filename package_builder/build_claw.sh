@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# get the absolute path to this script
+script_dir=$(dirname "$(realpath -s "$0")")
+
 # set default variables
 
 test -n "${REBUILD}"  || REBUILD=YES
@@ -101,28 +104,29 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   # Build claw-compiler dependency apache-ant
   echo "=============================="
   echo "Build claw-compiler dependency: apache-ant"
-  if [ ! -d ${package_basedir}/hpc-scripts ] ; then
-    git clone git@github.com:clementval/hpc-scripts.git ${package_basedir}/hpc-scripts
-  fi
-
-  cd ${package_basedir}/hpc-scripts/cscs
-  ./install.ant -i ../../ant || error_exit "Error : apach-ant build failed"
+  ${script_dir}/install.ant -i ./ant || error_exit "Error : apach-ant build failed"
    
-  cd ../../ant/apache-ant-1.10.2
+  cd ./ant/apache-ant-1.10.2
   export ANT_HOME=`pwd`
+  export PATH=$ANT_HOME/bin:$PATH
 
   cd $base_path
 
   # Build claw-compiler 
   echo "=============================="
   echo "Build claw-compiler"
-  if [ ! -d ${package_basedir}/claw-compiler ] ; then
+  if [ -d ${package_basedir}/cx2t/src/claw ] ; then
+    echo "Building from local source `readlink -f ${package_basedir}`"
+    cd ${package_basedir}
+    # Get latest tag or branch
+    resources_version=`git describe --tags --exact-match 2>/dev/null` || resources_version=`git symbolic-ref --short -q HEAD`
+    echo "Argument version ignored, forced to local source : $resources_version"
+  else
     git clone "${resources_repo}"
+    cd ${package_basedir}/claw-compiler
+    echo "Checking out $resources_version"
+    git checkout $resources_version || exitError 3334 "Git $resources_version does not exist"
   fi
-
-  cd ${package_basedir}/claw-compiler
-
-  export PATH=$ANT_HOME/bin:$PATH
 
   # Get OMNI Compiler as submodule
   git submodule init
@@ -149,7 +153,7 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   #remove build directories
   cd $base_path
   cd $package_basedir
-  rm -rf ant/ claw-compiler/ hpc-scripts/ 
+  rm -rf ant/ claw-compiler/ 
 else
   echo "claw-compiler already installed under $claw_compiler_install"
 fi
@@ -162,7 +166,6 @@ cd $base_path
 
 # Copy module files
 cp modules_fortran.env ${install_path}/modules.env
-unsetFortranEnvironment
 
 }
 

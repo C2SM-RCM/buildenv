@@ -45,18 +45,18 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(cray claw-cray pgi claw-pgi gnu)
-    fcompiler_cmds=(ftn)
+    compilers=(pgi claw-pgi gnu)
+    fcompiler_cmds=(mpif90 pgfortran gfortran)
 
 
-    export BASE_MODULES="craype-haswell"
+    export BASE_MODULES="craype-x86-skylake"
     export NVIDIA_CUDA_ARCH="sm_70"
 
     # BOOST
     export Boost_NO_SYSTEM_PATHS=true
     export Boost_NO_BOOST_CMAKE=true
 
-    export BOOST_ROOT=/project/c14/install/kesch/boost/boost_1_67_0/
+    export BOOST_ROOT=/project/c14/install/tsa/boost/boost_1_67_0/
     export BOOST_PATH=${BOOST_ROOT}
     export BOOST_INCLUDE=${BOOST_ROOT}/include/
  
@@ -67,7 +67,7 @@ setupDefaults()
         target="gpu"
     fi
     if [ -z "${compiler}" ] ; then
-        compiler="cray"
+        compiler="pgi"
     fi
     if [ -z "${cuda_arch}" ] ; then
         cuda_arch="${NVIDIA_CUDA_ARCH}"
@@ -77,8 +77,8 @@ setupDefaults()
     if [ -z "${fcompiler_cmd}" ] ; then
         if [ "${compiler}" == "gnu" ] ; then
             fcompiler_cmd="gfortran"
-         else
-            fcompiler_cmd="ftn"
+        else
+            fcompiler_cmd="pgfortran"
         fi
     fi
 }
@@ -90,7 +90,7 @@ get_fcompiler_cmd()
     if [ "${compiler}" == "gnu" ] || [ "${compiler}" == "claw-gnu" ]; then
         myresult="gfortran"
     else
-        myresult="ftn"
+        myresult="pgfortran"
     fi
 
     if [[ "$__resultvar" ]]; then
@@ -140,7 +140,7 @@ setCppEnvironment()
         # Gnu env
         module load PrgEnv-gnu/19.2
 EOF
-        # Export env variables for gpu nodes on tsa
+        # Export UCX env variables for gpu nodes
         if [ "${target}" == "gpu" ] ; then
             cat >> $ENVIRONMENT_TEMPFILE <<-EOF
         # UCX env variables
@@ -255,7 +255,7 @@ EOF
             export MPI_ROOT=\${EBROOTOPENMPI}
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
-        # Export env variables for gpu nodes on tsa
+        # Export UCX env variables for gpu nodes
         if [ "${target}" == "gpu" ] ; then
             cat >> $ENVIRONMENT_TEMPFILE <<-EOF
             # UCX env variables
@@ -288,13 +288,8 @@ EOF
     export CC=${GCC_PATH}/bin/gcc
 
     if [[ -z "$CLAWFC" ]]; then
-      # CLAW Compiler using the correct preprocessor
-      if [ "${compiler}" == "pgi" ]; then
-          export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
-      else
-          # CLAW v2.0.1 only works with PGI atm
-          export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
-      fi
+        # CLAW Compiler using the correct preprocessor
+        export CLAWFC="${installdir}/claw/v2.0.1/${compiler}/bin/clawfc"
     fi
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 

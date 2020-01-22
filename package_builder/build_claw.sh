@@ -8,12 +8,6 @@ script_dir=$(dirname "$(realpath -s "$0")")
 test -n "${REBUILD}"  || REBUILD=YES
 test -n "${slave}" || exitError "Error : slave must be defined"
 
-# hack for tsa
-if [ "$slave" == "tsa" ] ; then
-  export COSMO_TESTENV=ON
-  slave=arolla
-fi
-
 # CLAW
 resources_repo="git@github.com:claw-project/claw-compiler.git"
 resources_version="master"
@@ -139,7 +133,7 @@ if [[ ! -f $claw_compiler_install/libexec/claw_f_lib.sh || $REBUILD == YES ]]; t
   
   if [[ "${slave}" == "kesch" ]] ; then
     cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" .. 
-  elif [[ "${slave}" == "arolla" ]] ; then
+  elif [[ "${slave}" == "tsa" ]] ; then
     cmake -DCMAKE_C_FLAGS="-std=c99" -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" ..
   elif [[ "${slave}" == "daint" ]] || [[ "${slave}" == "tave" ]]; then
     cmake -DCMAKE_INSTALL_PREFIX="$claw_compiler_install" -DOMNI_MPI_CC="MPI_CC=cc" -DOMNI_MPI_FC="MPI_FC=ftn" ..

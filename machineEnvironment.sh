@@ -38,9 +38,11 @@ testdata=""     # directory where unittestdata is stored
 
 # setup machine specifics
 if [ "`hostname | grep daint`" != "" ] ; then
+    echo "Sourcing bash files"
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
     . /etc/bash.bashrc.local
+    echo "Finished sourcing bash files"
     export host="daint"
     queue="normal"
     nthreads=8
@@ -48,6 +50,7 @@ if [ "`hostname | grep daint`" != "" ] ; then
     installdir=/project/c14/install/${host}
     testdata=/scratch/snx3000/jenkins/data
     export CUDA_ARCH=sm_60
+    echo "Finished if hostname daint section"
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash
@@ -98,7 +101,7 @@ test -n "${queue}" || exitError 2002 ${LINENO} "Variable <queue> could not be se
 test -n "${nthreads}" || exitError 2003 ${LINENO} "Variable <nthreads> could not be set (unknown machine `hostname`?)"
 test -n "${mpilaunch}" || exitError 2004 ${LINENO} "Variable <mpilaunch> could not be set (unknown machine `hostname`?)"
 test -n "${installdir}" || exitError 2005 ${LINENO} "Variable <installdir> could not be set (unknown machine `hostname`?)"
-
+echo "Finished testing variables"
 # export installation directory
 export INSTALL_DIR="${installdir}"
 export TESTDATA_DIR="${testdata}"

@@ -40,7 +40,9 @@ testdata=""     # directory where unittestdata is stored
 if [ "`hostname | grep daint`" != "" ] ; then
     echo "Sourcing bash files"
     . /etc/bash.bashrc
+    echo "Finished bash.bashrc"
     . /opt/modules/default/init/bash
+    echo "Finished bash"
     . /etc/bash.bashrc.local
     echo "Finished sourcing bash files"
     export host="daint"

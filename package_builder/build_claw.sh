@@ -52,7 +52,7 @@ setupDefaults
 if [[ ${install_local} == "yes" ]]; then
     install_path_prefix_="${base_path}/claw/${resources_version}"
 else
-    install_path_prefix_="${install_dir}/claw//${resources_version}"
+    install_path_prefix_="${install_dir}/claw/${resources_version}"
 fi
 
 build_compiler_target()

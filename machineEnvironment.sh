@@ -38,9 +38,9 @@ testdata=""     # directory where unittestdata is stored
 
 # setup machine specifics
 if [ "`hostname | grep daint`" != "" ] ; then
-    echo "Sourcing bash files"
-    . /etc/bash.bashrc
-    echo "Finished bash.bashrc"
+#    echo "Sourcing bash files"
+#    . /etc/bash.bashrc
+#    echo "Finished bash.bashrc"
     . /opt/modules/default/init/bash
     echo "Finished bash"
     . /etc/bash.bashrc.local

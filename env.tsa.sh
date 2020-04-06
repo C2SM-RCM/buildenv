@@ -234,7 +234,7 @@ setFortranEnvironment()
             # Set GCC_PATH (used for c and c++ compilation within the Fortran env) 
             export GCC_PATH=/apps/arolla/UES/jenkins/RH7.6/generic/easybuild/software/GCCcore/8.3.0
             module load netcdf-fortran/4.4.5-fosscuda-2019b
-            module load eccodes/2.14.1-gnu-8.3.0-omp
+            module load eccodes/2.14.1-gnu-8.3.0-nocuda-omp
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
 EOF
@@ -250,7 +250,7 @@ EOF
             module load slurm
             module load PrgEnv-pgi/19.9
             module load netcdf-fortran/4.4.5-pgi-19.9-gcc-8.3.0
-            module load eccodes/2.14.1-pgi-19.9-omp
+            module load eccodes/2.14.1-pgi-19.9-nocuda-omp
             # Set GCC_PATH used for c and c++ compilation within the Fortran env
             export GCC_PATH=/apps/arolla/UES/jenkins/RH7.6/generic/easybuild/software/GCCcore/8.3.0
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64" 

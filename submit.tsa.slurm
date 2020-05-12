@@ -22,6 +22,13 @@ export MALLOC_MMAP_MAX_=0
 export MALLOC_TRIM_THRESHOLD_=536870912
 unset G2G
 
+# Default grib_api ressources
+if ([ -z $GRIB_DEFINITION_PATH ]) then
+    GRIBAPI_DIR=/project/c14/install/tsa/libgrib_api/${GRIBAPI_COSMO_RESOURCES_VERSION}/pgi
+    echo "GRIBAPI_DIR=$GRIBAPI_DIR"
+    source $GRIBAPI_DIR/configuration.sh
+fi
+
 <CMD>
 
 ########################################################

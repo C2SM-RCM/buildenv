@@ -239,9 +239,9 @@ setFortranEnvironment()
             if ([ -z $GRIBAPI_DIR ]) then
                 GRIBAPI_DIR=/project/c14/install/tsa/libgrib_api/${GRIBAPI_COSMO_RESOURCES_VERSION}/gnu
             fi
-            if ([ -f $GRIBAPI_DIR/configuration.sh ]) then
-                echo "using $GRIBAPI_DIR/configuration.sh"
-                source $GRIBAPI_DIR/configuration.sh
+            if ([ -f \${GRIBAPI_DIR}/configuration.sh ]) then
+                echo "using \${GRIBAPI_DIR}/configuration.sh"
+                source \${GRIBAPI_DIR}/configuration.sh
             fi
 EOF
         export FC=mpif90
@@ -264,9 +264,9 @@ EOF
             if ([ -z $GRIBAPI_DIR ]) then
                 GRIBAPI_DIR=/project/c14/install/tsa/libgrib_api/${GRIBAPI_COSMO_RESOURCES_VERSION}/pgi
             fi
-            if ([ -f $GRIBAPI_DIR/configuration.sh ]) then
-                echo "using $GRIBAPI_DIR/configuration.sh"
-                source $GRIBAPI_DIR/configuration.sh
+            if ([ -f \${GRIBAPI_DIR}/configuration.sh ]) then
+                echo "using \${GRIBAPI_DIR}/configuration.sh"
+                source \${GRIBAPI_DIR}/configuration.sh
             fi
 EOF
         # Export UCX env variables for gpu nodes

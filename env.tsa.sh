@@ -236,6 +236,13 @@ setFortranEnvironment()
             module load netcdf-fortran/4.4.5-fosscuda-2019b
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64"
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
+            if ([ -z $GRIBAPI_DIR ]) then
+                GRIBAPI_DIR=/project/c14/install/tsa/libgrib_api/${GRIBAPI_COSMO_RESOURCES_VERSION}/gnu
+            fi
+            if ([ -f \${GRIBAPI_DIR}/configuration.sh ]) then
+                echo "using \${GRIBAPI_DIR}/configuration.sh"
+                source \${GRIBAPI_DIR}/configuration.sh
+            fi
 EOF
         export FC=mpif90
         ;;
@@ -254,6 +261,13 @@ EOF
             export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.222.b10-0.el7_6.x86_64" 
             export MPI_ROOT=\${EBROOTOPENMPI}
             export GRIBAPI_COSMO_RESOURCES_VERSION=${GRIBAPI_COSMO_RESOURCES_VERSION}
+            if ([ -z $GRIBAPI_DIR ]) then
+                GRIBAPI_DIR=/project/c14/install/tsa/libgrib_api/${GRIBAPI_COSMO_RESOURCES_VERSION}/pgi
+            fi
+            if ([ -f \${GRIBAPI_DIR}/configuration.sh ]) then
+                echo "using \${GRIBAPI_DIR}/configuration.sh"
+                source \${GRIBAPI_DIR}/configuration.sh
+            fi
 EOF
         # Export UCX env variables for gpu nodes
         if [ "${target}" == "gpu" ] ; then

@@ -23,11 +23,11 @@ git --no-pager log -1
 cd $wd
 
 # First, test cosmo-pompa
-git clone git@github.com:MeteoSwiss-APN/cosmo-pompa
-rm -rf cosmo-pompa/cosmo/testsuite/src/*
-cp -rf testsuite/* cosmo-pompa/cosmo/test/testsuite/src
-cd cosmo-pompa/cosmo/test
-export compiler="cray"
+git clone git@github.com:COSMO-ORG/cosmo
+rm -rf cosmo/cosmo/testsuite/src/*
+cp -rf testsuite/* cosmo/cosmo/test/testsuite/src
+cd cosmo/cosmo/test
+export compiler="pgi"
 test -f ./jenkins/jenkins.sh || exit 1
 ./jenkins/jenkins.sh test
 

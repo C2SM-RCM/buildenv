@@ -22,7 +22,7 @@ echo "Last commit in testsuite repo:"
 git --no-pager log -1
 cd $wd
 
-# First, test cosmo-pompa
+# First, test cosmo
 git clone git@github.com:COSMO-ORG/cosmo
 rm -rf cosmo/cosmo/testsuite/src/*
 cp -rf testsuite/* cosmo/cosmo/test/testsuite/src

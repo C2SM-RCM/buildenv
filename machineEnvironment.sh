@@ -48,6 +48,17 @@ if [ "`hostname | grep daint`" != "" ] ; then
     installdir=/project/c14/install/${host}
     testdata=/scratch/snx3000/jenkins/data
     export CUDA_ARCH=sm_60
+elif [ "`hostname | grep dom`" != "" ] ; then
+    . /etc/bash.bashrc
+    . /opt/modules/default/init/bash
+    . /etc/bash.bashrc.local
+    export host="dom"
+    queue="normal"
+    nthreads=8
+    mpilaunch="srun"
+    installdir=/project/c14/install/${host}
+    testdata=/scratch/snx3000/jenkins/data
+    export CUDA_ARCH=sm_60
 elif [ "`hostname | grep dora`" != "" ] ; then
     . /etc/bash.bashrc
     . /opt/modules/default/init/bash

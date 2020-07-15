@@ -246,6 +246,7 @@ setFortranEnvironment()
         export CC=$GCC_PATH/snos/bin/gcc
         export FC=ftn
         export LDFLAGS="-L/opt/gcc/8.3.0/snos/lib64 ${LDFLAGS}"
+        export CUDA_HOME=${CUDATOOLKIT_HOME}
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2

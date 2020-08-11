@@ -239,7 +239,8 @@ setFortranEnvironment()
         export FC=ftn
         ;;
     *pgi )
-        module swap pgi/19.7.0
+        module swap pgi/20.1.0
+        export CUDA_HOME=${CUDATOOLKIT_HOME}
         # Load gcc/8.3.0 to link with the C++ Dynamical Core
         module load gcc/8.3.0
         export CXX=$GCC_PATH/snos/bin/g++

@@ -16,7 +16,7 @@
 #   targets           list of possible targets (e.g. gpu, cpu)
 #   compilers         list of possible compilers for Fortran parts
 #   target            default target
-#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)        
+#   BOOST_PATH        The boost installation path (for both fortran and C++ dependencies)
 #   compiler          default compiler to use for Fortran parts
 #   debug             build in debugging mode (yes/no)
 #   cleanup           clean before build (yes/no)
@@ -25,17 +25,15 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray pgi)
+    compilers=(gnu cray pgi claw-cray claw-pgi claw-gnu)
     fcompiler_cmds=(ftn)
 
-    # Daint and DOM environement should be indentical and using 
-    # the Daint installed Boost is fine
     # Module display boost
     export BOOST_PATH="/project/c14/install/daint/boost/boost_1_49_0"
 
     # Check if ncurses was loaded before
     export BUILDENV_NCURSES_LOADED=`module list -t 2>&1 | grep "ncurses"`
-    
+
     # default options
     if [ -z "${target}" ] ; then
         target="gpu"
@@ -57,7 +55,7 @@ get_fcompiler_cmd()
 {
     local __resultvar=$1
     local __compiler=$2
-    if [ "${compiler}" == "gnu" ] ; then
+    if [ "${compiler}" == "gnu" ] || [ "${compiler}" == "claw-gnu" ]; then
         myresult="gfortran"
     else
         myresult="ftn"
@@ -95,14 +93,12 @@ setCppEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-gnu
     fi
-    
+
     # standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
     fi
-    
-    module load CMake
-
+    module load cudatoolkit
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     cray )
@@ -158,13 +154,11 @@ unsetCppEnvironment()
         exit 1
     esac
 
-    module unload CMake
-    
     # unload curses in case it was already loaded
     if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
         module unload ncurses
     fi
-    
+
     # remove standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia60
@@ -210,48 +204,64 @@ setFortranEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-${compiler}
     fi
-    
+
     old_ldflags="${LDFLAGS}"
-    
+
+    # Set grib-api version and cosmo ressources
+    export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
+    export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
+
     # standard modules (part 1)
-    module load CMake
+
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
     fi
 
     # compiler specific modules
     case "${compiler}" in
-    cray )
-        module load cce/8.7.1
-        # Load gcc/5.3.0 to link with the C++ Dynamical Core
-        module load gcc/5.3.0
+    *cray )
+        module load cdt/19.10
+        module swap cce/9.0.2
+        # Load gcc/8.3.0 to link with the C++ Dynamical Core
+        module load gcc/8.3.0
+        export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
         # Override C++ and C compiler
         export CXX=$GCC_PATH/snos/bin/g++
         export CC=$GCC_PATH/snos/bin/gcc
         export FC=ftn
         export LDFLAGS="-L$GCC_PATH/snos/lib64 ${LDFLAGS}"
         ;;
-    gnu )
+    *gnu )
         module unload gcc
-        module load gcc/5.3.0
+        module load gcc/8.3.0
         export CXX=CC
         export CC=cc
         export FC=ftn
         ;;
-    pgi )
-        module unload pgi
-        module load pgi/18.3.0
-        # Load gcc/5.3.0 to link with the C++ Dynamical Core
-        module load gcc/5.3.0
+    *pgi )
+        module swap pgi/20.1.0
+        export CUDA_HOME=${CUDATOOLKIT_HOME}
+        # Load gcc/8.3.0 to link with the C++ Dynamical Core
+        module load gcc/8.3.0
         export CXX=$GCC_PATH/snos/bin/g++
         export CC=$GCC_PATH/snos/bin/gcc
         export FC=ftn
-        export LDFLAGS="-L/opt/gcc/5.3.0/snos/lib64 ${LDFLAGS}"
+        export LDFLAGS="-L/opt/gcc/8.3.0/snos/lib64 ${LDFLAGS}"
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
+    
+    if [[ -z "$CLAWFC" ]]; then
+      # CLAW Compiler using the correct preprocessor
+      export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    fi
+    export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
+
+    # Set grib-api version and cosmo ressources
+    export GRIBAPI_VERSION="libgrib_api_1.20.0p4"
+    export GRIBAPI_COSMO_RESOURCES_VERSION="v1.20.0.2"
 
     # standard modules (part 2)
     module load cray-netcdf
@@ -270,15 +280,20 @@ unsetFortranEnvironment()
 
     # remove compiler specific modules
     case "${compiler}" in
-    cray )
-        module unload gcc/5.3.0
+    *cray )
+        module unload gcc/8.3.0
+	#XL: try to restore system default manually since
+	#    this gives an error : source /opt/cray/pe/cdt/17.08/restore_system_defaults.sh
+	module unload cdt/19.10
+	module unload cray-libsci_acc/19.06.1
+	module swap cray-mpich/7.7.10
         ;;
-    gnu )
-        module unload gcc/5.3.0
+    *gnu )
+        module unload gcc/8.3.0
         module load gcc
         ;;
-    pgi )
-        module unload gcc/5.3.0
+    *pgi )
+        module unload gcc/8.3.0
         ;;
     * )
         echo "ERROR: Unsupported compiler encountered in unsetFortranEnvironment" 1>&2
@@ -286,12 +301,12 @@ unsetFortranEnvironment()
     esac
 
     # remove standard modules (part 1)
-    module unload CMake
+
     # unload curses in case it was already loaded
     if [ -z "${BUILDENV_NCURSES_LOADED}" ] ; then
         module unload ncurses
     fi
-    
+
     # GPU specific unload
     if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia60
@@ -304,10 +319,10 @@ unsetFortranEnvironment()
         module swap PrgEnv-${compiler} ${old_prgenv}
     fi
     unset old_prgenv
-    
+
     export LDFLAGS="${old_ldflags}"
     unset old_ldflags
-    
+
     unset CXX
     unset CC
     unset FC

@@ -98,7 +98,7 @@ setCppEnvironment()
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
     fi
-
+    module load cudatoolkit
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     cray )
@@ -163,6 +163,7 @@ unsetCppEnvironment()
     if [ "${target}" == "gpu" ] ; then
         module unload craype-accel-nvidia60
     fi
+    module unload cudatoolkit
 
 
     # restore programming environment (only on Cray)
@@ -220,12 +221,7 @@ setFortranEnvironment()
     # compiler specific modules
     case "${compiler}" in
     *cray )
-        module load cdt/19.08
-        module swap cudatoolkit/10.0.130_3.22-7.0.1.0_5.2__gdfb4ce5 
-        module swap cray-libsci_acc/19.03.1
-        module swap cray-libsci/19.02.1
-        module swap cray-mpich/7.7.6  
-        module swap cce/8.7.9
+        module load cdt/20.08
         # Load gcc/8.3.0 to link with the C++ Dynamical Core
         module load gcc/8.3.0
         export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
@@ -243,7 +239,8 @@ setFortranEnvironment()
         export FC=ftn
         ;;
     *pgi )
-        module swap pgi/18.10.0
+        module swap pgi/20.1.0
+        export CUDA_HOME=${CUDATOOLKIT_HOME}
         # Load gcc/8.3.0 to link with the C++ Dynamical Core
         module load gcc/8.3.0
         export CXX=$GCC_PATH/snos/bin/g++
@@ -255,9 +252,11 @@ setFortranEnvironment()
         echo "ERROR: Unsupported compiler encountered in setFortranEnvironment" 1>&2
         exit 1
     esac
-
-    # CLAW Compiler using the correct preprocessor
-    export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    
+    if [[ -z "$CLAWFC" ]]; then
+      # CLAW Compiler using the correct preprocessor
+      export CLAWFC="${installdir}/claw_v1.2.3/${compiler}/bin/clawfc"
+    fi
     export CLAWXMODSPOOL="${installdir}/../omni-xmod-pool"
 
     # Set grib-api version and cosmo ressources
@@ -283,11 +282,13 @@ unsetFortranEnvironment()
     case "${compiler}" in
     *cray )
         module unload gcc/8.3.0
+        module unload cdt/20.08
+        source /opt/cray/pe/cdt/20.08/restore_system_defaults.sh
 	#XL: try to restore system default manually since
 	#    this gives an error : source /opt/cray/pe/cdt/17.08/restore_system_defaults.sh
-	module unload cdt/19.10
-	module unload cray-libsci_acc/19.06.1
-	module swap cray-mpich/7.7.10
+	# module unload cdt/19.10
+	# module unload cray-libsci_acc/19.06.1
+	# module swap cray-mpich/7.7.10
         ;;
     *gnu )
         module unload gcc/8.3.0

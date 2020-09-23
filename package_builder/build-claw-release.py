@@ -21,7 +21,7 @@ DEFAULT_C_COMPILER = '/usr/bin/gcc'
 DEFAULT_CXX_COMPILER = '/usr/bin/g++'
 DEFAULT_FC_COMPILER = '/usr/bin/gfortran'
 DEFAULT_FC_COMPILER_MODULES = []
-TMP_DIR = '/dev/shm'
+TMP_DIR = '/tmp'
 SUPPORTED_RELEASES = ('v2.0.1', 'v2.0.2')
 
 
@@ -107,7 +107,7 @@ def check_arguments(args: Args):
     assert file_exists(args.cc), 'C compiler "%s" not found' % args.cc
     assert file_exists(args.cxx), 'C++ compiler "%s" not found' % args.cxx
     assert file_exists(args.fc), 'Fortran compiler "%s" not found' % args.fc
-    assert args.ant_dir is None or dir_exists(args.ant_home_dir), 'Ant dir "%s" not found' % args.ant_dir
+    assert args.ant_dir is None or dir_exists(args.ant_dir), 'Ant dir "%s" not found' % args.ant_dir
     assert args.release_tag in SUPPORTED_RELEASES, 'Currently only the following releases are supported [%s]' % \
                                                    ', '.join(SUPPORTED_RELEASES)
     os.makedirs(args.install_dir, exist_ok=True)
@@ -163,9 +163,9 @@ if __name__ == '__main__':
         src_dir = os.path.join(build_dir, 'claw-compiler')
         os.chdir(src_dir)
         log.debug('\tSource dir : %s' % src_dir)
-        run(['git', 'checkout', args.release_tag])
-        run(['git', 'submodule', 'init'])
-        run(['git', 'submodule', 'update'])
+        assert run(['git', 'checkout', args.release_tag]).returncode == 0
+        assert run(['git', 'submodule', 'init']).returncode == 0
+        assert run(['git', 'submodule', 'update']).returncode == 0
         log.info('Patching source... ')
         patch_source(src_dir)
         log.info('Configuring build...')

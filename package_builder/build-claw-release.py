@@ -191,7 +191,7 @@ if __name__ == '__main__':
             assert run(cmd, shell=True).returncode == 0, 'Build failed'
             if not args.disable_tests:
                 log.info('Testing...')
-                assert run(['make', '-j', 'transformation', 'test']).returncode == 0, 'Test failed'
+                assert run(module_cmd + 'make -j transformation test', shell=True).returncode == 0, 'Test failed'
             log.info('Installing...')
             assert run(['make', 'install']).returncode == 0, 'Install failed'
             shutil.rmtree(backup_dir)

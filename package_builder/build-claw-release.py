@@ -13,6 +13,7 @@ assert sys.version_info[0] >= 3 and sys.version_info[1] >= 5, 'Python >= 3.5 is 
 from enum import Enum
 from typing import NamedTuple, List, Optional
 from subprocess import run
+from contextlib import contextmanager
 
 DEFAULT_CLAW_REPOSITORY = 'https://github.com/claw-project/claw-compiler.git'
 DEFAULT_CLAW_RELEASE = 'v2.0.2'
@@ -42,6 +43,7 @@ class Args(NamedTuple):
     fc_modules: List[str]
     ant_dir: Optional[str]
     disable_tests: bool
+    build_dir: Optional[str]
 
 
 def parse_args() -> Args:
@@ -62,6 +64,8 @@ def parse_args() -> Args:
                         help='Fortran compiler module')
     parser.add_argument('--ant-home-dir', type=str,
                         help='Apache Ant install dir')
+    parser.add_argument('--build-dir', type=str,
+                        help='Build directory')
     parser.add_argument('--disable-tests', action='store_true')
     p_args = parser.parse_args()
     fc_modules = []
@@ -75,7 +79,8 @@ def parse_args() -> Args:
                 fc=shutil.which(p_args.fc_compiler),
                 fc_modules=fc_modules,
                 ant_dir=p_args.ant_home_dir,
-                disable_tests=p_args.disable_tests)
+                disable_tests=p_args.disable_tests,
+                build_dir=p_args.build_dir)
     return args
 
 
@@ -85,6 +90,17 @@ def file_exists(path: str):
 
 def dir_exists(path: str):
     return os.path.exists(path) and os.path.isdir(path)
+
+
+@contextmanager
+def prepare_dir(dir_path=None, parent_dir=None):
+    if dir_path is not None:
+        os.makedirs(dir_path, exist_ok=True)
+        yield dir_path
+    else:
+        d = tempfile.TemporaryDirectory(dir=parent_dir)
+        yield d.name
+        d.cleanup()
 
 
 def check_arguments(args: Args):
@@ -135,7 +151,12 @@ if __name__ == '__main__':
     log.info('Checking system...')
     check_system()
     log.info('Creating build dir')
-    with tempfile.TemporaryDirectory(dir=TMP_DIR) as build_dir:
+    build_dir_args = {}
+    if args.build_dir is None:
+        build_dir_args['parent_dir'] = TMP_DIR
+    else:
+        build_dir_args['dir_path'] = args.build_dir
+    with prepare_dir(**build_dir_args) as build_dir:
         os.chdir(build_dir)
         log.info('Checking out source...')
         run(['git', 'clone', args.source_repo])

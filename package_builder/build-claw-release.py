@@ -157,7 +157,7 @@ if __name__ == '__main__':
             module_cmd = ' && '.join(cmds) + ' && '
         c_args = ['CC=%s' % args.cc, 'CXX=%s' % args.cxx]
         if args.ant_dir is not None:
-            c_args += ['ANT_HOME=%s' % args.fc]
+            c_args += ['ANT_HOME=%s' % args.ant_dir]
         c_args += ['cmake', '-DCLAW_Fortran_COMPILER=%s' % args.fc, '-DCMAKE_INSTALL_PREFIX=%s' % args.install_dir]
         cmd = module_cmd + ' '.join(c_args)
         assert run(cmd, shell=True).returncode == 0, 'Build configuration failed'

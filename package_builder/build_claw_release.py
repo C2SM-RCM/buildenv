@@ -46,7 +46,7 @@ class Args(NamedTuple):
     build_dir: Optional[str]
 
 
-def parse_args() -> Args:
+def parse_args(cmdline_args: List[str]=None) -> Args:
     parser = argparse.ArgumentParser(description='CLAW installer')
     parser.add_argument('-i', '--install-dir', type=str, required=True,
                         help='Path to target install directory')
@@ -67,7 +67,7 @@ def parse_args() -> Args:
     parser.add_argument('--build-dir', type=str,
                         help='Build directory')
     parser.add_argument('--disable-tests', action='store_true')
-    p_args = parser.parse_args()
+    p_args = parser.parse_args(cmdline_args)
     fc_modules = []
     if p_args.fc_compiler_module is not None:
         fc_modules += p_args.fc_compiler_module
@@ -84,11 +84,11 @@ def parse_args() -> Args:
     return args
 
 
-def file_exists(path: str):
+def file_exists(path: str) -> bool:
     return os.path.exists(path) and os.path.isfile(path)
 
 
-def dir_exists(path: str):
+def dir_exists(path: str) -> bool:
     return os.path.exists(path) and os.path.isdir(path)
 
 
@@ -118,7 +118,7 @@ def check_system():
     assert res.returncode == 0 or 'cmake version' not in res.stdout, 'cmake not found'
 
 
-def setup_logging():
+def setup_logging() -> log.Logger:
     logger = log.getLogger("CLAW_INSTALLER")
     logger.setLevel(log.DEBUG)
     formatter = log.Formatter('%(asctime)s : %(levelname)s : %(message)s')
@@ -131,7 +131,7 @@ def setup_logging():
 def patch_source(src_dir : str):
     files = ('CMakeLists.txt', 'properties.cmake', 'cmake/omni_compiler.cmake')
     for f_name in files:
-        f_path = os.path.join(src_dir, f_name)
+        f_path = join_path(src_dir, f_name)
         f_data = None
         with open(f_path, 'r') as f:
             f_data = f.read()
@@ -140,9 +140,9 @@ def patch_source(src_dir : str):
             f.write(f_data)
 
 
-if __name__ == '__main__':
+def main(cmdline_args: List[str]=None):
     log = setup_logging()
-    args = parse_args()
+    args = parse_args(cmdline_args)
     log.info('Parsed input arguments...')
     for name, value in args._asdict().items():
         log.info('\t%s : %s' % (name, value))
@@ -160,7 +160,7 @@ if __name__ == '__main__':
         os.chdir(build_dir)
         log.info('Checking out source...')
         run(['git', 'clone', args.source_repo])
-        src_dir = os.path.join(build_dir, 'claw-compiler')
+        src_dir = join_path(build_dir, 'claw-compiler')
         os.chdir(src_dir)
         log.debug('\tSource dir : %s' % src_dir)
         assert run(['git', 'checkout', args.release_tag]).returncode == 0
@@ -198,4 +198,8 @@ if __name__ == '__main__':
         except:
             log.error('Restoring old install')
             shutil.move(backup_dir, args.install_dir)
+
+
+if __name__ == '__main__':
+    main()
     sys.exit(RC.SUCCESS.value)

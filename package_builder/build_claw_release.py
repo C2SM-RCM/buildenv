@@ -44,6 +44,7 @@ class Args(NamedTuple):
     ant_dir: Optional[str]
     disable_tests: bool
     build_dir: Optional[str]
+    cmake_modules: List[str]
 
 
 def parse_args(cmdline_args: List[str]=None) -> Args:
@@ -60,17 +61,19 @@ def parse_args(cmdline_args: List[str]=None) -> Args:
                         help='Path to C++ compiler executable')
     parser.add_argument('-f', '--fc-compiler', type=str, default=DEFAULT_FC_COMPILER,
                         help='Path to Fortran compiler executable')
-    parser.add_argument('-fm', '--fc-compiler-module', type=str, nargs='*',
-                        help='Fortran compiler module')
+    parser.add_argument('-fm', '--fc-compiler-modules', type=str, nargs='*',
+                        help='Fortran compiler modules')
     parser.add_argument('--ant-home-dir', type=str,
                         help='Apache Ant install dir')
     parser.add_argument('--build-dir', type=str,
                         help='Build directory')
     parser.add_argument('--disable-tests', action='store_true')
+    parser.add_argument('-cm', '--cmake-modules', type=str, nargs='*',
+                        help='Cmake modules')
     p_args = parser.parse_args(cmdline_args)
     fc_modules = []
-    if p_args.fc_compiler_module is not None:
-        fc_modules += p_args.fc_compiler_module
+    if p_args.fc_compiler_modules is not None:
+        fc_modules += p_args.fc_compiler_modules
     args = Args(install_dir=p_args.install_dir,
                 source_repo=p_args.source_repository,
                 release_tag=p_args.release_tag,
@@ -80,7 +83,8 @@ def parse_args(cmdline_args: List[str]=None) -> Args:
                 fc_modules=fc_modules,
                 ant_dir=p_args.ant_home_dir,
                 disable_tests=p_args.disable_tests,
-                build_dir=p_args.build_dir)
+                build_dir=p_args.build_dir,
+                cmake_modules=p_args.cmake_modules)
     return args
 
 
@@ -185,10 +189,11 @@ def main(cmdline_args: List[str]=None):
         patch_source(src_dir)
         log.info('Configuring build...')
         modules_cmd = ''
-        if len(args.fc_modules) > 0:
+        modules = args.cmake_modules + args.fc_modules
+        if len(modules) > 0:
             cmds = []
             cmds += ['module purge']
-            for module in args.fc_modules:
+            for module in modules:
                 cmds += ['module load %s' % module]
             modules_cmd = ' && '.join(cmds) + ' && '
         c_args = ['CC=%s' % args.cc, 'CXX=%s' % args.cxx]

@@ -56,6 +56,12 @@ def get_fc_compiler_modules(machine: str, compiler: str) -> List[str]:
         assert False, 'Unsupported compiler'
 
 
+def get_cmake_modules(machine: str) -> List[str]:
+    if machine == 'tsa':
+        return ['cmake']
+    else:
+        return []
+
 def get_env_var(name: str):
     val = os.environ.get(name)
     assert val is not None, 'Required environment var "%s" not set. Are you running the script from Jenkins?' % name
@@ -90,6 +96,7 @@ if __name__ == '__main__':
     assert RELEASE in RELEASES, 'Unsupported release'
     assert COMPILER in COMPILERS, 'Unsupported compiler'
     assert MACHINE in MACHINES, 'Unsupported machine'
+    cmake_modules = get_cmake_modules(MACHINE)
     cc = get_c_compiler(MACHINE, COMPILER)
     cxx = get_cxx_compiler(MACHINE, COMPILER)
     fc = get_fc_compiler(MACHINE, COMPILER)
@@ -115,7 +122,10 @@ if __name__ == '__main__':
             '--fc-compiler=%s' % fc]
     if fc_modules is not None and len(fc_modules) > 0:
         modules_str = ' '.join(fc_modules)
-        args += ['--fc-compiler-module', modules_str]
+        args += ['--fc-compiler-modules', modules_str]
+    if cmake_modules is not None and len(cmake_modules) > 0:
+        modules_str = ' '.join(cmake_modules)
+        args += ['--cmake-modules', modules_str]
     if ant_dir is not None:
         args += ['--ant-home-dir', ant_dir]
     if DISABLE_TESTS:

@@ -86,6 +86,7 @@ if __name__ == '__main__':
     RELEASE = get_env_var('release')
     COMPILER = get_env_var('compiler')
     MACHINE = get_env_var('slave')
+    DISABLE_TESTS = os.environ.get('disable_tests') is not None
     assert RELEASE in RELEASES, 'Unsupported release'
     assert COMPILER in COMPILERS, 'Unsupported compiler'
     assert MACHINE in MACHINES, 'Unsupported machine'
@@ -117,7 +118,8 @@ if __name__ == '__main__':
         args += ['--fc-compiler-module', modules_str]
     if ant_dir is not None:
         args += ['--ant-home-dir', ant_dir]
-    args += ['--disable-tests']
+    if DISABLE_TESTS:
+        args += ['--disable-tests']
     install(args)
     if link_exists(install_link):
         os.remove(install_link)

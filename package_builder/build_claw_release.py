@@ -47,6 +47,15 @@ class Args(NamedTuple):
     cmake_modules: List[str]
 
 
+def which(cmd: str, modules: List[str]=[]) -> str:
+    if len(modules) == 0:
+        return shutil.which(cmd)
+    else:
+        which_str = 'module purge && module load %s && which %s' % (' '.join(modules), cmd)
+        res = run(which_str, shell=True, stdout=subprocess.PIPE).stdout.decode('utf-8').strip()
+        return res
+
+
 def parse_args(cmdline_args: List[str]=None) -> Args:
     parser = argparse.ArgumentParser(description='CLAW installer')
     parser.add_argument('-i', '--install-dir', type=str, required=True,
@@ -74,17 +83,20 @@ def parse_args(cmdline_args: List[str]=None) -> Args:
     fc_modules = []
     if p_args.fc_compiler_modules is not None:
         fc_modules += p_args.fc_compiler_modules
+    cmake_modules = []
+    if p_args.cmake_modules is not None:
+        cmake_modules += p_args.cmake_modules
     args = Args(install_dir=p_args.install_dir,
                 source_repo=p_args.source_repository,
                 release_tag=p_args.release_tag,
-                cc=shutil.which(p_args.c_compiler),
-                cxx=shutil.which(p_args.cxx_compiler),
-                fc=shutil.which(p_args.fc_compiler),
+                cc=which(p_args.c_compiler),
+                cxx=which(p_args.cxx_compiler),
+                fc=which(p_args.fc_compiler, fc_modules),
                 fc_modules=fc_modules,
                 ant_dir=p_args.ant_home_dir,
                 disable_tests=p_args.disable_tests,
                 build_dir=p_args.build_dir,
-                cmake_modules=p_args.cmake_modules)
+                cmake_modules=cmake_modules)
     return args
 
 
@@ -167,8 +179,8 @@ def main(cmdline_args: List[str]=None):
         log.info('\t%s : %s' % (name, value))
     log.info('Checking input arguments...')
     check_arguments(args)
-    log.info('Checking system...')
-    check_system()
+    #log.info('Checking system...')
+    #check_system()
     log.info('Creating build dir')
     build_dir_args = {}
     if args.build_dir is None:

@@ -23,11 +23,17 @@ def link_exists(path: str) -> bool:
 
 
 def get_c_compiler(machine: str, compiler: str) -> str:
-    return '/usr/bin/gcc'
+    if machine == 'tsa':
+        return '/apps/arolla/UES/jenkins/RH7.7/generic/easybuild/software/GCCcore/8.3.0/bin/gcc'
+    else:
+        return '/usr/bin/gcc'
 
 
 def get_cxx_compiler(machine: str, compiler: str) -> str:
-    return '/usr/bin/g++'
+    if machine == 'tsa':
+        return '/apps/arolla/UES/jenkins/RH7.7/generic/easybuild/software/GCCcore/8.3.0/bin/g++'
+    else:
+        return '/usr/bin/g++'
 
 
 def get_fc_compiler(machine: str, compiler: str) -> str:
@@ -121,11 +127,9 @@ if __name__ == '__main__':
             '--cxx-compiler=%s' % cxx,
             '--fc-compiler=%s' % fc]
     if fc_modules is not None and len(fc_modules) > 0:
-        modules_str = ' '.join(fc_modules)
-        args += ['--fc-compiler-modules', modules_str]
+        args += ['--fc-compiler-modules'] + fc_modules
     if cmake_modules is not None and len(cmake_modules) > 0:
-        modules_str = ' '.join(cmake_modules)
-        args += ['--cmake-modules', modules_str]
+        args += ['--cmake-modules'] + cmake_modules
     if ant_dir is not None:
         args += ['--ant-home-dir', ant_dir]
     if DISABLE_TESTS:

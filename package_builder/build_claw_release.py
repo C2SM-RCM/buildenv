@@ -140,6 +140,21 @@ def patch_source(src_dir : str):
             f.write(f_data)
 
 
+def install_sanity_check(install_dir : str, modules_cmd : str):
+    clawfc = join_path(install_dir, 'bin/clawfc')
+    with tempfile.TemporaryDirectory(dir=TMP_DIR) as test_dir:
+        test_in_file = join_path(test_dir, 'conftest.f90')
+        with open(test_in_file, 'w') as f:
+            f.writelines(['module conftest_module\n',
+                          'end module'])
+        test_cmd = modules_cmd + clawfc + ' -f -o conftest.claw.f90 conftest.f90'
+        assert run(test_cmd, shell=True, cwd=test_dir).returncode == 0, 'claw run failed'
+        out_file_path = join_path(test_dir, 'conftest.claw.f90')
+        xmod_path = join_path(test_dir, 'conftest_module.xmod')
+        assert file_exists(out_file_path), 'claw run failed'
+        assert file_exists(xmod_path), 'claw run failed'
+
+
 def main(cmdline_args: List[str]=None):
     log = setup_logging()
     args = parse_args(cmdline_args)
@@ -169,31 +184,33 @@ def main(cmdline_args: List[str]=None):
         log.info('Patching source... ')
         patch_source(src_dir)
         log.info('Configuring build...')
-        module_cmd = ''
+        modules_cmd = ''
         if len(args.fc_modules) > 0:
             cmds = []
             cmds += ['module purge']
             for module in args.fc_modules:
                 cmds += ['module load %s' % module]
-            module_cmd = ' && '.join(cmds) + ' && '
+            modules_cmd = ' && '.join(cmds) + ' && '
         c_args = ['CC=%s' % args.cc, 'CXX=%s' % args.cxx]
         if args.ant_dir is not None:
             c_args += ['ANT_HOME=%s' % args.ant_dir]
         c_args += ['cmake', '-DCLAW_Fortran_COMPILER=%s' % args.fc, '-DCMAKE_INSTALL_PREFIX=%s' % args.install_dir]
-        cmd = module_cmd + ' '.join(c_args)
+        cmd = modules_cmd + ' '.join(c_args)
         assert run(cmd, shell=True).returncode == 0, 'Build configuration failed'
         log.info('Backing up old install...')
         backup_dir = args.install_dir + '.old'
         shutil.move(args.install_dir, backup_dir)
         try:
             log.info('Building...')
-            cmd = module_cmd + 'make -j'
+            cmd = modules_cmd + 'make -j'
             assert run(cmd, shell=True).returncode == 0, 'Build failed'
             if not args.disable_tests:
                 log.info('Testing...')
-                assert run(module_cmd + 'make -j transformation test', shell=True).returncode == 0, 'Test failed'
+                assert run(modules_cmd + 'make -j transformation test', shell=True).returncode == 0, 'Test failed'
             log.info('Installing...')
             assert run(['make', 'install']).returncode == 0, 'Install failed'
+            log.info('Performing sanity check on install...')
+            install_sanity_check(args.install_dir, modules_cmd)
             shutil.rmtree(backup_dir)
         except:
             log.error('Restoring old install')

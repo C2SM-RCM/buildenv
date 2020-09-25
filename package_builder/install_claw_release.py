@@ -18,6 +18,10 @@ COMPILERS = ('gcc', 'pgi')
 MACHINES = ('daint', 'tsa', 'ubuntu20')
 
 
+def link_exists(path: str) -> bool:
+    return os.path.exists(path) and os.path.islink(path)
+
+
 def get_c_compiler(machine: str, compiler: str) -> str:
     return '/usr/bin/gcc'
 
@@ -95,11 +99,14 @@ if __name__ == '__main__':
     install_link = join_path(top_install_dir, RELEASE)
     std_install_dir = install_dir
     old_install_dir = None
-    if dir_exists(install_dir):
-        old_install_dir = install_dir
-        install_dir += '.new'
+    if link_exists(install_link):
+        old_install_dir_path = os.readlink(install_link)
+        if dir_exists(old_install_dir_path):
+            old_install_dir = old_install_dir_path
+            if install_dir == old_install_dir:
+                install_dir += '.new'
         if dir_exists(install_dir):
-            os.rmdir(install_dir)
+            shutil.rmtree(install_dir)
     args = ['--install-dir=%s' % install_dir,
             '--release-tag=v%s' % RELEASE,
             '--c-compiler=%s' % cc,
@@ -112,11 +119,11 @@ if __name__ == '__main__':
         args += ['--ant-home-dir', ant_dir]
     args += ['--disable-tests']
     install(args)
-    if file_exists(install_link):
+    if link_exists(install_link):
         os.remove(install_link)
     os.symlink(install_dir, install_link, target_is_directory=True)
     if old_install_dir is not None:
         backup_dir = std_install_dir + '.old'
         if dir_exists(backup_dir):
-            os.rmdir(backup_dir)
+            shutil.rmtree(backup_dir)
         shutil.move(old_install_dir, backup_dir)

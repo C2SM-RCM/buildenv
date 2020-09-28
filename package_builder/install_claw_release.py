@@ -7,7 +7,7 @@ __copyright__ = "Copyright 2020, MeteoSwiss"
 """ This code manages CLAW release installation. It is supposed to be run from corresponding Jenkins plan.
 """
 
-import os, shutil
+import os, shutil, stat
 from os.path import join as join_path
 from typing import List, Optional
 from build_claw_release import main as install, dir_exists, file_exists
@@ -94,6 +94,28 @@ def get_ant_dir(machine: str) -> Optional[str]:
         assert False, 'Unknown machine'
 
 
+def set_permissions(dir: str, symlink: str):
+
+    def set_read(path: str):
+        current = stat.S_IMODE(os.lstat(path).st_mode)
+        os.chmod(path, current | stat.S_IROTH)
+
+    def set_exec(path: str):
+        current = stat.S_IMODE(os.lstat(path).st_mode)
+        os.chmod(path, current | stat.S_IROTH | stat.S_IXOTH)
+
+    for dir_path, dirnames, filenames in os.walk(dir):
+        set_read(dir_path)
+        for filename in filenames:
+            file_path = os.path.join(dir_path, filename)
+            set_read(file_path)
+    for dir_path, dirnames, filenames in os.walk(join_path(dir, 'bin')):
+        for filename in filenames:
+            file_path = os.path.join(dir_path, filename)
+            set_exec(file_path)
+    set_read(symlink)
+
+
 if __name__ == '__main__':
     RELEASE = get_env_var('release')
     COMPILER = get_env_var('compiler')
@@ -138,6 +160,7 @@ if __name__ == '__main__':
     if link_exists(install_link):
         os.remove(install_link)
     os.symlink(install_dir, install_link, target_is_directory=True)
+    set_permissions(install_dir, install_link)
     if old_install_dir is not None:
         backup_dir = std_install_dir + '.old'
         if dir_exists(backup_dir):

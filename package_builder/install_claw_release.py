@@ -96,11 +96,11 @@ def get_ant_dir(machine: str) -> Optional[str]:
 
 def set_permissions(dir: str, symlink: str):
 
-    def set_read(path: str):
+    def allow_read_to_other_users(path: str):
         current = stat.S_IMODE(os.lstat(path).st_mode)
         os.chmod(path, current | stat.S_IROTH)
 
-    def set_exec(path: str):
+    def allow_exec_to_other_users(path: str):
         current = stat.S_IMODE(os.lstat(path).st_mode)
         os.chmod(path, current | stat.S_IROTH | stat.S_IXOTH)
 
@@ -108,12 +108,12 @@ def set_permissions(dir: str, symlink: str):
         set_read(dir_path)
         for filename in filenames:
             file_path = os.path.join(dir_path, filename)
-            set_read(file_path)
+            allow_read_to_other_users(file_path)
     for dir_path, dirnames, filenames in os.walk(join_path(dir, 'bin')):
         for filename in filenames:
             file_path = os.path.join(dir_path, filename)
-            set_exec(file_path)
-    set_read(symlink)
+            allow_exec_to_other_users(file_path)
+    allow_read_to_other_users(symlink)
 
 
 if __name__ == '__main__':

@@ -105,7 +105,7 @@ def set_permissions(dir: str, symlink: str):
         os.chmod(path, current | stat.S_IROTH | stat.S_IXOTH)
 
     for dir_path, dirnames, filenames in os.walk(dir):
-        set_read(dir_path)
+        allow_read_to_other_users(dir_path)
         for filename in filenames:
             file_path = os.path.join(dir_path, filename)
             allow_read_to_other_users(file_path)

@@ -115,11 +115,7 @@ setCppEnvironment()
     module swap gcc             gcc/8.3.0
     module swap craype          craype/2.7.0
     module swap cray-mpich      cray-mpich/7.7.15
-    module swap slurm           slurm/20.02.6-1
     module swap cray-libsci     cray-libsci/20.06.1
-    module swap pmi             pmi/5.0.16
-    module swap atp             atp/3.7.4
-    module swap perftools-base  perftools-base/20.08.0
     module swap cray-libsci_acc cray-libsci_acc/20.06.1
     module swap cudatoolkit     cudatoolkit/10.2.89_3.29-7.0.2.1_3.5__g67354b4
 

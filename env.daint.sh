@@ -93,6 +93,7 @@ setCppEnvironment()
     else
         module swap ${old_prgenv} PrgEnv-gnu
     fi
+    module swap gcc gcc/8.3.0
 
     # standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then

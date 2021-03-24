@@ -98,8 +98,8 @@ setCppEnvironment()
     # standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
+        module switch cudatoolkit/10.2.89_3.29-7.0.2.1_3.5__g67354b4
     fi
-    module load cudatoolkit
     # Fortran compiler specific modules and setup
     case "${compiler}" in
     cray )
@@ -162,9 +162,9 @@ unsetCppEnvironment()
 
     # remove standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
+        module unload cudatoolkit
         module unload craype-accel-nvidia60
     fi
-    module unload cudatoolkit
 
 
     # restore programming environment (only on Cray)
@@ -217,12 +217,14 @@ setFortranEnvironment()
 
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
+        module switch cudatoolkit/10.2.89_3.29-7.0.2.1_3.5__g67354b4
     fi
 
     # compiler specific modules
     case "${compiler}" in
     *cray )
         module load cdt/20.08
+        # module load cdt/20.11
         # Load gcc/8.3.0 to link with the C++ Dynamical Core
         module load gcc/8.3.0
         export LD_LIBRARY_PATH=$CRAY_LD_LIBRARY_PATH:$LD_LIBRARY_PATH
@@ -312,6 +314,7 @@ unsetFortranEnvironment()
 
     # GPU specific unload
     if [ "${target}" == "gpu" ] ; then
+        module unload cudatoolkit
         module unload craype-accel-nvidia60
     fi
 

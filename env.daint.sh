@@ -98,7 +98,7 @@ setCppEnvironment()
     # standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
-        module switch cudatoolkit/10.2.89_3.29-7.0.2.1_3.5__g67354b4
+        module switch cudatoolkit/10.2.89_3.29-7.0.2.1_3.27__g67354b4
     fi
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -213,7 +213,7 @@ setFortranEnvironment()
 
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
-        module switch cudatoolkit/10.2.89_3.29-7.0.2.1_3.5__g67354b4
+        module switch cudatoolkit/10.2.89_3.29-7.0.2.1_3.27__g67354b4
     fi
 
     # compiler specific modules

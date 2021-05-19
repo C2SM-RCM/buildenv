@@ -115,7 +115,7 @@ setCppEnvironment()
     module swap gcc             gcc/8.3.0
     module swap cray-libsci     cray-libsci/20.06.1
     module swap cray-libsci_acc cray-libsci_acc/20.06.1
-    module swap cudatoolkit     cudatoolkit/10.2.89_3.29-7.0.2.1_3.5__g67354b4
+    module swap cudatoolkit     cudatoolkit/10.2.89_3.29-7.0.2.1_3.27__g67354b4
 
     # standard modules (part 2)
 
@@ -246,7 +246,7 @@ setFortranEnvironment()
     *pgi )
         module swap PrgEnv-pgi  PrgEnv-pgi/6.0.8
         module swap pgi         pgi/20.1.0
-        module swap cudatoolkit cudatoolkit/10.2.89_3.29-7.0.2.1_3.5__g67354b4
+        module swap cudatoolkit cudatoolkit/10.2.89_3.29-7.0.2.1_3.27__g67354b4
         module unload cray-libsci_acc/20.06.1
         export CUDA_HOME=${CUDATOOLKIT_HOME}
         # Load gcc/8.3.0 to link with the C++ Dynamical Core

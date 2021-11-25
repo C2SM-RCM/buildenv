@@ -31,6 +31,7 @@ setupDefaults()
     # Module display boost
     # export BOOST_PATH="/project/c14/install/daint/boost/boost_1_49_0"
     export BOOST_PATH="/project/g110/spack-install/daint/boost/1.67.0/gcc/hqbmwq4tbkcfhwo5kjrhkpns3vvavil2"
+    export serialbox_root="/project/g110/spack-install/daint/serialbox/2.6.0/gcc/lpqcyjrpedew76gskfy4jyetb6klapgo"
 
     # Check if ncurses was loaded before
     export BUILDENV_NCURSES_LOADED=`module list -t 2>&1 | grep "ncurses"`

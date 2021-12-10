@@ -31,6 +31,7 @@ setupDefaults()
     # Module display boost
     # export BOOST_PATH="/project/c14/install/daint/boost/boost_1_49_0"
     export BOOST_PATH="/project/pr94/cosmo-pompa_dependencies/boost_1_49_0"
+    export INSTALL_DIR="/project/pr94/cosmo-pompa_dependencies"
     export ENABLE_SERIALIZATION="OFF"
     export ENABLE_BENCHMARK="OFF"
     export ENABLE_TESTING="OFF"

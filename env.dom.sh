@@ -25,14 +25,16 @@ setupDefaults()
 {
     # available options
     targets=(cpu gpu)
-    compilers=(gnu cray pgi)
+    compilers=(gnu cray pgi claw-cray claw-pgi claw-gnu)
     fcompiler_cmds=(ftn)
 
-    # Daint and DOM environement should be indentical and using 
-    # the Daint installed Boost is fine
     # Module display boost
-    export BOOST_PATH="/project/c14/install/daint/boost/boost_1_49_0"
-
+    export BOOST_PATH="/project/pr94/cosmo-pompa_dependencies/boost_1_49_0"
+    export INSTALL_DIR="/project/pr94/cosmo-pompa_dependencies"
+    export ENABLE_SERIALIZATION="OFF"
+    export ENABLE_BENCHMARK="OFF"
+    export ENABLE_TESTING="OFF"
+    
     # Check if ncurses was loaded before
     export BUILDENV_NCURSES_LOADED=`module list -t 2>&1 | grep "ncurses"`
     
@@ -57,7 +59,7 @@ get_fcompiler_cmd()
 {
     local __resultvar=$1
     local __compiler=$2
-    if [ "${compiler}" == "gnu" ] ; then
+    if [ "${compiler}" == "gnu" ] || [ "${compiler}" == "claw-gnu" ]; then
         myresult="gfortran"
     else
         myresult="ftn"
@@ -100,7 +102,7 @@ setCppEnvironment()
     # standard modules (part 1)
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
-        module switch cudatoolkit/10.2.89_3.29-7.0.2.1_3.27__g67354b4
+        module switch cudatoolkit/10.2.89_3.28-2.1__g52c0314
     fi
     # Fortran compiler specific modules and setup
     case "${compiler}" in
@@ -215,7 +217,7 @@ setFortranEnvironment()
 
     if [ "${target}" == "gpu" ] ; then
         module load craype-accel-nvidia60
-        module switch cudatoolkit/10.2.89_3.29-7.0.2.1_3.27__g67354b4
+        module switch cudatoolkit/10.2.89_3.28-2.1__g52c0314
     fi
 
     # compiler specific modules

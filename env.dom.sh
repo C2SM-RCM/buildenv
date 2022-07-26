@@ -29,8 +29,8 @@ setupDefaults()
     fcompiler_cmds=(ftn)
 
     # Module display boost
-    export BOOST_PATH="/project/pr94/cosmo-pompa_dependencies/boost_1_49_0"
-    export INSTALL_DIR="/project/pr94/cosmo-pompa_dependencies"
+    export BOOST_PATH="/project/pr133/cosmo-pompa_dependencies/boost_1_49_0"
+    export INSTALL_DIR="/project/pr133/cosmo-pompa_dependencies"
     export ENABLE_SERIALIZATION="OFF"
     export ENABLE_BENCHMARK="OFF"
     export ENABLE_TESTING="OFF"
